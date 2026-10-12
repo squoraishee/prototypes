@@ -15,7 +15,7 @@
 <body>
 <div id="viewport"></div><div id="ambient"></div><div class="grain"></div>
 <div id="hud">
-  <div class="brand"><div class="brandmark"><span>✧</span></div><div><div class="overline">An interactive world</div><h1>The Luminous<br>Basin</h1><p>A living Gaussian landscape</p><p class="credit">Created by Shafik Quoraishee</p></div></div>
+  <div class="brand"><div class="brandmark"><span>✧</span></div><div><h1>The Luminous<br>Basin</h1><p class="credit">Created by Shafik Quoraishee</p></div></div>
   <div class="headright"><span class="micro live">World simulation active</span><button class="outlinebtn" id="settingsToggle">CONTROLS &nbsp; ☷</button><button class="outlinebtn" id="hideUI">HIDE UI</button></div>
   <nav class="leftnav"><div class="nav-title">Places to wander</div><div id="locations"></div><div class="side-note">A forgotten place, held<br>between light and memory.<br>Move freely. Stay a while.</div></nav>
   <aside class="settings" id="settings"><div class="settings-header"><div class="panel-title">World conditions</div><button id="closePanel" style="border:0;background:none;font-size:19px;color:#c6d8cd">×</button></div>
@@ -63,7 +63,7 @@ const locations=[{label:'The valley',sub:'An endless view',p:[80,153,390],t:[5,2
 {label:'The falls',sub:'Waters of the basin',p:[-93,117,-430],t:[-239,66,-629],caption:'The river remembers its source'},
 {label:'The old forest',sub:'Ancient growth',p:[-154,47,122],t:[-176,34,-115],caption:'A thousand shades of green'},
 {label:'Moonstone shrine',sub:'Silent monument',p:[184,84,-110],t:[185,40,-240],caption:'An offering to the quiet'},
-{label:'Skyward ridge',sub:'Above the clouds',p:[390,227,-295],t:[-20,34,-420],caption:'Beyond the veil of mountains'}];
+{label:'Skyward ridge',sub:'Above the clouds',p:[390,227,-295],t:[-20,34,-420],caption:'Skyward ridge'}];
 let currentView=0;
 locations.forEach((p,i)=>{const b=document.createElement('button');b.className='navplace'+(!i?' active':'');b.innerHTML=`<span class="n">${String(i+1).padStart(2,'0')}</span><span class="dash"></span><span>${p.label}</span>`;b.onclick=()=>goto(i);$('#locations').appendChild(b)});
 const quadGeometry=new THREE.BufferGeometry();quadGeometry.setAttribute('position',new THREE.Float32BufferAttribute([-1,-1,0,1,-1,0,1,1,0,-1,1,0],3));quadGeometry.setIndex([0,1,2,0,2,3]);
