@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>The Luminous Basin — A Living Gaussian World</title>
+<title>The Luminous Basin</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 :root{--cream:#f0ebdd;--muted:#a4ada8;--subtle:#778a88;--mint:#a3ddcd;--line:rgba(207,233,218,.16);--glass:rgba(10,21,26,.58)}
@@ -63,7 +63,7 @@ const locations=[{label:'The valley',sub:'An endless view',p:[80,153,390],t:[5,2
 {label:'The falls',sub:'Waters of the basin',p:[-93,117,-430],t:[-239,66,-629],caption:'The river remembers its source'},
 {label:'The old forest',sub:'Ancient growth',p:[-154,47,122],t:[-176,34,-115],caption:'A thousand shades of green'},
 {label:'Moonstone shrine',sub:'Silent monument',p:[184,84,-110],t:[185,40,-240],caption:'An offering to the quiet'},
-{label:'Skyward ridge',sub:'Above the clouds',p:[390,227,-295],t:[-20,34,-420],caption:'Skyward ridge'}];
+{label:'Skyward ridge',sub:'Above the clouds',p:[390,227,-295],t:[-20,34,-420],caption:''}];
 let currentView=0;
 locations.forEach((p,i)=>{const b=document.createElement('button');b.className='navplace'+(!i?' active':'');b.innerHTML=`<span class="n">${String(i+1).padStart(2,'0')}</span><span class="dash"></span><span>${p.label}</span>`;b.onclick=()=>goto(i);$('#locations').appendChild(b)});
 const quadGeometry=new THREE.BufferGeometry();quadGeometry.setAttribute('position',new THREE.Float32BufferAttribute([-1,-1,0,1,-1,0,1,1,0,-1,1,0],3));quadGeometry.setIndex([0,1,2,0,2,3]);
