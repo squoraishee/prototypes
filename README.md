@@ -26,7 +26,9 @@ An illustrated guide to how an audio forensic examiner checks whether a recordin
 
 **Live page:** https://squoraishee.github.io/audio-forensics/
 
-<video src="audio-forensics/demo.mp4" autoplay muted loop playsinline controls width="100%"></video>
+![Reading a Suspicious Recording, scrolling through the page](audio-forensics/demo.gif)
+
+[Full-quality video (MP4)](audio-forensics/demo.mp4)
 
 ## Running them
 
