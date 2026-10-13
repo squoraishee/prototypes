@@ -20,15 +20,15 @@ A party-snake campaign. Grow a cake chain, chase friends through a festival map,
 
 ![Snakephoria](snakephoria/screenshot.png)
 
-### Reading a Suspicious Recording
+### [Reading a Suspicious Recording](audio-forensics/)
 
-An illustrated guide to how an audio forensic examiner checks whether a recording is real. It covers the waveform, the spectrogram, pitch wobble, hidden watermarks, and file history, using a made-up recording. The source is in a private repo, and the page is hosted here.
+An illustrated guide to how an audio forensic examiner checks whether a recording is real. It covers the waveform, the spectrogram, pitch wobble, hidden watermarks, and file history, using a made-up recording.
 
 **Live page:** https://squoraishee.github.io/audio-forensics/
 
 ## Running them
 
-Each project is plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.
+The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.
 
 ## How they were made
 
