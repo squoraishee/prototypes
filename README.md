@@ -40,21 +40,21 @@ A Gray-Scott reaction-diffusion simulation in WebGL2. A single seed grows into a
 
 [Full-quality video (MP4)](turing-bloom/demo.mp4)
 
-### [Faraday Quasicrystal](faraday-quasicrystal/)
+### [Photon Ring](photon-ring/)
 
-Standing waves on a shaken fluid, the Faraday patterns from Michael Faraday's 1831 experiments. The forcing frequency sets the wavelength, the number of wave directions sets the symmetry (8-fold, 10-fold, and so on), and a second forcing frequency makes the pattern keep changing. The controls are hidden until you press `C`.
+A ray tracer for light bending around a black hole. It draws the shadow, the photon ring at the shadow edge, and the accretion disk lensed over the top and bottom of the hole. The orbit equation is solved for every pixel. The controls are hidden until you press `C`.
 
-**Live page:** https://squoraishee.github.io/faraday-quasicrystal/
+**Live page:** https://squoraishee.github.io/photon-ring/
 
-![Faraday Quasicrystal](faraday-quasicrystal/demo.gif)
+![Photon Ring, tilted view with a lensed accretion disk](photon-ring/demo.gif)
 
-[Full-quality video (MP4)](faraday-quasicrystal/demo.mp4)
+[Full-quality video (MP4)](photon-ring/demo.mp4)
 
 ## Running them
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.
 
-Turing Bloom and Faraday Quasicrystal load their scripts as ES modules, which browsers block on `file://`. Serve the folder instead, for example with `python3 -m http.server` from the repo root, then open the matching page.
+Turing Bloom and Photon Ring load their scripts as ES modules, which browsers block on `file://`. Serve the folder instead, for example with `python3 -m http.server` from the repo root, then open the matching page.
 
 ## How they were made
 
