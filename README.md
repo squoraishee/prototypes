@@ -4,7 +4,9 @@ A browser simulation of Gray-Scott reaction-diffusion, the model behind Turing p
 
 **Live page:** https://squoraishee.github.io/turing-bloom/
 
-![Turing Bloom](screenshot.png)
+![Turing Bloom, growing from a center seed](demo.gif)
+
+[Full-quality video (MP4)](demo.mp4)
 
 ## What it shows
 
