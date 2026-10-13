@@ -4,7 +4,7 @@ A short, illustrated guide to how an audio forensic examiner checks whether a re
 
 **Live page:** https://squoraishee.github.io/audio-forensics/
 
-![Reading a Suspicious Recording](screenshot.png)
+<video src="demo.mp4" autoplay muted loop playsinline controls width="100%"></video>
 
 ## What it covers
 
