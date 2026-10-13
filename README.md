@@ -16,7 +16,7 @@ Along the way you meet 10 party friends. Each one has its own behavior. Some cha
 
 - **Move:** arrow keys or WASD
 - **Attack weak enemy segments:** F or Enter
-- **Party Fever:** Space, once the fever bar fills
+- **Party Fever:** Space
 - **Pause:** P
 - **Mute:** M
 
