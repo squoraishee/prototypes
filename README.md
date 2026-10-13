@@ -2,9 +2,13 @@
 
 A browser simulation of Gray-Scott reaction-diffusion, the model behind Turing patterns.
 
+**Live page:** https://squoraishee.github.io/turing-bloom/
+
+![Turing Bloom](screenshot.png)
+
 ## What it shows
 
-Two chemicals live on a 512 x 512 grid that wraps at the edges. Chemical U spreads out and gets used up. Chemical V spreads more slowly, and it turns U into more V. V also dies off on its own. The balance between these effects decides the shape that forms: spots, labyrinths, splitting blobs, or traveling ripples.
+The page opens with a single seed of chemical V at the center. The pattern spreads outward from that seed and branches as it grows. Two chemicals live on a 512 x 512 grid that wraps at the edges. Chemical U spreads out and gets used up. Chemical V spreads more slowly, and it turns U into more V. V also dies off on its own. The balance between these effects decides the shape that forms: spots, labyrinths, splitting blobs, or traveling ripples.
 
 Alan Turing proposed this kind of process in 1952 as a way for an animal embryo to lay down stripes and spots. The same family of equations now serves as a standard model for pattern formation in biology and chemistry.
 
@@ -16,7 +20,7 @@ Alan Turing proposed this kind of process in 1952 as a way for an animal embryo 
 - **Steps per frame** sets how far the simulation advances each frame. More steps run faster and cost more GPU time.
 - **Palette** changes the colors.
 - Click or drag on the field to paint V into it.
-- `Space` pauses. `R` reseeds the field with random blobs.
+- `Space` pauses. `R` restarts the bloom from a single seed at the center.
 
 ## The math
 

@@ -23,8 +23,8 @@ const PALETTES = {
 };
 
 const state = {
-  feed: PRESETS[0].feed,
-  kill: PRESETS[0].kill,
+  feed: PRESETS[1].feed,
+  kill: PRESETS[1].kill,
   steps: 8,
   paused: false,
   palette: "ink",
@@ -210,27 +210,22 @@ function makeTarget() {
 const targets = [makeTarget(), makeTarget()];
 let cur = 0; // index of the texture holding the latest state
 
-// Seeds the grid with U everywhere and V in a few random blobs. Random seeds
-// give the pattern something to grow from. A uniform field stays flat.
+// Seeds one disc of V at the center of the grid. The pattern grows outward from
+// that disc, so it reads as a bloom. Scattered seeds died out in sparse fields
+// before they could spread.
 function seed() {
   const data = new Float32Array(N * N * 2);
-  for (let i = 0; i < N * N; i++) {
-    data[i * 2] = 1.0;
-    data[i * 2 + 1] = 0.0;
-  }
-  const blobs = 40;
-  for (let b = 0; b < blobs; b++) {
-    const cx = Math.floor(Math.random() * N);
-    const cy = Math.floor(Math.random() * N);
-    const r = 4 + Math.floor(Math.random() * 10);
-    for (let y = -r; y <= r; y++) {
-      for (let x = -r; x <= r; x++) {
-        if (x * x + y * y > r * r) continue;
-        const px = (cx + x + N) % N;
-        const py = (cy + y + N) % N;
-        const idx = (py * N + px) * 2;
+  const r = 26;
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const idx = (y * N + x) * 2;
+      data[idx] = 1.0;
+      const dx = x - N / 2;
+      const dy = y - N / 2;
+      if (dx * dx + dy * dy <= r * r) {
+        // Noise in the disc breaks the symmetry, so the front grows unevenly and forms branches.
         data[idx] = 0.5;
-        data[idx + 1] = 0.25 + Math.random() * 0.5;
+        data[idx + 1] = 0.5 + (Math.random() - 0.5) * 0.2;
       }
     }
   }
