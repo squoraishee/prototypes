@@ -36,7 +36,9 @@ A Gray-Scott reaction-diffusion simulation in WebGL2. A single seed grows into a
 
 **Live page:** https://squoraishee.github.io/turing-bloom/
 
-![Turing Bloom](turing-bloom/screenshot.png)
+![Turing Bloom, growing from a center seed](turing-bloom/demo.gif)
+
+[Full-quality video (MP4)](turing-bloom/demo.mp4)
 
 ## Running them
 
