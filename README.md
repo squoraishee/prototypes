@@ -26,6 +26,8 @@ An illustrated guide to how an audio forensic examiner checks whether a recordin
 
 **Live page:** https://squoraishee.github.io/audio-forensics/
 
+![Reading a Suspicious Recording](audio-forensics/screenshot.png)
+
 ## Running them
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.
