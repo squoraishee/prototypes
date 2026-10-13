@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Turing Bloom</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #0b0d12;
+        color: #e8e6df;
+        font-family: system-ui, -apple-system, "Helvetica Neue", sans-serif;
+      }
+      canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        cursor: crosshair;
+        touch-action: none;
+      }
+      #panel {
+        position: fixed;
+        left: 16px;
+        top: 16px;
+        width: 260px;
+        padding: 14px 16px 12px;
+        background: rgba(14, 17, 24, 0.84);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        backdrop-filter: blur(6px);
+        font-size: 13px;
+        user-select: none;
+      }
+      #panel h1 {
+        margin: 0 0 4px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      #panel .hint {
+        margin: 0 0 10px;
+        color: #8d93a0;
+        line-height: 1.45;
+      }
+      #panel label {
+        display: block;
+        margin: 10px 0 4px;
+        color: #b9bec9;
+      }
+      #panel label output {
+        float: right;
+        font-variant-numeric: tabular-nums;
+        color: #e8e6df;
+      }
+      #panel input[type="range"],
+      #panel select {
+        width: 100%;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+      }
+      button {
+        background: #1d2330;
+        color: #e8e6df;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 5px 9px;
+        font: inherit;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #262e3f;
+      }
+      button.on {
+        border-color: #7fd1b9;
+        color: #7fd1b9;
+      }
+      #panel .foot {
+        margin-top: 12px;
+        color: #6b7280;
+        font-size: 12px;
+      }
+      #error {
+        display: none;
+        position: fixed;
+        inset: 0;
+        place-items: center;
+        padding: 24px;
+        text-align: center;
+        line-height: 1.5;
+        color: #d9a3a3;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="view"></canvas>
+
+    <div id="panel">
+      <h1>Turing Bloom</h1>
+      <p class="hint">
+        Two chemicals spread, react, and fade. Click or drag on the field to add the activator.
+      </p>
+
+      <div class="row" id="presets"></div>
+
+      <label for="feed">Feed rate <output id="feedOut"></output></label>
+      <input id="feed" type="range" min="0" max="0.08" step="0.0005" />
+
+      <label for="kill">Kill rate <output id="killOut"></output></label>
+      <input id="kill" type="range" min="0.03" max="0.075" step="0.0005" />
+
+      <label for="steps">Steps per frame <output id="stepsOut"></output></label>
+      <input id="steps" type="range" min="1" max="24" step="1" />
+
+      <label for="palette">Palette</label>
+      <select id="palette">
+        <option value="ink">Ink</option>
+        <option value="ember">Ember</option>
+        <option value="lagoon">Lagoon</option>
+      </select>
+
+      <div class="row">
+        <button id="pause">Pause</button>
+        <button id="reset">Reset</button>
+      </div>
+
+      <div class="foot">Space pauses. R starts a new bloom from the center.</div>
+    </div>
+
+    <div id="error"></div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

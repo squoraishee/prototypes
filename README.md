@@ -30,9 +30,19 @@ An illustrated guide to how an audio forensic examiner checks whether a recordin
 
 [Full-quality video (MP4)](audio-forensics/demo.mp4)
 
+### [Turing Bloom](turing-bloom/)
+
+A Gray-Scott reaction-diffusion simulation in WebGL2. A single seed grows into a branching pattern, the same kind of chemistry that produces spots and stripes on animals. Five presets, adjustable feed and kill rates, three palettes, and paint-to-add.
+
+**Live page:** https://squoraishee.github.io/turing-bloom/
+
+![Turing Bloom](turing-bloom/screenshot.png)
+
 ## Running them
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.
+
+Turing Bloom loads its script as an ES module, which browsers block on `file://`. Serve the folder instead, for example with `python3 -m http.server` from the repo root, then open the matching page.
 
 ## How they were made
 
