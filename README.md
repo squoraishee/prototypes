@@ -52,11 +52,11 @@ A ray tracer for a spinning black hole, with a five-chapter tour of the M87* and
 
 ### [Reading the Light Under a Forest](forest-light/)
 
-An illustrated spectroscopy guide to a forest. It follows sunlight from the sun to the leaves, down through the canopy to the floor, and back to a satellite, where a simple ratio reads vegetation health. Each figure has controls for sun temperature, leaf condition, canopy depth, or surface type.
+An animated guide to forest light, one photon at a time. A prism builds Planck's curve, a leaf sorts photons by wavelength, a canopy filters them on the way to the floor, and a satellite paints an NDVI map.
 
 **Live page:** https://squoraishee.github.io/forest-light/
 
-![Reading the Light Under a Forest, scrolling through the page](forest-light/demo.gif)
+![Reading the Light Under a Forest, the four animated figures](forest-light/demo.gif)
 
 [Full-quality video (MP4)](forest-light/demo.mp4)
 
