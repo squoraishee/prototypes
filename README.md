@@ -40,16 +40,6 @@ A Gray-Scott reaction-diffusion simulation in WebGL2. A single seed grows into a
 
 [Full-quality video (MP4)](turing-bloom/demo.mp4)
 
-### [Photon Ring](photon-ring/)
-
-A ray tracer for a spinning black hole, with a five-chapter tour of the M87* and Sagittarius A* results. It traces light with the Kerr geodesic equations and shows the shadow, the photon ring, the Doppler-boosted disk, and how spin bends the shadow. The controls are hidden until you press `C`.
-
-**Live page:** https://squoraishee.github.io/photon-ring/
-
-![Photon Ring, the spin and Doppler chapters](photon-ring/demo.gif)
-
-[Full-quality video (MP4)](photon-ring/demo.mp4)
-
 ### [Reading the Light Under a Forest](forest-light/)
 
 An animated guide that follows sunlight into a forest, one photon at a time. It shows how a prism spreads sunlight into Planck's curve, how a leaf absorbs blue and red but reflects green, why light on the forest floor is dim and rich in far red, and how satellites use NDVI to map vegetation.
@@ -64,7 +54,7 @@ An animated guide that follows sunlight into a forest, one photon at a time. It 
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.
 
-Turing Bloom and Photon Ring load their scripts as ES modules, which browsers block on `file://`. Serve the folder instead, for example with `python3 -m http.server` from the repo root, then open the matching page.
+Turing Bloom loads its script as an ES module, which browsers block on `file://`. Serve the folder instead, for example with `python3 -m http.server` from the repo root, then open the matching page.
 
 ## How they were made
 
