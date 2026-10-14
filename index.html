@@ -32,16 +32,17 @@
         position: fixed;
         left: 16px;
         top: 16px;
-        width: 280px;
+        width: 290px;
         max-height: calc(100vh - 32px);
         overflow-y: auto;
         padding: 14px 16px 12px;
-        background: rgba(12, 14, 20, 0.88);
+        background: rgba(12, 14, 20, 0.9);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 10px;
         backdrop-filter: blur(6px);
         font-size: 13px;
         user-select: none;
+        z-index: 3;
       }
       #panel.open {
         display: block;
@@ -98,6 +99,10 @@
       button:hover {
         background: #262e3f;
       }
+      button:disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
       button.on {
         border-color: #f2b86b;
         color: #f2b86b;
@@ -117,6 +122,46 @@
         color: #6b7280;
         font-size: 12px;
       }
+      #story {
+        position: fixed;
+        left: 16px;
+        bottom: 16px;
+        width: min(420px, calc(100vw - 32px));
+        padding: 14px 16px 12px;
+        background: rgba(12, 14, 20, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        backdrop-filter: blur(6px);
+        line-height: 1.5;
+        z-index: 1;
+      }
+      #story.hidden {
+        display: none;
+      }
+      #story .step {
+        color: #f2b86b;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      #story h2 {
+        margin: 4px 0 6px;
+        font-size: 17px;
+        font-weight: 600;
+      }
+      #story p {
+        margin: 0;
+        color: #c4c9d2;
+        font-size: 14px;
+      }
+      #story .row {
+        justify-content: space-between;
+        align-items: center;
+      }
+      #story .hint {
+        color: #6b7280;
+        font-size: 12px;
+      }
       #error {
         display: none;
         position: fixed;
@@ -133,30 +178,41 @@
     <canvas id="view"></canvas>
     <button id="toggle">Controls</button>
 
+    <div id="story">
+      <div class="step" id="storyStep"></div>
+      <h2 id="storyTitle"></h2>
+      <p id="storyBody"></p>
+      <div class="row">
+        <button id="prev">Back</button>
+        <span class="hint">C opens controls</span>
+        <button id="next">Next</button>
+      </div>
+    </div>
+
     <div id="panel">
       <h1>Photon Ring</h1>
       <p class="hint">
-        Light bending around a non-spinning black hole. Each pixel traces the path of a light ray back from the observer.
+        Light around a spinning black hole, traced with the Kerr geodesic equations.
       </p>
 
-      <div class="row" id="presets"></div>
+      <div class="row" id="targets"></div>
+
+      <label for="spin">Spin <output id="spinOut"></output></label>
+      <input id="spin" type="range" min="0" max="0.998" step="0.001" />
 
       <label for="incl">Viewing angle <output id="inclOut"></output></label>
       <input id="incl" type="range" min="0" max="90" step="0.5" />
 
-      <label for="dist">Observer distance <output id="distOut"></output></label>
-      <input id="dist" type="range" min="10" max="100" step="0.5" />
-
       <label for="fov">Field of view <output id="fovOut"></output></label>
-      <input id="fov" type="range" min="20" max="80" step="1" />
+      <input id="fov" type="range" min="10" max="60" step="0.5" />
 
       <label class="check"><input id="disk" type="checkbox" /> Accretion disk</label>
 
       <label for="rin">Inner disk radius <output id="rinOut"></output></label>
-      <input id="rin" type="range" min="3" max="12" step="0.1" />
+      <input id="rin" type="range" min="1.5" max="12" step="0.05" />
 
       <label for="rout">Outer disk radius <output id="routOut"></output></label>
-      <input id="rout" type="range" min="12" max="40" step="0.5" />
+      <input id="rout" type="range" min="8" max="40" step="0.5" />
 
       <label for="diskSpeed">Disk rotation <output id="speedOut"></output></label>
       <input id="diskSpeed" type="range" min="0" max="1" step="0.01" />
@@ -179,7 +235,7 @@
 
       <div class="readout" id="readout"></div>
 
-      <div class="foot">C toggles this panel. Space pauses. Units: M is the black hole mass in geometric units.</div>
+      <div class="foot">C toggles this panel. Space pauses. Units: M = GM/c², the hole's gravitational radius scale.</div>
     </div>
 
     <div id="error"></div>
