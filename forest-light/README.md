@@ -1,6 +1,6 @@
 # Reading the Light Under a Forest
 
-An animated guide to how leaves take sunlight apart, told one photon at a time.
+An animated guide that follows sunlight into a forest, one photon at a time. It shows why leaves look green, why the forest floor is dim, and how satellites measure vegetation from orbit.
 
 **Live page:** https://squoraishee.github.io/forest-light/
 
@@ -8,23 +8,23 @@ An animated guide to how leaves take sunlight apart, told one photon at a time.
 
 [Full-quality video (MP4)](demo.mp4)
 
-## What it covers
+## What's on the page
 
-1. **Sunlight is many colors.** A prism sorts photons into a histogram that builds Planck's curve. Change the star's temperature to shift it.
-2. **A leaf is a filter.** Photons hit a leaf cross-section and are reflected, transmitted, or absorbed at the leaf's real odds for their wavelength. Healthy, stressed, and dry leaves differ.
-3. **Light sinks through the canopy.** Photons fall through layers of leaves. The floor collects what gets through, and its spectrum shifts toward far red.
-4. **Reading the forest from orbit.** A satellite scans a landscape and paints an NDVI map beside the true-color view.
-5. **What one spectrum cannot tell you.** A short note on the limits.
+1. **Splitting sunlight.** Photons from the sun pass through a prism and pile up by wavelength. The pile grows into the curve that Planck's law predicts. You can switch to a cooler or hotter star.
+2. **What a leaf does with light.** Photons land on a cross-section of a leaf. Each one is reflected, transmitted, or absorbed, with odds that depend on its wavelength. Running tallies show where the light goes, and you can compare healthy, stressed, and dry leaves.
+3. **Light under the canopy.** Photons fall through layers of leaves. The ones that reach the ground build up a spectrum that is dimmer and richer in far red. A slider sets how dense the canopy is.
+4. **Measuring forests from space.** A satellite scans a made-up landscape and draws an NDVI map one strip at a time, next to a true-color view.
+5. **Caveats.** A short note on what NDVI gets wrong.
 
-## Models
+## How the models work
 
-The curves match the shapes of typical spectra. They are not measurements of a real site.
+The spectra are simplified versions of typical sunlight, leaf, soil, and water curves. They are not measurements from a real site.
 
-- **Sunlight:** Planck's law. Photons are drawn in proportion to wavelength times energy.
-- **Leaves:** hand-built reflectance and transmittance with chlorophyll absorption, the red edge, and a water dip.
-- **Canopy:** Beer-Lambert attenuation with extinction coefficient 0.5, applied per photon. Light scattered back up is not tracked.
-- **NDVI:** red averaged over 630–690 nm, near infrared over 760–900 nm.
-- **Colors:** CIE 1931 color matching functions (Wyman, Sloan, and Shirley 2013 fit), relative to sunlight.
+- **Sunlight:** Planck's law. Photons are drawn in proportion to wavelength times energy, since each long-wavelength photon carries less energy.
+- **Leaves:** hand-built reflectance and transmittance curves with chlorophyll absorption near 440 and 670 nm, the sharp rise near 700 nm known as the red edge, and a small water dip near 970 nm.
+- **Canopy:** Beer-Lambert attenuation with an extinction coefficient of 0.5, applied to each photon. Light scattered back up through the canopy isn't tracked.
+- **NDVI:** red averaged over 630–690 nm and near infrared over 760–900 nm.
+- **Colors:** CIE 1931 color matching functions (the Wyman, Sloan, and Shirley 2013 fit), relative to sunlight.
 
 ## Source
 

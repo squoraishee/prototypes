@@ -49,12 +49,12 @@ footer{max-width:1120px;margin:6rem auto 0;padding:1.4rem 22px 3rem;border-top:1
 <header>
   <p class="kicker">Forest light</p>
   <h1>Reading the light under a forest</h1>
-  <p class="intro">Leaves take sunlight apart, wavelength by wavelength. Follow the photons from the sun to the forest floor, then up to a satellite that reads a forest's health from orbit.</p>
+  <p class="intro">This page follows sunlight on its way into a forest. Sunlight is a mix of many wavelengths, and plants treat each one differently. They absorb some for photosynthesis and let others bounce off or pass through. Those differences explain why leaves look green, why the forest floor is so dim, and how satellites can map vegetation from orbit. Each figure below is a small simulation that sends individual photons through the process.</p>
 </header>
 
 <section>
-  <div class="head"><span class="num">01</span><h2>Sunlight is many colors</h2>
-  <p>A prism sorts each photon by wavelength. The pile builds Planck's curve for the sun's 5,800 K surface.</p></div>
+  <div class="head"><span class="num">01</span><h2>Splitting sunlight</h2>
+  <p>The sun's surface is about 5,800 K. Like any hot object, it gives off light across a range of wavelengths, and Planck's law describes how much comes out at each one. In the simulation, photons from the sun pass through a prism, which sends each one to a spot that depends on its wavelength. As more photons land, the histogram fills in the shape Planck's law predicts, shown as the dashed line. A hotter star shifts the peak toward blue, and a cooler one shifts it toward red.</p></div>
   <div class="frame"><canvas id="c1" data-h="420"></canvas></div>
   <div class="row">
     <button class="btn" data-sun="4500">4,500 K</button>
@@ -64,8 +64,8 @@ footer{max-width:1120px;margin:6rem auto 0;padding:1.4rem 22px 3rem;border-top:1
 </section>
 
 <section>
-  <div class="head"><span class="num">02</span><h2>A leaf is a filter</h2>
-  <p>Chlorophyll absorbs blue and red. Green bounces back. Near infrared, invisible to us, mostly passes through or scatters back.</p></div>
+  <div class="head"><span class="num">02</span><h2>What a leaf does with light</h2>
+  <p>When a photon hits a leaf, it can bounce off, pass through, or be absorbed, and the odds depend on its wavelength. Chlorophyll absorbs most blue and red light, which powers photosynthesis. Green light is absorbed less, so more of it reflects, and that's why leaves look green to us. Near-infrared light, which our eyes can't see, is barely absorbed at all. About half of it reflects and most of the rest passes through. A stressed leaf has less chlorophyll, so it reflects more red. A dry leaf loses the small dip near 970 nm where water absorbs.</p></div>
   <div class="frame"><canvas id="c2" data-h="440"></canvas></div>
   <div class="row">
     <button class="btn on" data-leaf="healthy">Healthy</button>
@@ -75,26 +75,26 @@ footer{max-width:1120px;margin:6rem auto 0;padding:1.4rem 22px 3rem;border-top:1
 </section>
 
 <section>
-  <div class="head"><span class="num">03</span><h2>Light sinks through the canopy</h2>
-  <p>Each layer of leaves catches more blue and red than far red. What reaches the floor is dim and shifted.</p></div>
+  <div class="head"><span class="num">03</span><h2>Light under the canopy</h2>
+  <p>Leaf area index (LAI) is the total area of leaves stacked above a patch of ground, in square meters of leaf per square meter of ground. Open woodland might be around 1 or 2, and a dense forest is often 4 to 6. Each layer of leaves catches some of the photons that reach it, and it catches blue and red far more often than near infrared. By the time light reaches the floor, it is much dimmer and relatively richer in far-red light. Seedlings on the forest floor can sense that shift and use it to tell that they are in shade.</p></div>
   <div class="frame"><canvas id="c3" data-h="460"></canvas></div>
   <div class="slider"><label for="lai">Leaf area index</label><input id="lai" type="range" min="0.5" max="6" step="0.5" value="4"><output id="laiOut">4.0</output></div>
 </section>
 
 <section>
-  <div class="head"><span class="num">04</span><h2>Reading the forest from orbit</h2>
-  <p>A satellite compares near-infrared and red light. The ratio, NDVI, separates forest from crops, soil, and water.</p></div>
+  <div class="head"><span class="num">04</span><h2>Measuring forests from space</h2>
+  <p>Satellites such as Landsat and Sentinel-2 measure reflected light in a handful of wavelength bands. Healthy vegetation reflects little red light and a lot of near infrared. Soil reflects similar amounts of both, and water reflects very little of either. The Normalized Difference Vegetation Index, NDVI, turns that contrast into one number: (NIR − Red) / (NIR + Red). It runs from about −1 to 1. Dense, healthy vegetation scores high, bare soil scores low, and water is usually negative. Here a satellite scans a made-up landscape and builds the NDVI map one strip at a time, below the true-color view.</p></div>
   <div class="frame"><canvas id="c4" data-h="520"></canvas></div>
   <div class="row"><button class="btn" id="newMap">New landscape</button></div>
 </section>
 
 <section>
-  <div class="head"><span class="num">05</span><h2>What one spectrum cannot tell you</h2></div>
-  <p class="closing">Shadows, wet soil, sun angle, and species mix all shift the numbers. A dense forest and a lush field can share an NDVI. Good analysis combines bands, dates, and ground checks.</p>
+  <div class="head"><span class="num">05</span><h2>Caveats</h2></div>
+  <p class="closing">NDVI is useful but rough. Shadows, wet soil, haze, the angle of the sun, and the mix of plant species all change the measured values. The index also levels off for very dense vegetation, so a thick forest and a lush crop field can read about the same. In practice, analysts combine several bands, compare images taken over months or years, and check their results against measurements on the ground.</p>
 </section>
 
 <footer>
-  Simulations built from typical sunlight, leaf, soil, and water spectra, not measurements of a real site. Planck's law, the Beer-Lambert law, NDVI, and the CIE 1931 color functions are standard. The curve shapes are simplified.
+  The figures are simulations based on typical spectra for sunlight, leaves, soil, and water, not measurements of a real site. The physics (Planck's law, Beer-Lambert attenuation, NDVI, and CIE color matching) is standard. The spectral curves are simplified.
 </footer>
 
 <script>
@@ -118,7 +118,8 @@ function planckNorm(nm) {
 // red edge near 705 nm, near-infrared plateau, water dip near 970 nm.
 function leafReflectance(nm, kind) {
   const chl = kind === "stressed" ? 0.35 : 1.0;
-  const water = kind === "dry" ? 0.55 : 0.0;
+  // Leaf water absorbs near 970 nm, so a dry leaf has a shallower dip there.
+  const water = kind === "dry" ? 0.03 : 0.15;
   const visible = 0.05 + 0.08 * gauss(nm, 550, 38) + 0.12 * sig((nm - 600) / 15);
   const absorb = 1 - 0.92 * chl * (0.9 * gauss(nm, 440, 22) + 1.0 * gauss(nm, 670, 28));
   const edge = sig((nm - 705) / 12);
