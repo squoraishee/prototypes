@@ -42,11 +42,11 @@ A Gray-Scott reaction-diffusion simulation in WebGL2. A single seed grows into a
 
 ### [Photon Ring](photon-ring/)
 
-A ray tracer for light bending around a black hole. It draws the shadow, the photon ring at the shadow edge, and the accretion disk lensed over the top and bottom of the hole. The orbit equation is solved for every pixel. The controls are hidden until you press `C`.
+A ray tracer for a spinning black hole, with a five-chapter tour of the M87* and Sagittarius A* results. It traces light with the Kerr geodesic equations and shows the shadow, the photon ring, the Doppler-boosted disk, and how spin bends the shadow. The controls are hidden until you press `C`.
 
 **Live page:** https://squoraishee.github.io/photon-ring/
 
-![Photon Ring, tilted view with a lensed accretion disk](photon-ring/demo.gif)
+![Photon Ring, the spin and Doppler chapters](photon-ring/demo.gif)
 
 [Full-quality video (MP4)](photon-ring/demo.mp4)
 
