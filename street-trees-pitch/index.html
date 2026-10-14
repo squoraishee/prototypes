@@ -3,412 +3,618 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>One Bug Away: a pitch for The Pudding</title>
+<title>One Bug Away</title>
 <style>
 :root{
-  --bg:#0c120e;
-  --paper:#f3f1ea;
+  --bg:#0b110d;
   --text:#e8ecdf;
   --muted:#93a090;
   --rule:#26332a;
   --accent:#8fd19e;
   --hot:#ff5a3c;
   --ash:#5aa9ff;
+  --card:rgba(16,24,19,.92);
 }
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;line-height:1.6}
 .sans{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif}
-header{max-width:1100px;margin:0 auto;padding:4.5rem 22px 1rem}
+header{max-width:1100px;margin:0 auto;padding:5rem 22px 3rem}
 .kicker{font:700 .72rem -apple-system,"Helvetica Neue",Arial,sans-serif;text-transform:uppercase;letter-spacing:.16em;color:var(--accent)}
-h1{font-size:clamp(3rem,9vw,7rem);font-weight:400;line-height:.9;letter-spacing:-.04em;margin:.2em 0 .3em}
-.dek{max-width:56ch;font-size:clamp(1.1rem,2vw,1.35rem);color:#cfd8c9;margin:0}
-.part{max-width:1100px;margin:0 auto;padding:5rem 22px 0}
-.part-label{font:700 .72rem -apple-system,"Helvetica Neue",Arial,sans-serif;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border-top:1px solid var(--rule);padding-top:1rem;margin-bottom:2rem}
-h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;letter-spacing:-.02em;line-height:1.05;margin:0 0 1rem}
-p{max-width:62ch;margin:0 0 1rem}
+h1{font-size:clamp(3.2rem,10vw,8rem);font-weight:400;line-height:.88;letter-spacing:-.045em;margin:.2em 0 .35em}
+.dek{max-width:54ch;font-size:clamp(1.12rem,2vw,1.4rem);color:#cfd8c9;margin:0}
+.byline{font:.8rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted);margin-top:1.4rem}
+.scroll-hint{font:600 .72rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:2.6rem}
+
+/* Scrollytelling: the graphic sticks while the text steps scroll past. */
+.scrolly{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:0 32px;max-width:1400px;margin:0 auto;padding:0 22px}
+.graphic{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
+#stage{display:block;width:min(100%,calc(100vh - 40px));aspect-ratio:1/1;height:auto;border-radius:6px}
+.steps{padding:30vh 0 50vh}
+.step{min-height:85vh;display:flex;align-items:center}
+.step .card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:22px 24px;opacity:.35;transition:opacity .4s}
+.step.active .card{opacity:1}
+.step h3{margin:0 0 .5rem;font-weight:400;font-size:1.45rem;line-height:1.2}
+.step p{margin:0 0 .8rem;color:#d4dccd}
+.step p:last-child{margin-bottom:0}
+.step .stat{font:400 2.6rem Georgia,serif;line-height:1;margin:.2rem 0 .6rem}
+.hot{color:var(--hot)} .ashc{color:var(--ash)} .acc{color:var(--accent)}
+.note{font:.78rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
+
+.section{max-width:1100px;margin:0 auto;padding:6rem 22px 0}
+h2{font-size:clamp(1.9rem,4.4vw,3rem);font-weight:400;letter-spacing:-.02em;line-height:1.05;margin:0 0 1rem}
+p{max-width:62ch}
 .muted{color:var(--muted)}
-.story{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}
-.mapwrap{position:relative;background:#081009;border-radius:6px;overflow:hidden}
-#map{display:block;width:100%;height:auto;image-rendering:auto}
-.maplabel{position:absolute;left:14px;top:12px;font:600 .75rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:#cfd8c9;letter-spacing:.04em}
-.loading{position:absolute;inset:0;display:grid;place-items:center;font:.85rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
-.btns{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 1rem}
-.btn{font:600 .72rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:.5rem .9rem;cursor:pointer}
-.btn:hover{color:var(--text);border-color:#4a5d50}
-.btn.on{color:var(--bg);background:var(--accent);border-color:var(--accent)}
-.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.side h3{font-weight:400;font-size:1.35rem;margin:0 0 .5rem;line-height:1.2}
-.big{font:400 3rem Georgia,serif;line-height:1;margin:.2rem 0 .3rem}
-.rank{list-style:none;padding:0;margin:.8rem 0 0;font:.82rem -apple-system,"Helvetica Neue",Arial,sans-serif}
-.rank li{margin:0 0 .55rem}
-.rank .row{display:flex;justify-content:space-between;gap:10px;color:#cfd8c9}
-.rank .bar{height:5px;background:#1c271f;border-radius:3px;margin-top:3px}
-.rank .bar i{display:block;height:100%;border-radius:3px}
-.legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font:.75rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:#cfd8c9;margin-top:1rem}
-.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--c)}
-.swarm{background:#081009;border-radius:6px;padding:12px 8px 4px}
+.swarm{background:#081009;border-radius:8px;padding:12px 8px 4px;margin-top:1.2rem}
 .swarm svg{display:block;width:100%;height:auto}
-.tip{position:fixed;pointer-events:none;background:#f3f1ea;color:#16181a;font:.78rem -apple-system,"Helvetica Neue",Arial,sans-serif;padding:.45rem .6rem;border-radius:4px;opacity:0;transition:opacity .1s;max-width:260px;z-index:5}
-.gates{list-style:none;padding:0;margin:0;counter-reset:g}
-.gates li{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:1.1rem 0;border-top:1px solid var(--rule)}
-.gates .mark{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 .9rem -apple-system,"Helvetica Neue",Arial,sans-serif}
-.gates .yes .mark{background:#1d3a26;color:var(--accent)}
-.gates .partial .mark{background:#3a3218;color:#e6c35c}
-.gates h4{margin:0 0 .25rem;font-weight:400;font-size:1.2rem}
-.gates .verdict{font:700 .7rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
-.gates .yes .verdict{color:var(--accent)}
-.gates .partial .verdict{color:#e6c35c}
-.gates p{margin:.3rem 0 0;color:#cfd8c9}
-.form{background:var(--paper);color:#16181a;border-radius:8px;padding:28px 30px;margin-top:1rem}
-.form .field{margin:0 0 1.8rem}
-.form .q{font:700 .78rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#2f7d4f;margin-bottom:.15rem}
-.form .help{font:.82rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:#6b665d;margin-bottom:.6rem}
-.form .a{border-left:3px solid #2f7d4f;padding-left:1rem}
-.form .a p{max-width:70ch;color:#16181a}
-.copy{font:600 .7rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#2f7d4f;background:transparent;border:1px solid #b9c7b4;border-radius:999px;padding:.35rem .75rem;cursor:pointer;margin-top:.4rem}
-footer{max-width:1100px;margin:5rem auto 0;padding:1.4rem 22px 3rem;border-top:1px solid var(--rule);font:.8rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
+.tip{position:fixed;pointer-events:none;background:#f3f1ea;color:#16181a;font:.8rem -apple-system,"Helvetica Neue",Arial,sans-serif;padding:.5rem .65rem;border-radius:4px;opacity:0;transition:opacity .1s;max-width:270px;z-index:5}
+
+.explore{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;align-items:start;margin-top:1.2rem}
+#mini{display:block;width:100%;aspect-ratio:1/1;height:auto;border-radius:8px;background:#081009}
+select{width:100%;font:1rem -apple-system,"Helvetica Neue",Arial,sans-serif;background:#141d17;color:var(--text);border:1px solid var(--rule);border-radius:6px;padding:.6rem .7rem}
+.panel h3{font-weight:400;font-size:1.6rem;margin:1rem 0 .1rem}
+.panel .sub{font:.8rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted);margin-bottom:1rem}
+.bars{font:.82rem -apple-system,"Helvetica Neue",Arial,sans-serif}
+.bars .row{display:flex;justify-content:space-between;color:#cfd8c9;margin-top:.55rem}
+.bars .bar{height:6px;background:#1c271f;border-radius:3px;margin-top:3px;position:relative}
+.bars .bar i{display:block;height:100%;border-radius:3px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.bars .bar b{position:absolute;top:-3px;width:2px;height:12px;background:#e8ecdf;opacity:.7}
+.bars h4{font:700 .7rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:1.3rem 0 0}
+.legend-note{font:.75rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted);margin-top:.8rem}
+
+footer{max-width:1100px;margin:6rem auto 0;padding:1.4rem 22px 3rem;border-top:1px solid var(--rule);font:.8rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
 footer a{color:#cfd8c9}
 footer li{margin-bottom:.35rem}
-@media(max-width:900px){.story{grid-template-columns:1fr}}
-@media(max-width:640px){header,.part,footer{padding-left:16px;padding-right:16px}}
+
+@media(max-width:900px){
+  .scrolly{grid-template-columns:1fr;padding:0}
+  .graphic{height:100vh;top:0}
+  .steps{position:relative;margin-top:-100vh;padding:80vh 16px 40vh;z-index:2}
+  .explore{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
 <header>
-  <p class="kicker">A pitch for The Pudding</p>
+  <p class="kicker">Street trees · New York City</p>
   <h1>One bug away</h1>
-  <p class="dek">New York counted every street tree in 2015. Most neighborhoods lean heavily on one or two kinds of tree. Insects that kill trees pick specific kinds, so on some blocks, a single pest could take out a third of the shade.</p>
+  <p class="dek">New York's sidewalks hold more than 650,000 trees. In most neighborhoods, a few kinds of tree do most of the work, and the insects that kill trees are picky about which kinds they attack.</p>
+  <p class="byline">Data: 2015 NYC Street Tree Census</p>
+  <p class="scroll-hint">Scroll ↓</p>
 </header>
 
-<div class="part">
-  <div class="part-label">Part 1 · The story, as a working prototype</div>
+<div class="scrolly">
+  <div class="graphic"><canvas id="stage"></canvas></div>
+  <div class="steps">
+    <div class="step" data-step="map"><div class="card">
+      <h3>Every tree on the sidewalk</h3>
+      <p>In 2015, volunteers and city staff walked every street in New York and recorded each tree they found: <span id="tRecords"></span> in all. This map shows the <span id="tAlive"></span> that were alive and identified, each one a dot colored by its kind.</p>
+      <p class="note">Orange is maple, teal is London plane, green is oak, yellow is honey locust, white is Callery pear, and blue is ash.</p>
+    </div></div>
 
-  <div class="story">
-    <div>
-      <div class="mapwrap">
-        <canvas id="map" width="1000" height="1000"></canvas>
-        <div class="maplabel" id="mapLabel">Every living street tree, colored by kind</div>
-        <div class="loading" id="loading">Loading 652,168 trees…</div>
-      </div>
-    </div>
-    <div class="side">
-      <div class="btns" id="modes">
-        <button class="btn on" data-mode="all">All trees</button>
-        <button class="btn" data-mode="beetle">Beetle hosts</button>
-        <button class="btn" data-mode="ash">Ash</button>
-        <button class="btn" data-mode="after">If both struck</button>
-      </div>
-      <h3 id="sideTitle"></h3>
-      <div class="big" id="sideBig"></div>
-      <p id="sideText" class="muted"></p>
-      <ul class="rank" id="rank"></ul>
-      <div class="legend" id="legend"></div>
-    </div>
-  </div>
+    <div class="step" data-step="bars"><div class="card">
+      <h3>A few kinds do most of the work</h3>
+      <p>Sorted by kind, the same trees show how lopsided the city's planting is. Maples, London planes, and oaks each make up more than a tenth of all street trees.</p>
+      <p>Foresters often cite a rule of thumb credited to Frank Santamour: no single species should be more than 10 percent of a city's trees, no genus more than 20 percent, and no family more than 30 percent. London plane is a single species, and it makes up <span id="tPlane"></span> of the city's street trees on its own.</p>
+      <p class="note">In this chart, each dot stands for 25 trees.</p>
+    </div></div>
 
-  <div style="margin-top:4rem">
-    <h2>Almost every neighborhood breaks the 10 percent rule</h2>
-    <p>Urban foresters use a rule of thumb from Frank Santamour, published in 1990: no single species should make up more than 10 percent of a city's trees, no single genus more than 20 percent, and no single family more than 30 percent. The idea is that a pest or disease that wipes out one kind of tree should not take most of a neighborhood's shade with it. Each dot below is a neighborhood, placed by how much of its street canopy comes from its single most common species.</p>
-    <div class="swarm"><svg id="swarm" viewBox="0 0 1060 400" role="img" aria-label="Neighborhoods by share of their most common tree species"></svg></div>
-    <p class="muted sans" style="font-size:.8rem;margin-top:.6rem" id="swarmNote"></p>
+    <div class="step" data-step="beetle"><div class="card">
+      <h3>The beetle's favorite trees</h3>
+      <div class="stat hot" id="tBeetle"></div>
+      <p>The Asian longhorned beetle lays its eggs in living trees, and its larvae tunnel through the wood. It prefers maples, elms, horse chestnuts, willows, and birches. Those trees, shown in red, make up this share of the city's street trees. They are concentrated in eastern Queens and Staten Island.</p>
+    </div></div>
+
+    <div class="step" data-step="spread"><div class="card">
+      <h3>How an outbreak could travel</h3>
+      <p>The beetle was first found in the United States in Greenpoint, Brooklyn, in 1996. This animation starts with the host trees nearest Greenpoint and lets an infestation jump from host tree to host tree. At each step, an infected tree can reach host trees within about a kilometer.</p>
+      <p class="note">This is an illustration with simple, made-up rules. Real outbreaks move more slowly, and crews remove infested trees to stop them. The beetle has since been cleared from parts of the city.</p>
+      <p class="note" id="spreadCount"></p>
+    </div></div>
+
+    <div class="step" data-step="ash"><div class="card">
+      <h3>One neighborhood, one kind of tree</h3>
+      <div class="stat ashc" id="tAsh"></div>
+      <p>The emerald ash borer kills ash trees, and it was found in the city in 2017. Ash is only <span id="tAshCity"></span> of street trees citywide, but in Ozone Park, Queens, it is this share. A single pest that most of the city could absorb would hit this neighborhood hard.</p>
+    </div></div>
+
+    <div class="step" data-step="after"><div class="card">
+      <h3>What would be left</h3>
+      <div class="stat acc" id="tLeft"></div>
+      <p>If both pests took every one of their host trees, this share of the city's street trees would remain. The losses would not be even. In <span id="tWorst"></span>, more than a third of the trees would be gone.</p>
+      <p class="note">This is a worst case to show exposure. It does not forecast what will happen.</p>
+    </div></div>
   </div>
 </div>
 
-<div class="part">
-  <div class="part-label">Part 2 · The Pudding's flowchart, used as a rubric</div>
-  <p>The Pudding's process article "Continue, Pivot, or Put it Down" lays out the questions an idea has to pass before it becomes a story. Here is how this idea answers each one.</p>
-  <ul class="gates" id="gates"></ul>
+<div class="section" id="swarmSection">
+  <h2>Almost every neighborhood breaks the 10 percent rule</h2>
+  <p>Each dot is a neighborhood, placed by how much of its street trees come from its single most common species. The dashed line marks the 10 percent guideline. Hover over a dot to see the neighborhood.</p>
+  <div class="swarm"><svg id="swarm" viewBox="0 0 1060 400" role="img" aria-label="Neighborhoods by share of their most common tree species"></svg></div>
+  <p class="note" id="swarmNote"></p>
 </div>
 
-<div class="part">
-  <div class="part-label">Part 3 · Answers for the pitch form</div>
-  <p>The Pudding's pitch form asks for a one-minute pitch, a plan for the data and methods, and anything else. These are drafts ready to paste. The name and email fields are left for you.</p>
-  <div class="form" id="form"></div>
+<div class="section">
+  <h2>Look up a neighborhood</h2>
+  <p>Pick a neighborhood to see what grows on its sidewalks and how much of it the two pests could take. The white marks show the citywide average.</p>
+  <div class="explore">
+    <canvas id="mini"></canvas>
+    <div class="panel">
+      <select id="pick" aria-label="Choose a neighborhood"></select>
+      <h3 id="pName"></h3>
+      <div class="sub" id="pSub"></div>
+      <div class="bars" id="pBars"></div>
+    </div>
+  </div>
 </div>
 
 <footer>
-  <p>Numbers on this page come from the 2015 NYC Street Tree Census, counted from living trees with a recorded species. The pest scenarios are illustrations of exposure, not forecasts. They do not model how a pest spreads.</p>
+  <p>Counts come from the 2015 NYC Street Tree Census and include living trees with a recorded species. Neighborhoods are the city's neighborhood tabulation areas with at least 300 street trees. The pest scenarios show exposure. They are not forecasts, and the spread animation uses made-up rules.</p>
   <ul>
     <li><a href="https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh">2015 Street Tree Census, NYC Open Data</a></li>
     <li><a href="https://www.aphis.usda.gov/sites/default/files/alb-and-hosts-guide.pdf">USDA APHIS, Asian longhorned beetle host guide</a></li>
     <li><a href="https://agriculture.ny.gov/plant-industry/asian-longhorned-beetle">New York State Department of Agriculture and Markets, Asian longhorned beetle</a></li>
-    <li><a href="https://www.prospectpark.org/emerald-ash-borer-discovered-prospect-park/">Prospect Park Alliance, emerald ash borer discovered in Prospect Park (2017)</a></li>
-    <li><a href="https://pudding.cool/process/pivot-continue-down/">The Pudding, "Continue, Pivot, or Put it Down"</a> and <a href="https://pudding.cool/process/pitching-gendered-descriptions/">the pitch story behind "Gendered Descriptions"</a></li>
+    <li><a href="https://www.prospectpark.org/emerald-ash-borer-discovered-prospect-park/">Prospect Park Alliance, emerald ash borer found in Prospect Park (2017)</a></li>
   </ul>
 </footer>
 
 <div class="tip" id="tip"></div>
 
 <script>
-// ===================== data and constants =====================
+// ===================== constants =====================
 
+const L = 1000; // logical size of the map, in map units
 const GENUS_NAMES = ["Maple", "London plane", "Oak", "Honey locust", "Callery pear", "Linden", "Cherry", "Zelkova", "Ginkgo", "Ash", "Elm", "Other beetle hosts", "Everything else"];
 const GENUS_COLORS = ["#f28e2b", "#76b7b2", "#59a14f", "#edc948", "#e9e4d4", "#b07aa1", "#ff9da7", "#9c755f", "#cddc39", "#4e79a7", "#bab0ac", "#e15759", "#56655b"];
-// Preferred hosts of the Asian longhorned beetle, from the USDA APHIS host guide:
-// maple, elm, and the "other beetle hosts" group (horse chestnut, willow, birch).
+// Preferred hosts of the Asian longhorned beetle (USDA APHIS): maple, elm, and the
+// "other beetle hosts" group of horse chestnut, willow, and birch.
 const BEETLE = new Set([0, 10, 11]);
 const ASH = 9;
-const SIZE = 1000;
-const MIN_TREES = 1000; // neighborhoods smaller than this are left out of rankings
+const HOT = "#ff5a3c", ASHC = "#5aa9ff", DIM = "#2b3a30", LOST = "#a8321f";
 
 const hex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
-const COLORS = GENUS_COLORS.map(hex);
-const DIM = hex("#2b3a30");
-const HOT = hex("#ff5a3c");
-const ASHC = hex("#5aa9ff");
-const LOST = hex("#a8321f");
 const pct = (v, d = 0) => (v * 100).toFixed(d) + "%";
 const fmt = (n) => n.toLocaleString("en-US");
+const ease = (t) => t * t * (3 - 2 * t);
 
-let summary = null;
-let trees = null; // Uint8Array view of [x lo, x hi, y lo, y hi, genus] records
+let S = null;       // summary.json
+let full = null;    // all trees: [x u16, y u16, genus u8]
+let P = null;       // animated particles
 
-// ===================== map rendering =====================
+// ===================== stage canvas =====================
 
-const mapCanvas = document.getElementById("map");
-const mapCtx = mapCanvas.getContext("2d");
-const layers = {};
+const stage = document.getElementById("stage");
+const ctx = stage.getContext("2d");
+let px = 1; // device pixels per map unit
 
-// Each mode decides the color of each tree, or null to leave it out.
-const MODES = {
-  all: (g) => COLORS[g],
+function sizeStage() {
+  const css = stage.clientWidth || 800;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  stage.width = Math.round(css * dpr);
+  stage.height = Math.round(css * dpr);
+  px = stage.width / L;
+}
+window.addEventListener("resize", sizeStage);
+
+// Camera in map units: center (cx, cy) and zoom. Tweens toward its target.
+const cam = { cx: L / 2, cy: L / 2, z: 1, tx: L / 2, ty: L / 2, tz: 1 };
+function applyCamera() {
+  ctx.setTransform(px * cam.z, 0, 0, px * cam.z, stage.width / 2 - cam.cx * px * cam.z, stage.height / 2 - cam.cy * px * cam.z);
+}
+
+// ===================== background layers =====================
+
+// Full-density images of all 652,168 trees, one per view. Overlapping trees in a
+// pixel are averaged and denser pixels glow brighter.
+const LAYER_COLORS = {
+  all: (g) => GENUS_COLORS[g],
   beetle: (g) => (BEETLE.has(g) ? HOT : DIM),
   ash: (g) => (g === ASH ? ASHC : DIM),
-  // Lost trees stay as a faint dark red, so the gaps they leave are visible.
-  after: (g) => (BEETLE.has(g) || g === ASH ? LOST : COLORS[g]),
+  after: (g) => (BEETLE.has(g) || g === ASH ? LOST : GENUS_COLORS[g]),
+  dim: () => DIM,
 };
-
-// Builds one full-resolution layer per mode. Overlapping trees in a pixel are
-// averaged, and pixels with more trees glow brighter, so dense blocks stand out.
-function buildLayer(mode) {
-  const colorOf = MODES[mode];
-  const sum = new Float32Array(SIZE * SIZE * 3);
-  const count = new Uint16Array(SIZE * SIZE);
-  const view = new DataView(trees.buffer);
-  const n = trees.length / 5;
+const layers = {};
+function layer(name) {
+  if (layers[name]) return layers[name];
+  const R = 1600; // render the layer above the map's logical size so zooming stays sharp
+  const cols = Array.from({ length: 13 }, (_, g) => hex(LAYER_COLORS[name](g)));
+  const sum = new Float32Array(R * R * 3);
+  const count = new Uint16Array(R * R);
+  const dv = new DataView(full.buffer);
+  const n = full.length / 5;
   for (let i = 0; i < n; i++) {
-    const g = trees[i * 5 + 4];
-    const c = colorOf(g);
-    if (!c) continue;
-    const x = Math.min(SIZE - 1, Math.floor((view.getUint16(i * 5, true) / 65535) * SIZE));
-    const y = Math.min(SIZE - 1, Math.floor((1 - view.getUint16(i * 5 + 2, true) / 65535) * SIZE));
-    const p = y * SIZE + x;
+    const c = cols[full[i * 5 + 4]];
+    const x = Math.min(R - 1, Math.floor((dv.getUint16(i * 5, true) / 65535) * R));
+    const y = Math.min(R - 1, Math.floor((1 - dv.getUint16(i * 5 + 2, true) / 65535) * R));
+    const p = y * R + x;
     sum[p * 3] += c[0]; sum[p * 3 + 1] += c[1]; sum[p * 3 + 2] += c[2];
     count[p]++;
   }
-  const img = mapCtx.createImageData(SIZE, SIZE);
-  for (let p = 0; p < SIZE * SIZE; p++) {
+  const cv = document.createElement("canvas");
+  cv.width = R; cv.height = R;
+  const c2 = cv.getContext("2d");
+  const img = c2.createImageData(R, R);
+  for (let p = 0; p < R * R; p++) {
     const k = count[p];
-    const o = p * 4;
-    if (!k) { img.data[o] = 8; img.data[o + 1] = 16; img.data[o + 2] = 9; img.data[o + 3] = 255; continue; }
-    const glow = Math.min(1, 0.65 + 0.18 * k);
-    img.data[o] = (sum[p * 3] / k) * glow;
-    img.data[o + 1] = (sum[p * 3 + 1] / k) * glow;
-    img.data[o + 2] = (sum[p * 3 + 2] / k) * glow;
-    img.data[o + 3] = 255;
+    if (!k) continue;
+    const glow = Math.min(1, 0.7 + 0.15 * k);
+    img.data[p * 4] = (sum[p * 3] / k) * glow;
+    img.data[p * 4 + 1] = (sum[p * 3 + 1] / k) * glow;
+    img.data[p * 4 + 2] = (sum[p * 3 + 2] / k) * glow;
+    img.data[p * 4 + 3] = 255;
   }
-  const c = document.createElement("canvas");
-  c.width = SIZE; c.height = SIZE;
-  c.getContext("2d").putImageData(img, 0, 0);
-  return c;
+  c2.putImageData(img, 0, 0);
+  layers[name] = cv;
+  return cv;
 }
 
-let current = null;
-function showLayer(mode) {
-  if (!layers[mode]) layers[mode] = buildLayer(mode);
-  const next = layers[mode];
-  const prev = current;
-  current = next;
-  const start = performance.now();
-  const fade = (now) => {
-    const t = Math.min(1, (now - start) / 700);
-    mapCtx.globalAlpha = 1;
-    if (prev) mapCtx.drawImage(prev, 0, 0); else { mapCtx.fillStyle = "#081009"; mapCtx.fillRect(0, 0, SIZE, SIZE); }
-    mapCtx.globalAlpha = t * t * (3 - 2 * t);
-    mapCtx.drawImage(next, 0, 0);
-    mapCtx.globalAlpha = 1;
-    if (t < 1) requestAnimationFrame(fade);
+// Each background layer fades toward a target opacity.
+const bg = { all: 0, beetle: 0, ash: 0, after: 0, dim: 0 };
+const bgTarget = { all: 0, beetle: 0, ash: 0, after: 0, dim: 0 };
+let reveal = 0; // 0..1 sweep that draws the first map in
+
+// ===================== particles =====================
+
+// Each particle stands for 25 trees. It has a home on the map and a slot in the
+// tally chart, and it eases toward whichever target the current step sets.
+function buildParticles(buf) {
+  const n = buf.byteLength / 7;
+  const dv = new DataView(buf);
+  const p = {
+    n, x: new Float32Array(n), y: new Float32Array(n), tx: new Float32Array(n), ty: new Float32Array(n),
+    mx: new Float32Array(n), my: new Float32Array(n), bx: new Float32Array(n), by: new Float32Array(n),
+    a: new Float32Array(n), ta: new Float32Array(n), size: new Float32Array(n), tsize: new Float32Array(n),
+    speed: new Float32Array(n), g: new Uint8Array(n), nta: new Uint16Array(n), color: new Array(n),
+    infected: new Int16Array(n),
   };
-  requestAnimationFrame(fade);
+  for (let i = 0; i < n; i++) {
+    p.mx[i] = (dv.getUint16(i * 7, true) / 65535) * L;
+    p.my[i] = (1 - dv.getUint16(i * 7 + 2, true) / 65535) * L;
+    p.g[i] = dv.getUint8(i * 7 + 4);
+    p.nta[i] = dv.getUint16(i * 7 + 5, true);
+    p.x[i] = p.mx[i]; p.y[i] = p.my[i];
+    p.speed[i] = 0.05 + Math.random() * 0.07;
+    p.size[i] = 2; p.tsize[i] = 2;
+  }
+  layoutBars(p);
+  return p;
 }
 
-// ===================== side panel =====================
-
-const PANELS = {
-  all: () => ({
-    label: "Every living street tree, colored by kind",
-    title: "Street trees counted in 2015",
-    big: fmt(summary.summary.total),
-    text: "Each dot is one tree from the 2015 census. London planes dominate much of southern Brooklyn, honey locusts dominate parts of Manhattan, and maples are concentrated in eastern Queens and Staten Island. The list shows the neighborhoods most dominated by a single species.",
-    key: "topShare", color: "#cfd8c9", extra: (d) => d.top,
-  }),
-  beetle: () => ({
-    label: "Preferred hosts of the Asian longhorned beetle, in red",
-    title: "Trees the Asian longhorned beetle prefers",
-    big: pct(summary.summary.albHosts / summary.summary.total, 1),
-    text: "The beetle was first found in the United States in Brooklyn in 1996. It has since been cleared from parts of the city, but it is still present in parts of New York State, Massachusetts, and Ohio. It favors maples, elms, horse chestnuts, willows, and birches. These neighborhoods have the most to lose.",
-    key: "alb", color: "#ff5a3c",
-  }),
-  ash: () => ({
-    label: "Ash trees, in blue",
-    title: "Ash trees, the emerald ash borer's main host",
-    big: pct(summary.summary.ash / summary.summary.total, 1),
-    text: "The emerald ash borer was confirmed in Prospect Park in 2017. Ash is a small share of the city's street trees overall, but a few neighborhoods planted far more of it.",
-    key: "ash", color: "#5aa9ff",
-  }),
-  after: () => ({
-    label: "What would be left if every host tree were lost",
-    title: "If both pests took every host tree",
-    big: pct(1 - (summary.summary.albHosts + summary.summary.ash) / summary.summary.total, 1),
-    text: "The share of street trees that would remain, with the lost trees shown in dark red. This is the worst case and does not forecast what will happen. The list shows the neighborhoods that would lose the most.",
-    key: "both", color: "#e8ecdf",
-  }),
-};
-
-function renderPanel(mode) {
-  const p = PANELS[mode]();
-  document.getElementById("mapLabel").textContent = p.label;
-  document.getElementById("sideTitle").textContent = p.title;
-  document.getElementById("sideBig").textContent = p.big;
-  document.getElementById("sideText").textContent = p.text;
-  const rows = summary.nta.filter((d) => d.n >= MIN_TREES).sort((a, b) => b[p.key] - a[p.key]).slice(0, 7);
-  const max = rows[0][p.key];
-  document.getElementById("rank").innerHTML = rows.map((d) => `
-    <li><div class="row"><span>${d.name}${p.extra ? ` <span style="color:#93a090">· ${p.extra(d)}</span>` : ""}</span><b>${pct(d[p.key])}</b></div>
-    <div class="bar"><i style="width:${(d[p.key] / max) * 100}%;background:${p.color}"></i></div></li>`).join("");
-  document.getElementById("legend").innerHTML = mode === "all"
-    ? GENUS_NAMES.map((n, i) => `<span style="--c:${GENUS_COLORS[i]}">${n}</span>`).join("")
-    : "";
+// Tally chart: one band per kind of tree, largest first. Dots fill each band
+// column by column, so band length is proportional to the number of trees.
+const BAR = { x0: 290, top: 130, rows: 16, gap: 3, band: 62 };
+let barOrder = [];
+function layoutBars(p) {
+  const counts = new Array(13).fill(0);
+  for (let i = 0; i < p.n; i++) counts[p.g[i]]++;
+  // "Everything else" lumps many species together, so it goes last.
+  barOrder = counts.map((c, g) => [g, c]).filter(([g]) => g !== 12).sort((a, b) => b[1] - a[1]).map(([g]) => g).concat([12]);
+  const slot = new Array(13).fill(0);
+  for (let i = 0; i < p.n; i++) {
+    const g = p.g[i];
+    const row = barOrder.indexOf(g);
+    const k = slot[g]++;
+    p.bx[i] = BAR.x0 + Math.floor(k / BAR.rows) * BAR.gap;
+    p.by[i] = BAR.top + row * BAR.band + (k % BAR.rows) * BAR.gap;
+  }
 }
 
-document.querySelectorAll("[data-mode]").forEach((btn) => btn.addEventListener("click", () => {
-  if (!trees) return;
-  document.querySelectorAll("[data-mode]").forEach((b) => b.classList.toggle("on", b === btn));
-  showLayer(btn.dataset.mode);
-  renderPanel(btn.dataset.mode);
-}));
+// ===================== spread illustration =====================
 
-// ===================== swarm chart =====================
+// Host trees in the particle sample, indexed on a grid for neighbor lookups.
+// Each map unit is about 48 meters, so 24 units is roughly a kilometer. The
+// particles are a 1-in-25 sample, so the jump has to cover sparse hosts.
+const SPREAD_R = 24;
+const INFECTIOUS_STEPS = 3; // an infected tree keeps spreading for this many steps
+let spread = null;
+function startSpread() {
+  const hosts = [];
+  for (let i = 0; i < P.n; i++) { P.infected[i] = -1; if (BEETLE.has(P.g[i])) hosts.push(i); }
+  const grid = new Map();
+  const key = (x, y) => Math.floor(x / SPREAD_R) + "," + Math.floor(y / SPREAD_R);
+  for (const i of hosts) {
+    const k = key(P.mx[i], P.my[i]);
+    if (!grid.has(k)) grid.set(k, []);
+    grid.get(k).push(i);
+  }
+  // Seed with the 20 host trees nearest Greenpoint, Brooklyn. Greenpoint has few
+  // host trees, so a smaller seed has no neighbors in range and dies out at once.
+  const gx = ((-73.951 - S.summary.bbox[0]) / (S.summary.bbox[1] - S.summary.bbox[0])) * L;
+  const gy = (1 - (40.73 - S.summary.bbox[2]) / (S.summary.bbox[3] - S.summary.bbox[2])) * L;
+  const seeds = hosts.slice().sort((a, b) =>
+    ((P.mx[a] - gx) ** 2 + (P.my[a] - gy) ** 2) - ((P.mx[b] - gx) ** 2 + (P.my[b] - gy) ** 2)).slice(0, 20);
+  for (const i of seeds) P.infected[i] = 0;
+  spread = { grid, key, active: seeds, gen: 0, total: seeds.length, hosts: hosts.length, tick: 0, seedX: gx, seedY: gy };
+}
+
+function stepSpread() {
+  if (!spread || !spread.active.length) return;
+  if (++spread.tick % 7) return;
+  spread.gen++;
+  const next = [];
+  for (const i of spread.active) {
+    const cx = Math.floor(P.mx[i] / SPREAD_R), cy = Math.floor(P.my[i] / SPREAD_R);
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+      const cell = spread.grid.get((cx + dx) + "," + (cy + dy));
+      if (!cell) continue;
+      for (const j of cell) {
+        if (P.infected[j] >= 0) continue;
+        const d2 = (P.mx[j] - P.mx[i]) ** 2 + (P.my[j] - P.my[i]) ** 2;
+        if (d2 < SPREAD_R * SPREAD_R && Math.random() < 0.3) { P.infected[j] = spread.gen; next.push(j); }
+      }
+    }
+  }
+  spread.active = spread.active.filter((i) => spread.gen - P.infected[i] < INFECTIOUS_STEPS).concat(next);
+  spread.total += next.length;
+  document.getElementById("spreadCount").textContent =
+    `Step ${spread.gen}: ${pct(spread.total / spread.hosts)} of host trees reached` + (spread.active.length ? "" : ". The outbreak ran out of nearby hosts.");
+}
+
+// ===================== steps =====================
+
+let step = "map";
+let stepStart = 0;
+const ozone = () => S.nta.find((d) => d.name === "Ozone Park");
+
+function setStep(name) {
+  if (name === step && stepStart) return;
+  step = name;
+  stepStart = performance.now();
+  for (const k in bgTarget) bgTarget[k] = 0;
+  cam.tx = L / 2; cam.ty = L / 2; cam.tz = 1;
+  const n = P.n;
+  for (let i = 0; i < n; i++) {
+    P.tx[i] = P.mx[i]; P.ty[i] = P.my[i]; P.ta[i] = 0; P.tsize[i] = 2; P.color[i] = GENUS_COLORS[P.g[i]];
+  }
+  if (name === "map") {
+    bgTarget.all = 1;
+  } else if (name === "bars") {
+    for (let i = 0; i < n; i++) { P.tx[i] = P.bx[i]; P.ty[i] = P.by[i]; P.ta[i] = 1; P.tsize[i] = 2.2; }
+  } else if (name === "beetle") {
+    bgTarget.beetle = 1;
+    for (let i = 0; i < n; i++) if (BEETLE.has(P.g[i])) { P.ta[i] = 1; P.tsize[i] = 2.6; P.color[i] = HOT; }
+  } else if (name === "spread") {
+    bgTarget.dim = 1;
+    startSpread();
+    for (let i = 0; i < n; i++) if (BEETLE.has(P.g[i])) { P.ta[i] = 1; P.tsize[i] = 2.4; }
+  } else if (name === "ash") {
+    bgTarget.ash = 1;
+    const o = ozone();
+    cam.tx = (o.cx / 65535) * L; cam.ty = (1 - o.cy / 65535) * L; cam.tz = 4.2;
+    for (let i = 0; i < n; i++) if (P.g[i] === ASH) { P.ta[i] = 1; P.tsize[i] = 1.6; P.color[i] = ASHC; }
+  } else if (name === "after") {
+    bgTarget.after = 1;
+    // Lost trees fall and fade, so the gaps they leave open up.
+    for (let i = 0; i < n; i++) if (BEETLE.has(P.g[i]) || P.g[i] === ASH) {
+      P.x[i] = P.mx[i]; P.y[i] = P.my[i]; P.a[i] = 1; P.ta[i] = 0; P.ty[i] = P.my[i] + 30 + Math.random() * 30; P.color[i] = LOST; P.tsize[i] = 2.4;
+    }
+  }
+}
+
+// ===================== frame =====================
+
+function frame(now) {
+  // Ease the camera and the layer opacities.
+  cam.cx += (cam.tx - cam.cx) * 0.06;
+  cam.cy += (cam.ty - cam.cy) * 0.06;
+  cam.z += (cam.tz - cam.z) * 0.06;
+  for (const k in bg) bg[k] += (bgTarget[k] - bg[k]) * 0.08;
+  if (step === "map") reveal = Math.min(1, reveal + 0.012);
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = "#081009";
+  ctx.fillRect(0, 0, stage.width, stage.height);
+  applyCamera();
+
+  // Background layers, drawn at full density.
+  for (const k of ["dim", "all", "beetle", "ash", "after"]) {
+    if (bg[k] < 0.01) continue;
+    ctx.globalAlpha = bg[k];
+    if (k === "all" && reveal < 1) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(L / 2, L / 2, ease(reveal) * L * 0.75, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(layer(k), 0, 0, L, L);
+      ctx.restore();
+    } else {
+      ctx.drawImage(layer(k), 0, 0, L, L);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // Particles.
+  if (step === "spread") stepSpread();
+  const n = P.n;
+  let lastColor = null;
+  for (let i = 0; i < n; i++) {
+    const k = P.speed[i];
+    P.x[i] += (P.tx[i] - P.x[i]) * k;
+    P.y[i] += (P.ty[i] - P.y[i]) * k;
+    P.a[i] += (P.ta[i] - P.a[i]) * (step === "after" ? 0.03 : 0.08);
+    P.size[i] += (P.tsize[i] - P.size[i]) * 0.1;
+    if (P.a[i] < 0.02) continue;
+    let color = P.color[i];
+    if (step === "spread" && BEETLE.has(P.g[i])) {
+      const inf = P.infected[i];
+      // Newly infected trees flash bright, then darken as the outbreak moves on.
+      color = inf < 0 ? "#5a3a33" : spread.gen - inf < 3 ? "#ffd27a" : HOT;
+    }
+    if (color !== lastColor) { ctx.fillStyle = color; lastColor = color; }
+    ctx.globalAlpha = P.a[i];
+    const s = P.size[i] / (step === "ash" ? cam.z * 0.6 : 1);
+    ctx.fillRect(P.x[i] - s / 2, P.y[i] - s / 2, s, s);
+  }
+  ctx.globalAlpha = 1;
+
+  // Overlays in map units.
+  if (step === "spread" && spread) {
+    const r = 6 + ((now / 30) % 30);
+    ctx.strokeStyle = `rgba(255,210,122,${1 - r / 36})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(spread.seedX, spread.seedY, r, 0, Math.PI * 2); ctx.stroke();
+    label("Greenpoint", spread.seedX + 10, spread.seedY - 10, "#ffd27a", 14, "left");
+  }
+  if (step === "ash") {
+    const o = ozone();
+    label("Ozone Park", (o.cx / 65535) * L, (1 - o.cy / 65535) * L - 26 / cam.z, "#cfe4ff", 16 / cam.z, "center");
+  }
+  if (step === "bars") drawBarLabels(Math.min(1, (now - stepStart) / 900));
+
+  requestAnimationFrame(frame);
+}
+
+function label(text, x, y, color, size, align) {
+  ctx.font = `600 ${size}px -apple-system, Helvetica, Arial, sans-serif`;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.fillText(text, x, y);
+}
+
+function drawBarLabels(t) {
+  ctx.globalAlpha = ease(t);
+  const counts = S.summary.genusCounts;
+  barOrder.forEach((g, row) => {
+    const y = BAR.top + row * BAR.band + BAR.rows * BAR.gap / 2 + 5;
+    label(GENUS_NAMES[g], BAR.x0 - 70, y, "#e8ecdf", 15, "right");
+    label(pct(counts[g] / S.summary.total, 1), BAR.x0 - 14, y, "#93a090", 14, "right");
+  });
+  // Ten percent of all street trees, in tally-chart units.
+  const x10 = BAR.x0 + (S.summary.sampleCount * 0.1 / BAR.rows) * BAR.gap;
+  ctx.strokeStyle = "#8fd19e";
+  ctx.setLineDash([6, 5]);
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(x10, BAR.top - 30); ctx.lineTo(x10, BAR.top + 13 * BAR.band); ctx.stroke();
+  ctx.setLineDash([]);
+  label("10% of all street trees", x10 + 8, BAR.top - 30, "#8fd19e", 14, "left");
+  label("Each dot = 25 trees", BAR.x0, 70, "#93a090", 14, "left");
+  ctx.globalAlpha = 1;
+}
+
+// ===================== swarm =====================
 
 const BORO = { Manhattan: "#edc948", Brooklyn: "#76b7b2", Queens: "#f28e2b", Bronx: "#e15759", "Staten Island": "#b07aa1" };
 const tip = document.getElementById("tip");
+let swarmDots = [];
 
-function renderSwarm() {
+function buildSwarm() {
   const svg = document.getElementById("swarm");
   const x0 = 50, x1 = 1030, mid = 200, r = 5.2;
   const xs = (v) => x0 + (v / 0.7) * (x1 - x0);
-  const data = summary.nta.slice().sort((a, b) => a.topShare - b.topShare);
-  const placed = [];
   let html = "";
-  // Ticks and the 10 percent line.
   for (let v = 0; v <= 0.7001; v += 0.1) {
     html += `<line x1="${xs(v)}" x2="${xs(v)}" y1="20" y2="370" stroke="#1c271f"/>`;
     html += `<text x="${xs(v)}" y="392" fill="#6c786a" font-size="12" text-anchor="middle" font-family="-apple-system,Helvetica,Arial">${Math.round(v * 100)}%</text>`;
   }
   html += `<line x1="${xs(0.1)}" x2="${xs(0.1)}" y1="14" y2="370" stroke="#8fd19e" stroke-width="2" stroke-dasharray="5 4"/>`;
   html += `<text x="${xs(0.1) - 8}" y="30" fill="#8fd19e" font-size="12.5" text-anchor="end" font-family="-apple-system,Helvetica,Arial">10% guideline</text>`;
-  // Simple beeswarm: each dot takes the nearest free vertical slot.
-  for (const d of data) {
+  const data = S.nta.map((d, i) => ({ d, i })).sort((a, b) => a.d.topShare - b.d.topShare);
+  const placed = [];
+  swarmDots = [];
+  for (const { d, i } of data) {
     const x = xs(d.topShare);
     let y = mid;
-    for (let k = 0; k < 60; k++) {
-      const off = Math.ceil(k / 2) * (r * 2 + 0.5) * (k % 2 ? 1 : -1);
-      const cy = mid + off;
+    for (let k = 0; k < 80; k++) {
+      const cy = mid + Math.ceil(k / 2) * (r * 2 + 0.5) * (k % 2 ? 1 : -1);
       if (placed.every((p) => (p.x - x) ** 2 + (p.y - cy) ** 2 >= (2 * r) ** 2)) { y = cy; break; }
     }
     placed.push({ x, y });
-    html += `<circle cx="${x}" cy="${y}" r="${r}" fill="${BORO[d.boro] || "#999"}" fill-opacity=".9" data-i="${summary.nta.indexOf(d)}"/>`;
+    swarmDots.push({ i, x, y });
+    html += `<circle cx="${xs(0)}" cy="${mid}" r="${r}" fill="${BORO[d.boro] || "#999"}" fill-opacity="0" data-i="${i}"/>`;
   }
   svg.innerHTML = html;
-  const over = summary.nta.filter((d) => d.topShare > 0.1).length;
+  const over = S.nta.filter((d) => d.topShare > 0.1).length;
   document.getElementById("swarmNote").innerHTML =
-    `${over} of ${summary.nta.length} neighborhoods with at least 300 street trees exceed 10 percent for a single species. Colors show the borough: ` +
+    `${over} of ${S.nta.length} neighborhoods exceed 10 percent for a single species. Colors show the borough: ` +
     Object.entries(BORO).map(([b, c]) => `<span style="color:${c}">${b}</span>`).join(", ") + ".";
   svg.addEventListener("mousemove", (e) => {
     const i = e.target.dataset && e.target.dataset.i;
     if (i === undefined) { tip.style.opacity = 0; return; }
-    const d = summary.nta[i];
+    const d = S.nta[i];
     tip.innerHTML = `<b>${d.name}</b>, ${d.boro}<br>${pct(d.topShare)} ${d.top}<br>${fmt(d.n)} trees`;
     tip.style.left = e.clientX + 14 + "px";
     tip.style.top = e.clientY + 14 + "px";
     tip.style.opacity = 1;
   });
-  svg.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
+  svg.addEventListener("mouseleave", () => (tip.style.opacity = 0));
 }
 
-// ===================== rubric and form =====================
-
-function renderGates() {
-  const s = summary.summary;
-  const over = summary.nta.filter((d) => d.topShare > 0.1).length;
-  const big = summary.nta.filter((d) => d.n >= MIN_TREES);
-  const topBeetle = big.slice().sort((a, b) => b.alb - a.alb)[0];
-  const topAsh = big.slice().sort((a, b) => b.ash - a.ash)[0];
-  const gates = [
-    ["yes", "Do you have a unique question?",
-      "Yes. How much of each neighborhood's shade depends on trees that a single pest prefers? The question is about every neighborhood rather than the city as a whole, and it gives every reader a block to look up."],
-    ["yes", "Can it be answered with data?",
-      "Yes. Every tree has a species and a location, and the federal host lists say which species each pest prefers. Matching the two gives the exposure for any area."],
-    ["yes", "Do the data exist?",
-      `Yes. The 2015 NYC Street Tree Census on NYC Open Data has ${fmt(683788)} records, ${fmt(s.total)} of them living trees with a species. The USDA APHIS host guide lists the beetle's preferred trees.`],
-    ["yes", "Is it ethical to collect or use these data?",
-      "Yes. The records describe trees on public sidewalks and include no personal information. The story needs to be careful not to cause alarm: the scenarios show exposure and say plainly that they are not forecasts."],
-    ["yes", "Are the results of the analysis interesting?",
-      `Yes. ${over} of ${summary.nta.length} neighborhoods break the 10 percent guideline. ${pct(s.albHosts / s.total, 1)} of all street trees are preferred beetle hosts, rising to ${pct(topBeetle.alb)} in ${topBeetle.name}. Ash is ${pct(s.ash / s.total, 1)} citywide but ${pct(topAsh.ash)} in ${topAsh.name}. The prototype above already shows the pattern.`],
-    ["partial", "Are you the right person to tell this story?",
-      "Partly. The data work and the visuals are done. An urban forester and an entomologist should review the host list and the framing before publication, and the plan below includes them."],
-    ["yes", "Create a plan for your data story. Is it still interesting?",
-      "Yes. The plan is short because most of the analysis is done: refresh the data, add expert review, and add a search box so readers can find their own street."],
-  ];
-  document.getElementById("gates").innerHTML = gates.map(([cls, q, a]) => `
-    <li class="${cls}"><div class="mark">${cls === "yes" ? "✓" : "~"}</div>
-    <div><div class="verdict">${cls === "yes" ? "Passes" : "Passes with help"}</div><h4>${q}</h4><p>${a}</p></div></li>`).join("");
+// Dots sweep in from the left edge, in order of share, when the chart scrolls into view.
+function playSwarm() {
+  const circles = [...document.querySelectorAll("#swarm circle")];
+  const start = performance.now();
+  const sx = 50, sy = 200;
+  const tick = (now) => {
+    let done = true;
+    circles.forEach((c, k) => {
+      const t = Math.max(0, Math.min(1, (now - start - k * 6) / 900));
+      if (t < 1) done = false;
+      const e = ease(t);
+      const dot = swarmDots[k];
+      c.setAttribute("cx", sx + (dot.x - sx) * e);
+      c.setAttribute("cy", sy + (dot.y - sy) * e);
+      c.setAttribute("fill-opacity", 0.9 * Math.min(1, t * 2));
+    });
+    if (!done) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
-function renderForm() {
-  const s = summary.summary;
-  const big = summary.nta.filter((d) => d.n >= MIN_TREES);
-  const topBeetle = big.slice().sort((a, b) => b.alb - a.alb)[0];
-  const topAsh = big.slice().sort((a, b) => b.ash - a.ash)[0];
-  const over = summary.nta.filter((d) => d.topShare > 0.1).length;
-  const fields = [
-    {
-      q: "The Pitch",
-      help: "What's your idea? Imagine you've got one minute with us in an elevator. Make us get it, and get excited.",
-      a: [
-        `New York counted every one of its street trees in 2015, and most neighborhoods lean hard on one or two kinds. That matters because the insects that kill trees are picky. The Asian longhorned beetle, first found in the U.S. in Brooklyn in 1996, prefers maples, elms, willows, birches, and horse chestnuts. Those make up one in six of the city's street trees, and ${pct(topBeetle.alb)} in ${topBeetle.name}. The emerald ash borer, which reached the city in 2017, attacks ash trees: ${pct(s.ash / s.total, 0)} of trees citywide, but ${pct(topAsh.ash)} in ${topAsh.name}.`,
-        `"One bug away" maps all ${fmt(s.total)} living trees, shows which blocks would go bare under each pest, and lets readers find their own street. Foresters say no species should be more than 10 percent of a forest. ${over} of ${summary.nta.length} neighborhoods break that rule.`,
-      ],
-    },
-    {
-      q: "The Plan",
-      help: "Walk us through your data and methods. Where is it coming from, and how do you plan to work with it?",
-      a: [
-        `Data. The 2015 Street Tree Census from NYC Open Data (dataset uvpi-gqnh): ${fmt(683788)} records with species, location, and neighborhood. I use the ${fmt(s.total)} living trees with a recorded species. Pest host lists come from USDA APHIS for the Asian longhorned beetle, and from NYC Parks and New York State for the emerald ash borer.`,
-        "Methods. Group species by genus, flag each tree as a host or not, and total the shares for each of the city's neighborhood tabulation areas. Rankings use neighborhoods with at least 1,000 trees, so tiny areas don't produce extreme percentages. I leave out the census health ratings, because volunteers judged them in a single visit.",
-        "Done so far. The full analysis and a working prototype: a dot map of every tree, pest scenarios, neighborhood rankings, and a chart against the 10 percent guideline.",
-        "Next. Check whether NYC Parks' current tree inventory can update the 2015 counts, since ash numbers have likely fallen since the borer arrived. Interview an NYC Parks forester and an entomologist about host preferences and replanting. Add an address search so readers can see their own block. Build mobile layouts and scroll-driven transitions between the map states.",
-      ],
-    },
-    {
-      q: "Anything else we should know?",
-      help: "Optional.",
-      a: [
-        "The prototype is live at this page, built on the real data, so you can test the story before committing.",
-        "Caveats I'll state in the piece: the data are from 2015, the scenarios show exposure rather than forecasts, and the beetle has been eradicated from parts of the city. The point is to show how concentrated planting creates risk.",
-      ],
-    },
-  ];
-  document.getElementById("form").innerHTML = fields.map((f, i) => `
-    <div class="field"><div class="q">${f.q}</div><div class="help">${f.help}</div>
-    <div class="a" id="ans${i}">${f.a.map((t) => `<p>${t}</p>`).join("")}</div>
-    <button class="copy" data-copy="ans${i}">Copy answer</button></div>`).join("");
-  document.querySelectorAll("[data-copy]").forEach((btn) => btn.addEventListener("click", async () => {
-    const text = [...document.getElementById(btn.dataset.copy).querySelectorAll("p")].map((p) => p.textContent).join("\n\n");
-    try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; } catch { btn.textContent = "Select and copy"; }
-    setTimeout(() => (btn.textContent = "Copy answer"), 1600);
-  }));
+// ===================== explorer =====================
+
+const mini = document.getElementById("mini");
+const mctx = mini.getContext("2d");
+const mcam = { cx: L / 2, cy: L / 2, z: 1, tx: L / 2, ty: L / 2, tz: 1 };
+let picked = 0;
+
+function sizeMini() {
+  const css = mini.clientWidth || 600;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  mini.width = Math.round(css * dpr);
+  mini.height = Math.round(css * dpr);
+}
+window.addEventListener("resize", sizeMini);
+
+function drawMini() {
+  mcam.cx += (mcam.tx - mcam.cx) * 0.08;
+  mcam.cy += (mcam.ty - mcam.cy) * 0.08;
+  mcam.z += (mcam.tz - mcam.z) * 0.08;
+  const s = mini.width / L;
+  mctx.setTransform(1, 0, 0, 1, 0, 0);
+  mctx.fillStyle = "#081009";
+  mctx.fillRect(0, 0, mini.width, mini.height);
+  mctx.setTransform(s * mcam.z, 0, 0, s * mcam.z, mini.width / 2 - mcam.cx * s * mcam.z, mini.height / 2 - mcam.cy * s * mcam.z);
+  mctx.globalAlpha = 0.35;
+  mctx.drawImage(layer("dim"), 0, 0, L, L);
+  mctx.globalAlpha = 1;
+  const size = 8 / mcam.z; // about 8 map units on screen at any zoom
+  for (let i = 0; i < P.n; i++) {
+    if (P.nta[i] !== picked) continue;
+    mctx.fillStyle = BEETLE.has(P.g[i]) ? HOT : P.g[i] === ASH ? ASHC : GENUS_COLORS[P.g[i]];
+    mctx.fillRect(P.mx[i] - size / 2, P.my[i] - size / 2, size, size);
+  }
+  requestAnimationFrame(drawMini);
+}
+
+function pick(i) {
+  picked = i;
+  const d = S.nta[i];
+  mcam.tx = (d.cx / 65535) * L; mcam.ty = (1 - d.cy / 65535) * L; mcam.tz = 4;
+  document.getElementById("pName").textContent = d.name;
+  document.getElementById("pSub").textContent = `${d.boro} · ${fmt(d.n)} street trees`;
+  const city = S.summary;
+  const cityBeetle = city.albHosts / city.total, cityAsh = city.ash / city.total;
+  const bar = (name, v, color, avg) => `
+    <div class="row"><span>${name}</span><span>${pct(v, 1)}</span></div>
+    <div class="bar"><i style="width:${Math.min(100, v * 200)}%;background:${color}"></i>${avg !== undefined ? `<b style="left:${Math.min(100, avg * 200)}%"></b>` : ""}</div>`;
+  document.getElementById("pBars").innerHTML =
+    `<h4>Most common species</h4>` + d.mix.map(([n, v]) => bar(n, v, "#8fd19e")).join("") +
+    `<h4>Exposure</h4>` +
+    bar("Beetle host trees", d.alb, HOT, cityBeetle) +
+    bar("Ash trees", d.ash, ASHC, cityAsh) +
+    bar("Lost if both struck", d.both, LOST, (city.albHosts + city.ash) / city.total) +
+    `<p class="legend-note">Bars run from 0 to 50 percent. On the map, beetle hosts are red and ash is blue.</p>`;
 }
 
 // ===================== load =====================
@@ -416,17 +622,56 @@ function renderForm() {
 Promise.all([
   fetch("data/summary.json").then((r) => r.json()),
   fetch("data/trees.bin").then((r) => r.arrayBuffer()),
-]).then(([s, buf]) => {
-  summary = s;
-  trees = new Uint8Array(buf);
-  document.getElementById("loading").remove();
-  showLayer("all");
-  renderPanel("all");
-  renderSwarm();
-  renderGates();
-  renderForm();
-}).catch(() => {
-  document.getElementById("loading").textContent = "Could not load the tree data. Serve this folder over HTTP to view it.";
+  fetch("data/sample.bin").then((r) => r.arrayBuffer()),
+]).then(([summary, fullBuf, sampleBuf]) => {
+  S = summary;
+  full = new Uint8Array(fullBuf);
+  P = buildParticles(sampleBuf);
+  const s = S.summary;
+
+  document.getElementById("tRecords").textContent = fmt(683788);
+  document.getElementById("tAlive").textContent = fmt(s.total);
+  document.getElementById("tPlane").textContent = pct(s.topSpecies[0][1] / s.total, 1);
+  document.getElementById("tBeetle").textContent = pct(s.albHosts / s.total, 1);
+  document.getElementById("tAsh").textContent = pct(ozone().ash, 0);
+  document.getElementById("tAshCity").textContent = pct(s.ash / s.total, 1);
+  document.getElementById("tLeft").textContent = pct(1 - (s.albHosts + s.ash) / s.total, 1);
+  const worst = S.nta.filter((d) => d.n >= 1000).sort((a, b) => b.both - a.both).slice(0, 3);
+  document.getElementById("tWorst").textContent = worst.map((d) => d.name).join(", ").replace(/, ([^,]*)$/, ", and $1");
+
+  sizeStage();
+  sizeMini();
+  setStep("map");
+  requestAnimationFrame(frame);
+
+  // Activate a step when its card crosses the middle of the screen.
+  const steps = document.querySelectorAll(".step");
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      steps.forEach((s) => s.classList.toggle("active", s === e.target));
+      setStep(e.target.dataset.step);
+    }
+  }, { rootMargin: "-45% 0px -45% 0px" });
+  steps.forEach((s) => io.observe(s));
+
+  buildSwarm();
+  let played = false;
+  new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !played) { played = true; playSwarm(); }
+  }, { threshold: 0.35 }).observe(document.getElementById("swarm"));
+
+  const select = document.getElementById("pick");
+  const order = S.nta.map((d, i) => [d.name, i]).sort((a, b) => a[0].localeCompare(b[0]));
+  select.innerHTML = order.map(([n, i]) => `<option value="${i}">${n} (${S.nta[i].boro})</option>`).join("");
+  const start = S.nta.findIndex((d) => d.name === "Ozone Park");
+  select.value = start;
+  select.addEventListener("change", () => pick(Number(select.value)));
+  pick(start);
+  requestAnimationFrame(drawMini);
+}).catch((err) => {
+  console.error(err);
+  document.querySelector(".dek").textContent = "The tree data could not load. Serve this folder over HTTP to view the page.";
 });
 </script>
 </body>

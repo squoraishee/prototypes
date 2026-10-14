@@ -50,13 +50,13 @@ An animated guide that follows sunlight into a forest, one photon at a time. It 
 
 [Full-quality video (MP4)](forest-light/demo.mp4)
 
-### [One Bug Away: a pitch for The Pudding](street-trees-pitch/)
+### [One Bug Away](street-trees-pitch/)
 
-A visual essay pitch built on New York City's 2015 street tree census. A dot map of all 652,168 living street trees shows how much of each neighborhood's shade depends on trees that a single pest prefers. The page then checks the idea against The Pudding's decision flowchart and drafts answers for their pitch form.
+A scrolling visual essay about New York City's street trees and the insects that could strip them. All 652,168 living street trees are drawn on the map. As you scroll, they fly into a tally chart, light up as beetle hosts, carry an illustrated outbreak out from Greenpoint, zoom into Ozone Park's ash, and fall away in a worst case. A neighborhood explorer closes the piece.
 
 **Live page:** https://squoraishee.github.io/street-trees-pitch/
 
-![The map, the pest scenarios, the rubric, and the form answers](street-trees-pitch/demo.gif)
+![Scrolling through One Bug Away](street-trees-pitch/demo.gif)
 
 [Full-quality video (MP4)](street-trees-pitch/demo.mp4)
 
