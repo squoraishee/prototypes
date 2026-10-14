@@ -50,6 +50,16 @@ An animated guide that follows sunlight into a forest, one photon at a time. It 
 
 [Full-quality video (MP4)](forest-light/demo.mp4)
 
+### [Pitch: Who Gets the Healthy Street Trees?](street-trees-pitch/)
+
+A pitch sketch for a Pudding-style visual essay. It tests one question, whether New York's neighborhoods with the fewest street trees also have the trees in worst condition, against The Pudding's decision path. No analysis has been run.
+
+**Live page:** https://squoraishee.github.io/street-trees-pitch/
+
+![Walking the flowchart](street-trees-pitch/demo.gif)
+
+[Full-quality video (MP4)](street-trees-pitch/demo.mp4)
+
 ## Running them
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.

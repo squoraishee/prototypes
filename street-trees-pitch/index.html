@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pitch: Who Gets the Healthy Street Trees?</title>
+<style>
+:root{
+  --bg:#f4f2ec;
+  --text:#17191b;
+  --muted:#5f655e;
+  --rule:#d4d4c9;
+  --accent:#2f7d4f;
+  --open:#b07a1f;
+  --passed:#2f7d4f;
+  --pending:#6b7280;
+  --panel:#0f1511;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;line-height:1.6}
+header{max-width:1080px;margin:0 auto;padding:4rem 22px 1rem}
+.kicker{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:.7rem;font-weight:700;color:var(--accent)}
+h1{font-size:clamp(2.4rem,6.5vw,4.6rem);font-weight:400;line-height:.98;letter-spacing:-.03em;margin:.3em 0 .4em;max-width:16ch}
+.intro{max-width:60ch;font-size:1.12rem;margin:0}
+section{max-width:1080px;margin:0 auto;padding:4.5rem 22px 0}
+h2{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:400;letter-spacing:-.02em;line-height:1.1;margin:0 0 .8rem}
+.num{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;font-weight:700;font-size:.75rem;color:var(--accent);letter-spacing:.08em;display:block;margin-bottom:.4rem}
+.elevator{border-left:3px solid var(--accent);padding:.2rem 0 .2rem 1.2rem;font-size:1.25rem;max-width:60ch;margin:0 0 1rem}
+p{max-width:64ch;margin:0 0 1rem}
+.muted{color:var(--muted)}
+.flow{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:22px;align-items:start}
+.frame{background:var(--panel);border-radius:6px;padding:14px}
+.frame svg{display:block;width:100%;height:auto}
+.node{cursor:pointer}
+.node rect{fill:#18211b;stroke:#3a4a3f;stroke-width:1.2;rx:6}
+.node:hover rect,.node.sel rect{stroke:#8fd19e;stroke-width:2}
+.node text{fill:#dfe8db;font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;font-size:13px}
+.node .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.edge{stroke:#3a4a3f;stroke-width:1.4;fill:none}
+.edge.taken{stroke:#8fd19e;stroke-width:2}
+.side{border:1px solid var(--rule);border-radius:6px;padding:20px 22px;background:#fbfbf7;min-height:260px}
+.side .tag{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.side h3{margin:.35rem 0 .6rem;font-size:1.3rem;font-weight:400}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font:.75rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted);margin:.8rem 0 0}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.legend .p::before{background:var(--passed)}
+.legend .o::before{background:var(--open)}
+.legend .w::before{background:var(--pending)}
+table{width:100%;border-collapse:collapse;font-size:1rem;margin-top:.5rem}
+th,td{text-align:left;vertical-align:top;padding:.7rem .6rem;border-top:1px solid var(--rule)}
+th{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.tags{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.tags.p{color:var(--passed)} .tags.o{color:var(--open)} .tags.w{color:var(--pending)}
+.open-list li{margin-bottom:.6rem}
+footer{max-width:1080px;margin:5rem auto 0;padding:1.4rem 22px 3rem;border-top:1px solid var(--rule);font:.8rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
+@media(max-width:820px){.flow{grid-template-columns:1fr} header,section,footer{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Pitch to The Pudding</p>
+  <h1>Who gets the healthy street trees?</h1>
+  <p class="intro">This is a pitch for a visual essay built on New York City's street tree census. It tests one question against the decision path The Pudding uses, and it lists what is still open. Nothing here is a result yet.</p>
+</header>
+
+<section>
+  <span class="num">01 · The pitch</span>
+  <h2>The one-minute version</h2>
+  <p class="elevator">New York's street trees were counted block by block in 2015, with each tree's species, size, and health recorded. Some neighborhoods have dense, shady streets. Others have a few sickly trees and a lot of bare pavement. Do the places with the fewest trees also have the trees in the worst shape? If so, the difference shows up on every block, and we can show it one tree at a time.</p>
+  <p class="muted">The essay would map each tree as a dot, then zoom into a few blocks to show what "Poor" health looks like on the sidewalk.</p>
+</section>
+
+<section>
+  <span class="num">02 · The flowchart</span>
+  <h2>Walking the idea through the gates</h2>
+  <p>The Pudding's decision chart asks a series of questions before a story goes into production. Each gate can send an idea forward, back for a new question, or to the "put it down" box. Select a step to see how this idea stands there.</p>
+
+  <div class="flow">
+    <div class="frame">
+      <svg viewBox="0 0 560 600" role="img" aria-label="Decision path for the street tree question">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#5a6d60"/>
+          </marker>
+        </defs>
+
+        <path class="edge taken" d="M280 62 L280 84" marker-end="url(#arr)"/>
+        <path class="edge taken" d="M280 132 L280 154" marker-end="url(#arr)"/>
+        <path class="edge taken" d="M280 202 L280 224" marker-end="url(#arr)"/>
+        <path class="edge taken" d="M280 272 L280 294" marker-end="url(#arr)"/>
+        <path class="edge taken" d="M280 342 L280 364" marker-end="url(#arr)"/>
+        <path class="edge" d="M280 412 L280 434" marker-end="url(#arr)"/>
+        <path class="edge" d="M280 482 L280 504" marker-end="url(#arr)"/>
+        <path class="edge" d="M380 532 L406 532" marker-end="url(#arr)"/>
+
+        <g class="node" data-node="q" tabindex="0">
+          <rect x="120" y="22" width="320" height="40"/>
+          <text x="280" y="47" text-anchor="middle">Do you have a unique question?</text>
+        </g>
+        <g class="node" data-node="data" tabindex="0">
+          <rect x="120" y="92" width="320" height="40"/>
+          <text x="280" y="117" text-anchor="middle">Can it be answered with data?</text>
+        </g>
+        <g class="node" data-node="exist" tabindex="0">
+          <rect x="120" y="162" width="320" height="40"/>
+          <text x="280" y="187" text-anchor="middle">Do the data exist?</text>
+        </g>
+        <g class="node" data-node="ethics" tabindex="0">
+          <rect x="120" y="232" width="320" height="40"/>
+          <text x="280" y="257" text-anchor="middle">Is it ethical to collect or use these data?</text>
+        </g>
+        <g class="node" data-node="interest" tabindex="0">
+          <rect x="120" y="302" width="320" height="40"/>
+          <text x="280" y="327" text-anchor="middle">Are the results of the analysis interesting?</text>
+        </g>
+        <g class="node" data-node="person" tabindex="0">
+          <rect x="120" y="372" width="320" height="40"/>
+          <text x="280" y="397" text-anchor="middle">Are you the right person to tell this story?</text>
+        </g>
+        <g class="node" data-node="plan" tabindex="0">
+          <rect x="120" y="442" width="320" height="40"/>
+          <text x="280" y="467" text-anchor="middle">Create a plan, then check it is still interesting</text>
+        </g>
+        <g class="node" data-node="publish" tabindex="0">
+          <rect x="120" y="512" width="260" height="40"/>
+          <text x="250" y="537" text-anchor="middle">Make it, then publish</text>
+        </g>
+        <g class="node" data-node="down" tabindex="0">
+          <rect x="410" y="512" width="130" height="40" style="stroke:#7a4b3a"/>
+          <text x="475" y="537" text-anchor="middle" style="fill:#e7c9b8">Put it down</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="side" id="detail">
+      <div class="tag" id="dTag">Select a step</div>
+      <h3 id="dTitle">The flowchart</h3>
+      <p id="dBody" class="muted">Click any box. Green steps are passed, amber steps are open, and grey steps wait on earlier work.</p>
+    </div>
+  </div>
+  <div class="legend"><span class="p">Passed</span><span class="o">Open</span><span class="w">Waiting</span></div>
+</section>
+
+<section>
+  <span class="num">03 · The plan</span>
+  <h2>How the data would be used</h2>
+  <p>The census lists trees, so the first job is to combine it with census tracts. Each step below states what gets done and what could go wrong.</p>
+  <table>
+    <thead><tr><th>Step</th><th>What happens</th><th>What could go wrong</th></tr></thead>
+    <tbody>
+      <tr><td>1. Get the tree records</td><td>Download the 2015 Street Tree Census tree records from the NYC Open Data portal.</td><td>The mirrors we checked do not state a license. We need the original listing and its terms first.</td></tr>
+      <tr><td>2. Get neighborhood numbers</td><td>Join each tree to its census tract, then pull population and median household income for each tract from the American Community Survey.</td><td>Tract boundaries and survey years differ from the 2015 count, so the numbers need matching carefully.</td></tr>
+      <tr><td>3. Measure tree density</td><td>Count trees per 1,000 residents in each tract, and count trees per tract area as a second measure.</td><td>Tracts with few residents can give extreme ratios. We would set a minimum size.</td></tr>
+      <tr><td>4. Measure condition</td><td>Calculate the share of trees rated Poor and the share rated Good in each tract.</td><td>Health ratings are volunteer judgments made in one visit, so two volunteers could rate the same tree differently.</td></tr>
+      <tr><td>5. Compare</td><td>Test whether low-density tracts have a higher share of Poor trees, and whether income explains the pattern.</td><td>Both density and income can move together. The comparison needs to hold one factor fixed while looking at the other.</td></tr>
+      <tr><td>6. Check the story</td><td>Visit a few blocks in each group with an urban forester, and ask the local parks office whether the numbers match what they see.</td><td>If the blocks disagree with the numbers, the story changes or gets dropped.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <span class="num">04 · Open questions</span>
+  <h2>What still needs an answer</h2>
+  <ul class="open-list">
+    <li><strong>License.</strong> Confirm the terms on the original NYC Open Data listing before any data appears in the essay.</li>
+    <li><strong>Age of the data.</strong> The census is from 2015. Check whether a newer street tree count exists, and whether a newer count would change the question.</li>
+    <li><strong>Who should tell this story.</strong> The pitch has no arborist or local urban forestry voice yet. The Pudding asks this question at a late gate, so it needs a real answer.</li>
+    <li><strong>Consent and framing.</strong> The essay should not suggest that residents in low-tree areas are to blame for their trees' health.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="num">05 · The form</span>
+  <h2>What would go into the pitch form</h2>
+  <p><strong>Name:</strong> left for the author to fill in.</p>
+  <p><strong>The pitch:</strong> the one-minute version in section 01.</p>
+  <p><strong>The plan:</strong> the steps in section 03, with the open questions in section 04 stated as open.</p>
+  <p class="muted">This page does not submit anything. The form is at The Pudding's pitch page, and it is up to the author to send it.</p>
+</section>
+
+<footer>
+  This is a pitch sketch. It is not an analysis. No tree counts, rates, or correlations have been computed. Walking the flowchart is a planning exercise, based on The Pudding's published process articles.
+</footer>
+
+<script>
+const NODES = {
+  q: {
+    tag: "Passed", tagClass: "p",
+    title: "Do you have a unique question?",
+    body: "Yes. The question compares two things, tree density and tree condition, across neighborhoods. It is narrow enough to answer in one essay."
+  },
+  data: {
+    tag: "Passed", tagClass: "p",
+    title: "Can it be answered with data?",
+    body: "Yes. Each tree has a location, a species, and a health rating, which is enough to count and compare."
+  },
+  exist: {
+    tag: "Passed", tagClass: "p",
+    title: "Do the data exist?",
+    body: "Yes, the 2015 Street Tree Census. The records are public, but the health ratings come from volunteers in a single visit, so they are estimates. The census is also more than ten years old."
+  },
+  ethics: {
+    tag: "Passed", tagClass: "p",
+    title: "Is it ethical to collect or use these data?",
+    body: "Probably yes. The records describe trees and streets. We would publish only tract-level totals. Two things are still open: the license terms, and how to avoid blaming residents for the trees."
+  },
+  interest: {
+    tag: "Waiting", tagClass: "w",
+    title: "Are the results of the analysis interesting?",
+    body: "Unknown until the analysis runs. A null result, where density and condition do not track each other, would still be a finding, but it would need a different angle to hold a reader."
+  },
+  person: {
+    tag: "Open", tagClass: "o",
+    title: "Are you the right person to tell this story?",
+    body: "Not yet. A parks or forestry expert needs to check the health ratings and the field visits. The Pudding's process articles ask this question early and expect an honest answer."
+  },
+  plan: {
+    tag: "Waiting", tagClass: "w",
+    title: "Create a plan, then check it is still interesting",
+    body: "The plan is in section 03. Its last step, visiting blocks with a forester, is where the story could be confirmed or dropped."
+  },
+  publish: {
+    tag: "Waiting", tagClass: "w",
+    title: "Make it, then publish or put it down",
+    body: "If the story holds after the field check, it goes into production. If the numbers and the blocks disagree, it is put down, either for now or for good."
+  },
+  down: {
+    tag: "Exit", tagClass: "w",
+    title: "Put it down",
+    body: "The Pudding's path allows this at several gates. Putting an idea down still counts as a finished path. The same chart includes stories that were dropped and later revived."
+  }
+};
+
+const detail = {
+  tag: document.getElementById("dTag"),
+  title: document.getElementById("dTitle"),
+  body: document.getElementById("dBody"),
+};
+
+function select(key) {
+  const n = NODES[key];
+  document.querySelectorAll(".node").forEach((g) => g.classList.toggle("sel", g.dataset.node === key));
+  detail.tag.textContent = n.tag;
+  detail.tag.style.color = n.tagClass === "p" ? "#2f7d4f" : n.tagClass === "o" ? "#b07a1f" : "#6b7280";
+  detail.title.textContent = n.title;
+  detail.body.textContent = n.body;
+}
+
+document.querySelectorAll(".node").forEach((g) => {
+  g.addEventListener("click", () => select(g.dataset.node));
+  g.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(g.dataset.node); }
+  });
+});
+</script>
+</body>
+</html>
