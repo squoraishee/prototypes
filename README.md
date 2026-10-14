@@ -50,6 +50,16 @@ A ray tracer for a spinning black hole, with a five-chapter tour of the M87* and
 
 [Full-quality video (MP4)](photon-ring/demo.mp4)
 
+### [Reading the Light Under a Forest](forest-light/)
+
+An illustrated spectroscopy guide to a forest. It follows sunlight from the sun to the leaves, down through the canopy to the floor, and back to a satellite, where a simple ratio reads vegetation health. Each figure has controls for sun temperature, leaf condition, canopy depth, or surface type.
+
+**Live page:** https://squoraishee.github.io/forest-light/
+
+![Reading the Light Under a Forest, scrolling through the page](forest-light/demo.gif)
+
+[Full-quality video (MP4)](forest-light/demo.mp4)
+
 ## Running them
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.

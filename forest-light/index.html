@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reading the Light Under a Forest</title>
+<style>
+:root{
+  --bg:#f3f1ea;
+  --text:#16181a;
+  --muted:#5f655e;
+  --rule:#d2d3c8;
+  --accent:#2f7d4f;
+  --panel:#0c120e;
+  --grid:#1f2a22;
+  --ink:#c9d3c4;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;line-height:1.55}
+.sans{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif}
+header{max-width:1120px;margin:0 auto;padding:4.5rem 22px 1rem}
+.kicker{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:.7rem;font-weight:700;color:var(--accent)}
+h1{font-size:clamp(2.8rem,8vw,6rem);font-weight:400;line-height:.92;letter-spacing:-.035em;margin:.25em 0 .3em;max-width:12ch}
+.intro{max-width:62ch;font-size:clamp(1.08rem,1.8vw,1.25rem);line-height:1.6}
+.intro p{margin:0 0 1em}
+section{max-width:1120px;margin:0 auto;padding:6rem 22px 0}
+.head{display:grid;grid-template-columns:auto 1fr;gap:.2rem 1.4rem;align-items:baseline;max-width:820px;margin-bottom:1.6rem}
+.num{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;font-weight:700;font-size:.8rem;color:var(--accent);letter-spacing:.08em}
+h2{font-size:clamp(1.9rem,4.4vw,3.1rem);font-weight:400;letter-spacing:-.03em;line-height:1.02;margin:0}
+.head p{grid-column:2;margin:.6rem 0 0;font-size:1.12rem;color:var(--muted);max-width:62ch}
+.body{max-width:66ch;font-size:1.08rem;margin:0 0 1.2rem}
+.frame{position:relative;background:var(--panel);border-radius:4px;overflow:hidden;padding:12px}
+.frame canvas{display:block;width:100%;height:auto}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.9rem;align-items:center}
+.btn{font:600 .7rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:.45rem .9rem;cursor:pointer}
+.btn:hover{color:var(--text);border-color:var(--muted)}
+.btn.on{color:var(--accent);border-color:var(--accent)}
+.btn:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.slider{display:flex;align-items:center;gap:1rem;margin-top:.9rem;font:600 .78rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
+.slider input{flex:1;accent-color:var(--accent)}
+.slider output{min-width:9em;text-align:right;color:var(--text);font-variant-numeric:tabular-nums}
+.hint{font:.75rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted);margin-top:.6rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:1rem}
+.stat{border-top:2px solid var(--rule);padding-top:.5rem}
+.stat b{display:block;font:700 1.5rem Georgia,serif;font-variant-numeric:tabular-nums}
+.stat span{font:.72rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.swatches{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem}
+.swatch{height:90px;border-radius:4px;border:1px solid var(--rule)}
+.label{font:.72rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted);margin-top:.3rem}
+.note{font-size:.95rem;color:var(--muted);max-width:66ch;margin-top:1rem}
+footer{max-width:1120px;margin:7rem auto 0;padding:1.4rem 22px 3rem;border-top:1px solid var(--rule);font:.78rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
+@media(max-width:640px){
+  header,section,footer{padding-left:16px;padding-right:16px}
+  section{padding-top:4.5rem}
+  .head{grid-template-columns:1fr}
+  .head p{grid-column:1}
+  .swatches{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Forest light</p>
+  <h1>Reading the light under a forest</h1>
+  <div class="intro">
+    <p>Stand under a tree in summer and the light looks green, even though sunlight is nearly white. The leaves above you have taken the light apart, kept some wavelengths, and sent the rest somewhere else. What reaches the ground is a different light again.</p>
+    <p>Spectroscopy is the tool for reading that change. It measures how much light there is at each wavelength, not just how bright it is. The same measurement, made from a satellite, tells scientists how healthy a forest is, how much water it holds, and how much carbon it is storing.</p>
+    <p>The figures below are models built from the shapes of real leaf and sunlight spectra. They show the physics clearly. They are not measurements of any particular tree.</p>
+  </div>
+</header>
+
+<section id="s1">
+  <div class="head"><span class="num">01</span><h2>Sunlight is not one color</h2>
+  <p>A hot object glows at a range of wavelengths, and the sun's spectrum peaks in the green-blue part of the visible range.</p></div>
+  <p class="body">The sun's surface is about 5,800 kelvin. A hot body emits light at every wavelength, and the strength at each wavelength follows Planck's law. Most of the sun's energy falls between about 400 and 1000 nanometers, the range that matters for plants.</p>
+  <div class="frame"><canvas id="sunChart" width="1100" height="420"></canvas></div>
+  <div class="row">
+    <button class="btn" data-sun="5000">5,000 K</button>
+    <button class="btn on" data-sun="5778">5,778 K (sun)</button>
+    <button class="btn" data-sun="6500">6,500 K</button>
+  </div>
+  <p class="note">The shaded bands mark the visible range (400–700 nm) and the near infrared (700–1000 nm). Plants use the visible range for photosynthesis. Their structure responds strongly to the near infrared.</p>
+</section>
+
+<section id="s2">
+  <div class="head"><span class="num">02</span><h2>A leaf is a colored filter</h2>
+  <p>Chlorophyll absorbs red and blue light strongly, reflects green, and leaves the near infrared mostly alone.</p></div>
+  <p class="body">Each leaf reflects some wavelengths, transmits some, and absorbs the rest. The absorbed light drives photosynthesis. The sharp rise near 700 nanometers, called the red edge, is one of the clearest features in any plant spectrum. It appears because chlorophyll stops absorbing there while the leaf's internal structure keeps scattering light back.</p>
+  <div class="frame"><canvas id="leafChart" width="1100" height="420"></canvas></div>
+  <div class="row">
+    <button class="btn on" data-leaf="healthy">Healthy leaf</button>
+    <button class="btn" data-leaf="stressed">Stressed (less chlorophyll)</button>
+    <button class="btn" data-leaf="dry">Dry (less water)</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="statG">–</b><span>Green reflectance at 550 nm</span></div>
+    <div class="stat"><b id="statR">–</b><span>Red absorbed at 670 nm</span></div>
+    <div class="stat"><b id="statNIR">–</b><span>Near infrared at 800 nm</span></div>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="head"><span class="num">03</span><h2>Light sinks through the canopy</h2>
+  <p>Each layer of leaves removes more light from the blue and red than from the far red, so the light that reaches the ground is shifted.</p></div>
+  <p class="body">Canopy depth is measured by the leaf area index, or LAI: the total leaf area above a square meter of ground. A grassland has an LAI near 1. A dense tropical forest can reach 5 or 6. The model below attenuates each wavelength with an exponential law, the Beer-Lambert law, using the leaf's own transmittance. Deeper in the canopy the spectrum becomes richer in far red and poorer in blue and red.</p>
+  <div class="frame"><canvas id="canopyChart" width="1100" height="420"></canvas></div>
+  <div class="slider"><label for="lai">Leaf area index</label><input id="lai" type="range" min="0" max="6" step="0.1" value="4"><output id="laiOut"></output></div>
+  <div class="stats">
+    <div class="stat"><b id="statPAR">–</b><span>Visible light reaching ground</span></div>
+    <div class="stat"><b id="statFR">–</b><span>Far-red share of floor light</span></div>
+    <div class="stat"><b id="statTrans">–</b><span>Near-infrared transmitted</span></div>
+  </div>
+  <div class="swatches">
+    <div><div class="swatch" id="swSun"></div><div class="label">Light above the canopy</div></div>
+    <div><div class="swatch" id="swFloor"></div><div class="label">Light on the forest floor (shown for display)</div></div>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="head"><span class="num">04</span><h2>Why the forest looks green</h2>
+  <p>What the eye sees is the sunlight that the leaves send back, not the sunlight they take in.</p></div>
+  <p class="body">Light that reaches your eye from a leaf is sunlight multiplied by the leaf's reflectance at each wavelength. Chlorophyll takes out the blue and red, so the reflected light is dominated by green. The light that gets through to the floor loses most of its blue and red, so it looks green-gray and carries relatively more far red.</p>
+  <div class="frame"><canvas id="reflectChart" width="1100" height="380"></canvas></div>
+  <div class="swatches">
+    <div><div class="swatch" id="swRefl"></div><div class="label">Light reflected from the leaf</div></div>
+    <div><div class="swatch" id="swDeep"></div><div class="label">Light transmitted through a deep canopy</div></div>
+  </div>
+  <p class="note">The colors use the CIE 1931 color matching functions, relative to sunlight. They are not calibrated to a particular camera or screen.</p>
+</section>
+
+<section id="s5">
+  <div class="head"><span class="num">05</span><h2>Reading the forest from orbit</h2>
+  <p>A satellite sees only a few broad bands of light. A simple ratio between two of them separates vegetation from soil and water.</p></div>
+  <p class="body">The Normalized Difference Vegetation Index, or NDVI, compares near-infrared reflectance with red reflectance: (NIR − Red) / (NIR + Red). Healthy vegetation reflects strongly in the near infrared and absorbs red, so NDVI is high. Bare soil reflects both, so it sits low. Water absorbs almost everything, so it is negative. Pick a surface below to see its spectrum and the index it produces.</p>
+  <div class="frame"><canvas id="ndviChart" width="1100" height="420"></canvas></div>
+  <div class="row">
+    <button class="btn on" data-surface="forest">Forest</button>
+    <button class="btn" data-surface="crop">Stressed crop</button>
+    <button class="btn" data-surface="soil">Bare soil</button>
+    <button class="btn" data-surface="water">Water</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="statNDVI">–</b><span>NDVI</span></div>
+    <div class="stat"><b id="statRed">–</b><span>Mean red reflectance (630–690 nm)</span></div>
+    <div class="stat"><b id="statNIR2">–</b><span>Mean near-infrared reflectance (760–900 nm)</span></div>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="head"><span class="num">06</span><h2>What one spectrum cannot tell you</h2>
+  <p>The same index can change for reasons that have nothing to do with the forest itself.</p></div>
+  <p class="body">Shadows, soil moisture, the angle of the sun, the mix of tree species, and the size of a satellite pixel all change the measured spectrum. A dense forest and a wide field of healthy grass can produce similar NDVI. Careful work combines several bands, many dates, and ground measurements, and it checks the results against the physics above.</p>
+  <p class="body">The forest is not a single color. It is a set of filters, each removing a different part of the light, and the light that finally reaches a sensor or a seedling carries a record of every layer it passed through.</p>
+</section>
+
+<footer>
+  Explanatory models built from typical leaf, soil, water, and sunlight spectra. Not measurements of a specific site. Planck's law, the Beer-Lambert law, and NDVI are standard; the curve shapes are simplified.
+</footer>
+
+<script>
+// ---------- helpers ----------
+
+const NM_MIN = 380;
+const NM_MAX = 1000;
+
+function gauss(x, mu, s) {
+  const z = (x - mu) / s;
+  return Math.exp(-0.5 * z * z);
+}
+
+function sig(x) {
+  return 1 / (1 + Math.exp(-x));
+}
+
+// Planck's law, up to a constant. Wavelengths are in nanometers and the
+// temperature in kelvin. The exponent uses hc/k in nm·K.
+function planck(nm, T) {
+  const x = 1.4388e7 / (nm * T);
+  return 1 / (Math.pow(nm, 5) * (Math.exp(x) - 1));
+}
+
+function sunSpectrum(T) {
+  const out = [];
+  let peak = 0;
+  for (let nm = NM_MIN; nm <= NM_MAX; nm += 2) {
+    const v = planck(nm, T);
+    out.push([nm, v]);
+    if (v > peak) peak = v;
+  }
+  return out.map(([nm, v]) => [nm, v / peak]);
+}
+
+// Leaf reflectance. The visible part is low with a green bump. Chlorophyll
+// absorbs strongly near 440 and 670 nm. The red edge at about 705 nm lifts the
+// reflectance into a near-infrared plateau. Water absorbs near 970 nm.
+function leafReflectance(nm, kind) {
+  const chl = kind === "stressed" ? 0.35 : 1.0;
+  const water = kind === "dry" ? 0.55 : 0.0;
+  // Unmasked reflectance: a green bump plus a rise into the red that chlorophyll hides.
+  const visible = 0.05 + 0.08 * gauss(nm, 550, 38) + 0.12 * sig((nm - 600) / 15);
+  // The red absorption band is wide, so healthy leaves absorb most of the 630–690 nm range.
+  const absorb = 1 - 0.92 * chl * (0.9 * gauss(nm, 440, 22) + 1.0 * gauss(nm, 670, 28));
+  const edge = sig((nm - 705) / 12);
+  const nir = 0.45 * (1 - water * gauss(nm, 970, 22)) + 0.02;
+  const refl = (1 - edge) * visible * Math.max(absorb, 0.04) + edge * nir;
+  return Math.min(Math.max(refl, 0), 1);
+}
+
+// Leaf transmittance is low in the visible and high in the near infrared.
+function leafTransmittance(nm, kind) {
+  const chl = kind === "stressed" ? 0.35 : 1.0;
+  const edge = sig((nm - 705) / 12);
+  const visible = 0.02 + 0.06 * gauss(nm, 550, 40) * chl + 0.02 * (1 - chl);
+  return Math.min((1 - edge) * visible + edge * 0.42, 1);
+}
+
+function soilReflectance(nm) {
+  return 0.1 + 0.28 * sig((nm - 600) / 80);
+}
+
+function waterReflectance(nm) {
+  return Math.max(0.02, 0.07 - 0.00008 * (nm - 400));
+}
+
+// Wavelength-to-color map for display. It is a rough approximation of how the
+// eye responds, and it is not calibrated to any camera.
+function wavelengthRGB(nm) {
+  let r = 0, g = 0, b = 0;
+  if (nm >= 380 && nm < 440) { r = -(nm - 440) / 60; b = 1; }
+  else if (nm < 490) { g = (nm - 440) / 50; b = 1; }
+  else if (nm < 510) { g = 1; b = -(nm - 510) / 20; }
+  else if (nm < 580) { r = (nm - 510) / 70; g = 1; }
+  else if (nm < 645) { r = 1; g = -(nm - 645) / 65; }
+  else if (nm <= 780) { r = 1; }
+  return [r, g, b];
+}
+
+// Sums a spectrum (a function of nanometers) into a display color.
+// CIE 1931 color matching functions, from the multi-lobe Gaussian fit of
+// Wyman, Sloan, and Shirley (2013). Summing a spectrum against them gives the
+// tristimulus values the eye responds to.
+function cieXYZ(nm) {
+  const lobe = (mu, s1, s2) => {
+    const s = nm < mu ? s1 : s2;
+    return Math.exp(-0.5 * ((nm - mu) / s) ** 2);
+  };
+  const x = 1.056 * lobe(599.8, 37.9, 31.0) + 0.362 * lobe(442.0, 16.0, 26.7) - 0.065 * lobe(501.1, 20.4, 26.2);
+  const y = 0.821 * lobe(568.8, 46.9, 40.5) + 0.286 * lobe(530.9, 16.3, 31.1);
+  const z = 1.217 * lobe(437.0, 11.8, 36.0) + 0.681 * lobe(459.0, 26.0, 13.8);
+  return [x, y, z];
+}
+
+function linearRGBOf(spectrumFn) {
+  let X = 0, Y = 0, Z = 0;
+  for (let nm = 380; nm <= 700; nm += 2) {
+    const w = spectrumFn(nm);
+    const [x, y, z] = cieXYZ(nm);
+    X += w * x;
+    Y += w * y;
+    Z += w * z;
+  }
+  return [
+    3.2406 * X - 1.5372 * Y - 0.4986 * Z,
+    -0.9689 * X + 1.8758 * Y + 0.0415 * Z,
+    0.0557 * X - 0.2040 * Y + 1.0570 * Z,
+  ];
+}
+
+// The color of a light spectrum, relative to sunlight. Dividing by the sun's
+// own channels makes sunlight white, so a surface that returns all the light
+// looks white and a surface that returns half of it looks mid gray.
+function spectrumColor(spectrumFn) {
+  const sun = linearRGBOf(planckNorm);
+  const light = linearRGBOf(spectrumFn);
+  const encode = (v, s) => Math.round(255 * Math.pow(Math.min(Math.max(v / s, 0), 1), 1 / 2.2));
+  return `rgb(${encode(light[0], sun[0])}, ${encode(light[1], sun[1])}, ${encode(light[2], sun[2])})`;
+}
+
+function meanBetween(fn, a, b) {
+  let sum = 0, n = 0;
+  for (let nm = a; nm <= b; nm += 2) { sum += fn(nm); n++; }
+  return sum / n;
+}
+
+// ---------- chart drawing ----------
+
+function setupCanvas(canvas) {
+  const ctx = canvas.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const cssW = canvas.clientWidth || canvas.width;
+  const cssH = canvas.clientWidth ? canvas.clientWidth * (canvas.height / canvas.width) : canvas.height;
+  canvas.width = Math.round(cssW * dpr);
+  canvas.height = Math.round(cssH * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w: cssW, h: cssH };
+}
+
+// Plot area inside the canvas, with room for axis labels.
+function plotArea(w, h) {
+  return { x0: 56, x1: w - 18, y0: 18, y1: h - 40 };
+}
+
+function xFor(nm, area) {
+  return area.x0 + ((nm - NM_MIN) / (NM_MAX - NM_MIN)) * (area.x1 - area.x0);
+}
+
+function yFor(v, area, vMax) {
+  return area.y1 - (v / vMax) * (area.y1 - area.y0);
+}
+
+function drawBands(ctx, area) {
+  // Visible range is shaded to show where photosynthesis happens.
+  ctx.fillStyle = "rgba(120, 200, 150, 0.07)";
+  ctx.fillRect(xFor(400, area), area.y0, xFor(700, area) - xFor(400, area), area.y1 - area.y0);
+}
+
+function drawAxes(ctx, area, vMax, yLabel, yTicks) {
+  ctx.strokeStyle = "#1f2a22";
+  ctx.lineWidth = 1;
+  ctx.font = "11px -apple-system, Helvetica, Arial, sans-serif";
+  ctx.fillStyle = "#8a9488";
+  for (let nm = 400; nm <= 1000; nm += 100) {
+    const x = xFor(nm, area);
+    ctx.beginPath();
+    ctx.moveTo(x, area.y0);
+    ctx.lineTo(x, area.y1);
+    ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.fillText(nm + " nm", x, area.y1 + 18);
+  }
+  for (const t of yTicks) {
+    const y = yFor(t, area, vMax);
+    ctx.beginPath();
+    ctx.moveTo(area.x0, y);
+    ctx.lineTo(area.x1, y);
+    ctx.stroke();
+    ctx.textAlign = "right";
+    ctx.fillText(Math.round(t * 100) + "%", area.x0 - 8, y + 4);
+  }
+  ctx.save();
+  ctx.translate(14, (area.y0 + area.y1) / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = "center";
+  ctx.fillText(yLabel, 0, 0);
+  ctx.restore();
+}
+
+function drawCurve(ctx, area, points, vMax, color, width = 2.2) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.beginPath();
+  points.forEach(([nm, v], i) => {
+    const x = xFor(nm, area);
+    const y = yFor(Math.min(v, vMax), area, vMax);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+}
+
+function sampleFn(fn) {
+  const pts = [];
+  for (let nm = NM_MIN; nm <= NM_MAX; nm += 2) pts.push([nm, fn(nm)]);
+  return pts;
+}
+
+// ---------- section 1: sun ----------
+
+const sunCanvas = document.getElementById("sunChart");
+let sunT = 5778;
+
+function drawSun() {
+  const { ctx, w, h } = setupCanvas(sunCanvas);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#0c120e";
+  ctx.fillRect(0, 0, w, h);
+  const area = plotArea(w, h);
+  drawBands(ctx, area);
+  drawAxes(ctx, area, 1, "Relative intensity", [0, 0.25, 0.5, 0.75, 1]);
+
+  const pts = sunSpectrum(sunT);
+  // Fill the curve with the rainbow colors each wavelength corresponds to.
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [nm, v] = pts[i];
+    const [nm2, v2] = pts[i + 1];
+    const [r, g, b] = wavelengthRGB(nm);
+    ctx.fillStyle = `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, 0.22)`;
+    ctx.beginPath();
+    ctx.moveTo(xFor(nm, area), area.y1);
+    ctx.lineTo(xFor(nm, area), yFor(v, area, 1));
+    ctx.lineTo(xFor(nm2, area), yFor(v2, area, 1));
+    ctx.lineTo(xFor(nm2, area), area.y1);
+    ctx.closePath();
+    ctx.fill();
+  }
+  drawCurve(ctx, area, pts, 1, "#e9efe0", 2.4);
+
+  // Peak marker.
+  let peakNm = 0, peakV = 0;
+  for (const [nm, v] of pts) if (v > peakV) { peakV = v; peakNm = nm; }
+  ctx.fillStyle = "#e9efe0";
+  ctx.textAlign = "left";
+  ctx.fillText("Peak near " + peakNm + " nm", xFor(peakNm, area) + 8, yFor(peakV, area, 1) - 8);
+}
+
+document.querySelectorAll("[data-sun]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    sunT = Number(btn.dataset.sun);
+    document.querySelectorAll("[data-sun]").forEach((b) => b.classList.toggle("on", b === btn));
+    drawSun();
+  });
+});
+
+// ---------- section 2: leaf ----------
+
+const leafCanvas = document.getElementById("leafChart");
+let leafKind = "healthy";
+
+function drawLeaf() {
+  const { ctx, w, h } = setupCanvas(leafCanvas);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#0c120e";
+  ctx.fillRect(0, 0, w, h);
+  const area = plotArea(w, h);
+  drawBands(ctx, area);
+  drawAxes(ctx, area, 1, "Fraction", [0, 0.25, 0.5, 0.75, 1]);
+
+  const refl = sampleFn((nm) => leafReflectance(nm, leafKind));
+  const trans = sampleFn((nm) => leafTransmittance(nm, leafKind));
+  drawCurve(ctx, area, trans, 1, "#7fb3d6", 2);
+  drawCurve(ctx, area, refl, 1, "#8fd19e", 2.6);
+
+  ctx.font = "12px -apple-system, Helvetica, Arial, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#8fd19e";
+  ctx.fillText("Reflected", xFor(790, area), yFor(0.5, area, 1) - 10);
+  ctx.fillStyle = "#7fb3d6";
+  ctx.fillText("Transmitted", xFor(790, area), yFor(0.22, area, 1) - 10);
+
+  document.getElementById("statG").textContent = Math.round(leafReflectance(550, leafKind) * 100) + "%";
+  document.getElementById("statR").textContent = Math.round((1 - leafReflectance(670, leafKind) - leafTransmittance(670, leafKind)) * 100) + "%";
+  document.getElementById("statNIR").textContent = Math.round(leafReflectance(800, leafKind) * 100) + "%";
+}
+
+document.querySelectorAll("[data-leaf]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    leafKind = btn.dataset.leaf;
+    document.querySelectorAll("[data-leaf]").forEach((b) => b.classList.toggle("on", b === btn));
+    drawLeaf();
+  });
+});
+
+// ---------- section 3: canopy ----------
+
+const canopyCanvas = document.getElementById("canopyChart");
+const laiInput = document.getElementById("lai");
+
+// Beer-Lambert attenuation with extinction coefficient 0.5, the usual value for
+// randomly oriented leaves. Each wavelength is weighted by the leaf's interception,
+// one minus its transmittance, so blue and red are removed fastest and far red
+// passes most easily. The model does not track light scattered back up through
+// the canopy, so near-infrared values are a little high.
+function leafInterception(nm, kind) {
+  return Math.max(1 - leafTransmittance(nm, kind), 0.02);
+}
+
+function floorFraction(nm, lai) {
+  return Math.exp(-0.5 * lai * leafInterception(nm, "healthy"));
+}
+
+function drawCanopy() {
+  const lai = Number(laiInput.value);
+  document.getElementById("laiOut").textContent = lai.toFixed(1);
+  const { ctx, w, h } = setupCanvas(canopyCanvas);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#0c120e";
+  ctx.fillRect(0, 0, w, h);
+  const area = plotArea(w, h);
+  drawBands(ctx, area);
+  drawAxes(ctx, area, 1, "Relative intensity", [0, 0.25, 0.5, 0.75, 1]);
+
+  const sun = sunSpectrum(5778);
+  drawCurve(ctx, area, sun, 1, "rgba(233, 239, 224, 0.5)", 2);
+  drawCurve(ctx, area, sun.map(([nm, v]) => [nm, v * floorFraction(nm, lai)]), 1, "#e0a458", 2.6);
+
+  ctx.font = "12px -apple-system, Helvetica, Arial, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillStyle = "rgba(233, 239, 224, 0.7)";
+  ctx.fillText("Above canopy", xFor(560, area), yFor(0.92, area, 1));
+  ctx.fillStyle = "#e0a458";
+  ctx.fillText("Forest floor", xFor(560, area), yFor(0.02, area, 1) - 14);
+
+  // Fraction of visible light (400–700 nm) that reaches the floor, relative to the top.
+  const sunVis = meanBetween((nm) => planckNorm(nm), 400, 700);
+  const floorVis = meanBetween((nm) => planckNorm(nm) * floorFraction(nm, lai), 400, 700);
+  const parPct = (floorVis / sunVis) * 100;
+  document.getElementById("statPAR").textContent = parPct.toFixed(1) + "%";
+
+  // Far-red share is the 700–750 nm band divided by the visible band plus that
+  // band. The ratio of floor share to top share shows the shift. It is above 1
+  // when the far red becomes a bigger part of the light.
+  const farRedFloor = meanBetween((nm) => planckNorm(nm) * floorFraction(nm, lai), 700, 750);
+  const farRedTop = meanBetween((nm) => planckNorm(nm), 700, 750);
+  const visFloor = floorVis;
+  const shareTop = farRedTop / (sunVis + farRedTop);
+  const shareFloor = farRedFloor / (visFloor + farRedFloor);
+  document.getElementById("statFR").textContent = (shareFloor / shareTop).toFixed(2) + "×";
+
+  const nirTrans = meanBetween((nm) => planckNorm(nm) * floorFraction(nm, lai), 760, 900) /
+    meanBetween((nm) => planckNorm(nm), 760, 900);
+  document.getElementById("statTrans").textContent = Math.round(nirTrans * 100) + "%";
+
+  document.getElementById("swSun").style.background = spectrumColor((nm) => planckNorm(nm));
+  document.getElementById("swFloor").style.background = spectrumColor((nm) => planckNorm(nm) * floorFraction(nm, lai));
+}
+
+function planckNorm(nm) {
+  return planck(nm, 5778) / planck(500, 5778);
+}
+
+laiInput.addEventListener("input", drawCanopy);
+
+// ---------- section 4: reflected light ----------
+
+const reflectCanvas = document.getElementById("reflectChart");
+
+function drawReflect() {
+  const { ctx, w, h } = setupCanvas(reflectCanvas);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#0c120e";
+  ctx.fillRect(0, 0, w, h);
+  const area = plotArea(w, h);
+  drawBands(ctx, area);
+  drawAxes(ctx, area, 1, "Relative intensity", [0, 0.25, 0.5, 0.75, 1]);
+
+  const reflected = sampleFn((nm) => planckNorm(nm) * leafReflectance(nm, "healthy"));
+  const peak = Math.max(...reflected.map(([, v]) => v));
+  const reflectedNorm = reflected.map(([nm, v]) => [nm, v / peak]);
+  const deep = sampleFn((nm) => planckNorm(nm) * floorFraction(nm, 6));
+  const deepPeak = Math.max(...deep.map(([, v]) => v));
+  const deepNorm = deep.map(([nm, v]) => [nm, v / deepPeak]);
+
+  drawCurve(ctx, area, reflectedNorm, 1, "#8fd19e", 2.6);
+  drawCurve(ctx, area, deepNorm, 1, "#7fb3d6", 2.2);
+
+  ctx.font = "12px -apple-system, Helvetica, Arial, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#8fd19e";
+  ctx.fillText("Reflected from a leaf", xFor(420, area), yFor(0.3, area, 1));
+  ctx.fillStyle = "#7fb3d6";
+  ctx.fillText("Through a deep canopy (normalized)", xFor(420, area), yFor(0.66, area, 1));
+
+  document.getElementById("swRefl").style.background = spectrumColor((nm) => planckNorm(nm) * leafReflectance(nm, "healthy"));
+  document.getElementById("swDeep").style.background = spectrumColor((nm) => planckNorm(nm) * floorFraction(nm, 6));
+}
+
+// ---------- section 5: NDVI ----------
+
+const ndviCanvas = document.getElementById("ndviChart");
+let surface = "forest";
+
+const SURFACES = {
+  forest: { name: "Forest", fn: (nm) => leafReflectance(nm, "healthy") },
+  crop: { name: "Stressed crop", fn: (nm) => leafReflectance(nm, "stressed") },
+  soil: { name: "Bare soil", fn: soilReflectance },
+  water: { name: "Water", fn: waterReflectance },
+};
+
+function ndviOf(fn) {
+  const red = meanBetween(fn, 630, 690);
+  const nir = meanBetween(fn, 760, 900);
+  return { ndvi: (nir - red) / (nir + red), red, nir };
+}
+
+function drawNdvi() {
+  const { ctx, w, h } = setupCanvas(ndviCanvas);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#0c120e";
+  ctx.fillRect(0, 0, w, h);
+  const area = plotArea(w, h);
+  drawBands(ctx, area);
+  drawAxes(ctx, area, 1, "Reflectance", [0, 0.25, 0.5, 0.75, 1]);
+
+  // Draw all four surfaces faintly, then the selected one bright.
+  for (const key of Object.keys(SURFACES)) {
+    const s = SURFACES[key];
+    drawCurve(ctx, area, sampleFn(s.fn), 1, key === surface ? "#8fd19e" : "rgba(143,209,158,0.18)", key === surface ? 2.8 : 1.4);
+  }
+
+  const picked = SURFACES[surface];
+  const result = ndviOf(picked.fn);
+  document.getElementById("statNDVI").textContent = result.ndvi.toFixed(2);
+  document.getElementById("statRed").textContent = Math.round(result.red * 100) + "%";
+  document.getElementById("statNIR2").textContent = Math.round(result.nir * 100) + "%";
+
+  // Mark the two bands used for the index.
+  ctx.fillStyle = "rgba(233, 90, 70, 0.10)";
+  ctx.fillRect(xFor(630, area), area.y0, xFor(690, area) - xFor(630, area), area.y1 - area.y0);
+  ctx.fillStyle = "rgba(233, 239, 224, 0.08)";
+  ctx.fillRect(xFor(760, area), area.y0, xFor(900, area) - xFor(760, area), area.y1 - area.y0);
+  ctx.font = "12px -apple-system, Helvetica, Arial, sans-serif";
+  ctx.fillStyle = "#e0a458";
+  ctx.textAlign = "center";
+  ctx.fillText("Red band", (xFor(630, area) + xFor(690, area)) / 2, area.y0 + 14);
+  ctx.fillStyle = "#e9efe0";
+  ctx.fillText("Near-infrared band", (xFor(760, area) + xFor(900, area)) / 2, area.y0 + 14);
+  ctx.fillStyle = "#8fd19e";
+  ctx.textAlign = "left";
+  ctx.fillText(picked.name, xFor(420, area), yFor(0.92, area, 1));
+}
+
+document.querySelectorAll("[data-surface]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    surface = btn.dataset.surface;
+    document.querySelectorAll("[data-surface]").forEach((b) => b.classList.toggle("on", b === btn));
+    drawNdvi();
+  });
+});
+
+// ---------- draw everything ----------
+
+function drawAll() {
+  drawSun();
+  drawLeaf();
+  drawCanopy();
+  drawReflect();
+  drawNdvi();
+}
+
+window.addEventListener("resize", drawAll);
+document.fonts && document.fonts.ready.then(drawAll);
+drawAll();
+</script>
+</body>
+</html>
