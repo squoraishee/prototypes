@@ -1,30 +1,36 @@
-# Pitch: Who Gets the Healthy Street Trees?
+# One Bug Away: a pitch for The Pudding
 
-A pitch sketch for a visual essay, written to fit the decision path that The Pudding describes in its process articles. It takes one data question, New York City's street tree census, and walks it through each gate on the flowchart.
+A pitch for a visual essay about New York City's street trees and the pests that could strip them. The page has three parts: a working prototype built on the real data, The Pudding's decision flowchart used as a rubric, and finished answers for The Pudding's pitch form.
 
 **Live page:** https://squoraishee.github.io/street-trees-pitch/
 
-![Walking the flowchart](demo.gif)
+![The map, the pest scenarios, the rubric, and the form answers](demo.gif)
 
 [Full-quality video (MP4)](demo.mp4)
 
+## The idea
+
+New York counted every street tree in 2015. Most neighborhoods depend heavily on one or two kinds of tree, and the insects that kill trees pick specific kinds.
+
+- 183 of 188 neighborhoods break the forestry guideline that no single species should be more than 10 percent of the trees.
+- 16.3 percent of living street trees are preferred hosts of the Asian longhorned beetle. In Glen Oaks-Floral Park-New Hyde Park, the share is 33 percent.
+- Ash is 3.1 percent of street trees citywide, but 17 percent in Ozone Park. The emerald ash borer reached the city in 2017.
+
 ## What's on the page
 
-1. **The one-minute version.** A short pitch, written for an editor who has a minute to decide.
-2. **The flowchart.** The Pudding's gates, with each step marked as passed, open, or waiting. Click a step to see the reasoning.
-3. **The plan.** Six steps from getting the tree records to checking the story with a forester. Each step lists what could go wrong.
-4. **Open questions.** License terms, the age of the data, who should tell the story, and how to frame it.
-5. **The form.** Which parts of the page go into The Pudding's pitch form. The page does not submit anything.
+1. **The prototype.** A dot map of all 652,168 living street trees, with four views: all trees by kind, beetle hosts, ash, and what would remain if both pests took every host tree. Each view ranks the neighborhoods with the most at stake. A second chart places every neighborhood against the 10 percent guideline.
+2. **The rubric.** Each question from The Pudding's "Continue, Pivot, or Put it Down" flowchart, with the answer and the evidence behind it.
+3. **The form answers.** Drafts for "The Pitch," "The Plan," and "Anything else," each with a copy button. Name and email are left blank, and nothing is submitted.
 
-## What it does not do
+## Data and method
 
-No analysis has been run. The page contains no tree counts, rates, or correlations. It is a plan for an analysis.
+- 2015 Street Tree Census, NYC Open Data, dataset `uvpi-gqnh`: 683,788 records. The analysis uses the 652,168 living trees with a recorded species.
+- Beetle hosts are maple, elm, horse chestnut, willow, and birch, from the USDA APHIS host guide. The ash borer scenario uses ash (*Fraxinus*).
+- Shares are computed per neighborhood tabulation area. Rankings include neighborhoods with at least 1,000 trees.
+- The census health ratings are left out, because volunteers judged them in a single visit.
+- `data/trees.bin` stores each tree as a quantized position and a genus code, 5 bytes per tree.
 
-## Sources
-
-- The Pudding, "Continue, Pivot, or Put it Down" (Amber Thomas, 2020), for the decision path. Read at pudding.cool/process/pivot-continue-down.
-- The Pudding, the pitch article on gendered descriptions (Erin Davis), for what a pitch needs to show. Read at pudding.cool/process/pitching-gendered-descriptions.
-- The 2015 NYC Street Tree Census tree records. Health is rated Good, Fair, or Poor by volunteers. The license on the original NYC Open Data listing still needs checking.
+The scenarios show exposure, not forecasts. They do not model how either pest spreads.
 
 ## Source
 

@@ -50,13 +50,13 @@ An animated guide that follows sunlight into a forest, one photon at a time. It 
 
 [Full-quality video (MP4)](forest-light/demo.mp4)
 
-### [Pitch: Who Gets the Healthy Street Trees?](street-trees-pitch/)
+### [One Bug Away: a pitch for The Pudding](street-trees-pitch/)
 
-A pitch sketch for a Pudding-style visual essay. It tests one question, whether New York's neighborhoods with the fewest street trees also have the trees in worst condition, against The Pudding's decision path. No analysis has been run.
+A visual essay pitch built on New York City's 2015 street tree census. A dot map of all 652,168 living street trees shows how much of each neighborhood's shade depends on trees that a single pest prefers. The page then checks the idea against The Pudding's decision flowchart and drafts answers for their pitch form.
 
 **Live page:** https://squoraishee.github.io/street-trees-pitch/
 
-![Walking the flowchart](street-trees-pitch/demo.gif)
+![The map, the pest scenarios, the rubric, and the form answers](street-trees-pitch/demo.gif)
 
 [Full-quality video (MP4)](street-trees-pitch/demo.mp4)
 
