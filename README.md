@@ -60,6 +60,16 @@ A scrolling visual essay about New York City's street trees and the insects that
 
 [Full-quality video (MP4)](street-trees-pitch/demo.mp4)
 
+### [Who Eats Whom in the Dark](dark-food-web/)
+
+A scrolling visual essay about the deep-sea food web. Scroll from the surface to the bottom of the Challenger Deep past animated lanternfish, a barreleye, a vampire squid, an anglerfish, a dumbo octopus, and more, each at its real depth. Then run a simulation of the nightly migration, where predators, prey, and sinking droppings interact, and watch a whale carcass feed the seafloor for decades.
+
+**Live page:** https://squoraishee.github.io/dark-food-web/
+
+![Who Eats Whom in the Dark](dark-food-web/demo.gif)
+
+[Full-quality video (MP4)](dark-food-web/demo.mp4)
+
 ## Running them
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.

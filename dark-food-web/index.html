@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Who Eats Whom in the Dark</title>
+<style>
+:root{
+  --bg:#02070d;
+  --text:#e6eef2;
+  --muted:#8ea3ad;
+  --rule:#16242d;
+  --glow:#7fd4ff;
+  --card:rgba(6,16,24,.88);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;line-height:1.6}
+.sans{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif}
+header{position:relative;height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 6vw 12vh;background:linear-gradient(#3d8fc4,#1b5c8a 55%,#0c3350);overflow:hidden}
+header .rays{position:absolute;inset:0;background:repeating-linear-gradient(100deg,rgba(255,255,255,.07) 0 40px,transparent 40px 140px);mask-image:linear-gradient(#000,transparent 80%);animation:sway 9s ease-in-out infinite alternate}
+@keyframes sway{from{transform:translateX(-30px) skewX(-4deg)}to{transform:translateX(30px) skewX(4deg)}}
+.kicker{font:700 .72rem -apple-system,"Helvetica Neue",Arial,sans-serif;text-transform:uppercase;letter-spacing:.16em;color:#cfeaff;position:relative}
+h1{font-size:clamp(3rem,9vw,7.5rem);font-weight:400;line-height:.9;letter-spacing:-.04em;margin:.2em 0 .35em;max-width:11ch;position:relative}
+.dek{max-width:52ch;font-size:clamp(1.1rem,2vw,1.35rem);color:#e3f2fb;margin:0;position:relative}
+.hint{font:600 .72rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#cfeaff;margin-top:2.4rem;position:relative}
+
+/* The dive: a sticky canvas, driven by how far the reader has scrolled. */
+#dive{position:relative;height:1500vh}
+#diveStage{position:sticky;top:0;height:100vh;overflow:hidden}
+#diveCanvas{display:block;width:100%;height:100%}
+.gauge{position:absolute;left:28px;top:50%;transform:translateY(-50%);font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;pointer-events:none}
+.gauge .depth{font:300 clamp(2.4rem,5vw,4rem) -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.02em;line-height:1}
+.gauge .unit{font-size:.4em;color:var(--muted);margin-left:.2em}
+.gauge .zone{font-weight:700;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--glow);margin:.6rem 0 .9rem}
+.gauge dl{margin:0;display:grid;grid-template-columns:auto auto;gap:.25rem .9rem;font-size:.78rem}
+.gauge dt{color:var(--muted)}
+.gauge dd{margin:0;color:#d5e3ea;font-variant-numeric:tabular-nums}
+.caption{position:absolute;right:4vw;top:50%;transform:translateY(-50%);width:min(360px,40vw);background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;opacity:0;transition:opacity .25s;pointer-events:none}
+.caption h3{margin:0 0 .4rem;font-weight:400;font-size:1.4rem;line-height:1.2}
+.caption .range{font:700 .68rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--glow);margin-bottom:.5rem}
+.caption p{margin:0;color:#cfdce3;font-size:.98rem}
+
+.section{max-width:1150px;margin:0 auto;padding:7rem 22px 0}
+h2{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:400;letter-spacing:-.02em;line-height:1.05;margin:0 0 1rem}
+.section p{max-width:64ch;color:#cfdce3}
+.frame{position:relative;background:#010509;border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:1.4rem}
+.frame canvas{display:block;width:100%;height:auto}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:1rem;font:600 .75rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
+.btn{font:600 .72rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid #23394a;border-radius:999px;padding:.5rem .95rem;cursor:pointer}
+.btn:hover{color:var(--text);border-color:#3c5a6e}
+.btn.on{color:#02070d;background:var(--glow);border-color:var(--glow)}
+.btn:focus-visible,input:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+input[type=range]{accent-color:var(--glow);flex:1;min-width:180px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:1.2rem}
+.stat{border-top:2px solid var(--rule);padding-top:.5rem}
+.stat b{display:block;font:400 1.8rem Georgia,serif;font-variant-numeric:tabular-nums}
+.stat span{font:.7rem -apple-system,"Helvetica Neue",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.note{font:.8rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted);max-width:70ch;margin-top:.8rem}
+footer{max-width:1150px;margin:7rem auto 0;padding:1.4rem 22px 3rem;border-top:1px solid var(--rule);font:.8rem -apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--muted)}
+footer a{color:#cfdce3}
+footer li{margin-bottom:.35rem}
+@media(max-width:760px){
+  .caption{left:16px;right:16px;width:auto;top:auto;bottom:18px;transform:none}
+  .gauge{top:22px;transform:none;left:18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="rays"></div>
+  <p class="kicker">The deep ocean</p>
+  <h1>Who eats whom in the dark</h1>
+  <p class="dek">Below the sunlit surface, the ocean's strangest animals depend on one another, and on food falling from far above. Dive down to see who lives where, then watch how they feed each other.</p>
+  <p class="hint">Scroll to dive ↓</p>
+</header>
+
+<section id="dive">
+  <div id="diveStage">
+    <canvas id="diveCanvas"></canvas>
+    <div class="gauge">
+      <div class="depth"><span id="gDepth">0</span><span class="unit">m</span></div>
+      <div class="zone" id="gZone">Sunlight zone</div>
+      <dl>
+        <dt>Pressure</dt><dd id="gPress"></dd>
+        <dt>Sunlight</dt><dd id="gLight"></dd>
+        <dt>Water</dt><dd id="gTemp"></dd>
+      </dl>
+    </div>
+    <div class="caption" id="caption">
+      <div class="range" id="cRange"></div>
+      <h3 id="cTitle"></h3>
+      <p id="cBody"></p>
+    </div>
+  </div>
+</section>
+
+<div class="section" id="commute">
+  <h2>The nightly commute</h2>
+  <p>Every night, a vast number of small animals rise hundreds of meters from the twilight zone to feed near the surface, then sink back down before dawn. It is often called the largest daily migration on Earth. Lanternfish and the tiny crustaceans they eat make the trip because predators that hunt by sight can't catch them in the dark.</p>
+  <p>In this simulation, each dot follows those rules. Lanternfish (blue lights) chase zooplankton (pale specks). Tuna near the surface catch lanternfish, but only when there is enough light to see. When lanternfish sink at dawn, they leave droppings in deep water, which carries carbon down from the surface. A sperm whale dives now and then to hunt squid.</p>
+  <div class="frame"><canvas id="sim" data-h="560"></canvas></div>
+  <div class="controls">
+    <button class="btn on" id="playBtn">Pause</button>
+    <button class="btn on" id="migBtn">Migration on</button>
+    <span>Time of day</span><input id="clock" type="range" min="0" max="24" step="0.05">
+    <span id="clockOut" style="min-width:4em;color:#e6eef2"></span>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="sEaten">0</b><span>Lanternfish caught by tuna</span></div>
+    <div class="stat"><b id="sMeals">0</b><span>Zooplankton eaten by lanternfish</span></div>
+    <div class="stat"><b id="sCarbon">0</b><span>Droppings delivered below 400 m</span></div>
+    <div class="stat"><b id="sSquid">0</b><span>Squid caught by the whale</span></div>
+  </div>
+  <p class="note">Turn the migration off and the lanternfish stay near the surface all day. Watch how many the tuna catch. The rules are simplified to show the trade-off. They are not a model of real numbers.</p>
+</div>
+
+<div class="section" id="whalefall">
+  <h2>When a whale falls</h2>
+  <p>Most food in the deep arrives as marine snow: a slow drizzle of dead plankton, waste, and mucus. Sometimes a whole meal arrives at once. When a whale dies and sinks to the seafloor, its body feeds a community that changes over the years in three overlapping stages.</p>
+  <div class="frame"><canvas id="fall" data-h="500"></canvas></div>
+  <div class="controls">
+    <button class="btn on" id="fallPlay">Pause</button>
+    <span>Years after the whale lands</span><input id="fallTime" type="range" min="0" max="1" step="0.001" value="0">
+    <span id="fallOut" style="min-width:7em;color:#e6eef2"></span>
+  </div>
+  <p class="note">Stage lengths vary with the size of the whale and the depth. Researchers have followed carcasses on the seafloor off California since the early 1990s.</p>
+</div>
+
+<div class="section">
+  <h2>A food web that runs on falling scraps</h2>
+  <p>Almost everything in the deep depends on food made in the sunlit surface. Some of it is carried down by migrating animals. Some drifts down as marine snow. Some arrives as a whale. The creatures that live there have adapted to make the most of each delivery, with huge mouths, glowing lures, and bodies built to wait a long time between meals.</p>
+</div>
+
+<footer>
+  <p>Creature drawings are illustrations, not to scale with one another. Depths are typical ranges. The commute and whale fall animations simplify real processes to show how they work.</p>
+  <ul>
+    <li>Irigoien and others (2014), <a href="https://bio.uib.no/te/papers/Irigoien_2014_Large_mesopelagic_fishes.pdf">"Large mesopelagic fishes biomass and trophic efficiency in the open ocean,"</a> <i>Nature Communications</i></li>
+    <li>MBARI, <a href="https://www.mbari.org/news/mbari-researchers-discover-what-vampire-squids-eat-its-not-what-you-think/">what vampire squids eat</a> (Hoving and Robison, 2012)</li>
+    <li>Smithsonian, <a href="https://www.smithsonianmag.com/smart-news/behold-the-deepest-fish-ever-filmed-180981937/">the deepest fish ever filmed</a> (8,336 m, 2022)</li>
+    <li>Smith and Baco, <a href="https://marineinfo.org/doc/publication/63621">ecology of whale falls at the deep-sea floor</a>, and <a href="https://www.scientificamerican.com/article/the-prolific-afterlife-of-whales/">Scientific American on whale fall succession</a></li>
+  </ul>
+</footer>
+
+<script>
+// ============================================================
+// Shared helpers
+// ============================================================
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = (t) => t * t * (3 - 2 * t);
+const rand = (a, b) => a + Math.random() * (b - a);
+const fmt = (n) => Math.round(n).toLocaleString("en-US");
+
+// A soft glowing dot. Drawn with additive blending, so overlapping lights brighten.
+function glow(ctx, x, y, r, color, alpha) {
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, color.replace("ALPHA", alpha));
+  g.addColorStop(1, color.replace("ALPHA", 0));
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+}
+
+// ============================================================
+// Creature drawings
+// Each takes (ctx, t) and draws around (0, 0), facing right, with unit size
+// set by the caller's transform. They are illustrations of real features,
+// not to scale with one another.
+// ============================================================
+
+function lanternfish(ctx, t, phase) {
+  const wag = Math.sin(t * 9 + phase) * 0.25;
+  ctx.fillStyle = "#2c3a4b";
+  ctx.beginPath(); ctx.ellipse(0, 0, 13, 4.2, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-11, 0); ctx.lineTo(-19, -5 + wag * 8); ctx.lineTo(-19, 5 + wag * 8); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#c9d7e3";
+  ctx.beginPath(); ctx.arc(8, -0.8, 2.3, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#0b1118";
+  ctx.beginPath(); ctx.arc(8.4, -0.8, 1.2, 0, TAU); ctx.fill();
+  // Belly photophores: rows of small blue lights.
+  ctx.globalCompositeOperation = "lighter";
+  const blink = 0.55 + 0.45 * Math.sin(t * 3 + phase * 2);
+  for (let i = 0; i < 6; i++) glow(ctx, 6 - i * 3.2, 3.2, 2.6, "rgba(120,210,255,ALPHA)", blink);
+  ctx.globalCompositeOperation = "source-over";
+}
+
+function siphonophore(ctx, t) {
+  // A colony of linked bells and dangling tentacles, swaying as one body.
+  ctx.globalCompositeOperation = "lighter";
+  for (let i = 0; i < 34; i++) {
+    const x = -i * 9;
+    const y = Math.sin(t * 1.2 + i * 0.35) * 6;
+    ctx.strokeStyle = `rgba(170,225,255,${0.45 - i * 0.008})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.ellipse(x, y, 4.5, 3.5, 0, 0, TAU); ctx.stroke();
+    if (i % 2 === 0) {
+      ctx.strokeStyle = "rgba(150,210,255,0.18)";
+      ctx.beginPath(); ctx.moveTo(x, y + 3);
+      for (let k = 1; k <= 8; k++) ctx.lineTo(x + Math.sin(t * 2 + i + k) * 2, y + 3 + k * 5);
+      ctx.stroke();
+    }
+  }
+  glow(ctx, 2, Math.sin(t * 1.2) * 6, 10, "rgba(170,230,255,ALPHA)", 0.5);
+  ctx.globalCompositeOperation = "source-over";
+}
+
+function barreleye(ctx, t) {
+  const roll = Math.sin(t * 0.6) * 0.5 + 0.5; // eyes turn between looking up and forward
+  ctx.fillStyle = "#3b3026";
+  ctx.beginPath(); ctx.ellipse(-4, 4, 26, 8, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-26, 4); ctx.lineTo(-38, -4); ctx.lineTo(-38, 12); ctx.closePath(); ctx.fill();
+  // Large clear fins.
+  ctx.fillStyle = "rgba(200,220,230,0.18)";
+  ctx.beginPath(); ctx.ellipse(-2, 14, 14, 5, 0.4, 0, TAU); ctx.fill();
+  // The transparent, fluid-filled head shield.
+  ctx.strokeStyle = "rgba(200,235,255,0.55)";
+  ctx.fillStyle = "rgba(160,210,240,0.10)";
+  ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.ellipse(10, -4, 16, 12, 0, Math.PI, TAU); ctx.lineTo(26, 3); ctx.lineTo(-6, 3); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Tubular green eyes inside the head.
+  for (const dx of [5, 13]) {
+    ctx.save();
+    ctx.translate(dx, -2);
+    ctx.rotate(-Math.PI / 2 + roll * (Math.PI / 2));
+    ctx.globalCompositeOperation = "lighter";
+    glow(ctx, 8, 0, 7, "rgba(90,255,140,ALPHA)", 0.55);
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "#3fe08a";
+    ctx.beginPath(); ctx.roundRect(0, -2.4, 9, 4.8, 2.4); ctx.fill();
+    ctx.restore();
+  }
+  ctx.fillStyle = "#1a140f";
+  ctx.beginPath(); ctx.arc(24, 5, 1.6, 0, TAU); ctx.fill();
+}
+
+function vampireSquid(ctx, t) {
+  const pulse = 0.5 + 0.5 * Math.sin(t * 1.8);
+  // Two long feeding filaments that sweep up marine snow.
+  ctx.strokeStyle = "rgba(230,220,210,0.35)";
+  ctx.lineWidth = 0.8;
+  for (const side of [-1, 1]) {
+    ctx.beginPath(); ctx.moveTo(0, 14);
+    for (let k = 1; k <= 30; k++) ctx.lineTo(side * k * 3.2 + Math.sin(t + k * 0.3) * 4, 14 + k * 3.4);
+    ctx.stroke();
+  }
+  // The webbed cape between the eight arms.
+  const open = 18 + pulse * 10;
+  ctx.fillStyle = "#4a0f18";
+  ctx.beginPath();
+  ctx.moveTo(-10, 4);
+  for (let i = 0; i <= 8; i++) {
+    const a = Math.PI * (0.15 + 0.7 * (i / 8));
+    const r = open + (i % 2 ? -4 : 2);
+    ctx.lineTo(Math.cos(a) * r * 1.25, 6 + Math.sin(a) * r);
+  }
+  ctx.lineTo(10, 4);
+  ctx.closePath(); ctx.fill();
+  // Mantle and ear-like fins.
+  ctx.fillStyle = "#5c1420";
+  ctx.beginPath(); ctx.ellipse(0, -10, 10, 16, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(-12, -18, 7, 4, -0.6 + pulse * 0.3, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(12, -18, 7, 4, 0.6 - pulse * 0.3, 0, TAU); ctx.fill();
+  // Large eyes.
+  ctx.fillStyle = "#7fb6ff";
+  ctx.beginPath(); ctx.arc(-5, -2, 3.2, 0, TAU); ctx.arc(5, -2, 3.2, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#0a0a12";
+  ctx.beginPath(); ctx.arc(-5, -2, 1.4, 0, TAU); ctx.arc(5, -2, 1.4, 0, TAU); ctx.fill();
+  // Glowing arm tips.
+  ctx.globalCompositeOperation = "lighter";
+  for (let i = 0; i <= 8; i += 2) {
+    const a = Math.PI * (0.15 + 0.7 * (i / 8));
+    const r = open + 2;
+    glow(ctx, Math.cos(a) * r * 1.25, 6 + Math.sin(a) * r, 5, "rgba(120,200,255,ALPHA)", 0.5 + pulse * 0.4);
+  }
+  ctx.globalCompositeOperation = "source-over";
+}
+
+function spermWhale(ctx, t) {
+  const fl = Math.sin(t * 1.4) * 6;
+  ctx.fillStyle = "#3a4048";
+  ctx.beginPath();
+  ctx.moveTo(60, -16); ctx.quadraticCurveTo(78, -14, 78, 2); ctx.quadraticCurveTo(76, 14, 56, 14);
+  ctx.quadraticCurveTo(10, 18, -40, 6); ctx.quadraticCurveTo(-70, 2, -86, fl);
+  ctx.lineTo(-92, fl - 10); ctx.lineTo(-94, fl + 10); ctx.lineTo(-86, fl + 2);
+  ctx.quadraticCurveTo(-60, -10, -20, -16); ctx.closePath(); ctx.fill();
+  // Narrow lower jaw.
+  ctx.strokeStyle = "#5a626c"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(70, 10); ctx.lineTo(30, 16); ctx.stroke();
+  ctx.fillStyle = "#14171b";
+  ctx.beginPath(); ctx.arc(32, 2, 1.8, 0, TAU); ctx.fill();
+  // Echolocation clicks spreading ahead.
+  for (let k = 0; k < 3; k++) {
+    const r = ((t * 60 + k * 30) % 90) + 10;
+    ctx.strokeStyle = `rgba(160,220,255,${0.35 * (1 - r / 100)})`;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(80, 0, r, -0.6, 0.6); ctx.stroke();
+  }
+}
+
+function giantSquid(ctx, t) {
+  ctx.fillStyle = "#8a3b2c";
+  ctx.beginPath(); ctx.ellipse(-30, 0, 34, 9, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-60, 0); ctx.lineTo(-74, -10); ctx.lineTo(-74, 10); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#e9d7a8";
+  ctx.beginPath(); ctx.arc(4, -3, 4, 0, TAU); ctx.fill();
+  ctx.strokeStyle = "#8a3b2c"; ctx.lineCap = "round";
+  for (let i = 0; i < 10; i++) {
+    const long = i >= 8;
+    ctx.lineWidth = long ? 1.6 : 2.6;
+    ctx.beginPath(); ctx.moveTo(4, (i - 4.5) * 1.2);
+    const len = long ? 26 : 12;
+    for (let k = 1; k <= len; k++) ctx.lineTo(4 + k * 4, (i - 4.5) * (1.2 + k * 0.25) + Math.sin(t * 2 + i + k * 0.3) * k * 0.35);
+    ctx.stroke();
+  }
+  ctx.lineCap = "butt";
+}
+
+function anglerfish(ctx, t) {
+  const bob = Math.sin(t * 1.6) * 3;
+  const pulse = 0.6 + 0.4 * Math.sin(t * 2.4);
+  // Lure on a fishing-rod spine.
+  ctx.strokeStyle = "#3a3236"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(4, -26); ctx.quadraticCurveTo(26, -52, 40, -30 + bob); ctx.stroke();
+  ctx.globalCompositeOperation = "lighter";
+  glow(ctx, 40, -28 + bob, 26, "rgba(140,230,255,ALPHA)", 0.55 * pulse);
+  glow(ctx, 40, -28 + bob, 6, "rgba(230,250,255,ALPHA)", 0.95);
+  ctx.globalCompositeOperation = "source-over";
+  // Round body.
+  ctx.fillStyle = "#1b1418";
+  ctx.beginPath(); ctx.arc(0, 0, 28, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-26, 0); ctx.lineTo(-44, -12); ctx.lineTo(-44, 12); ctx.closePath(); ctx.fill();
+  // Wide jaw with needle teeth, lit faintly by the lure.
+  ctx.fillStyle = "#050304";
+  ctx.beginPath(); ctx.moveTo(26, -4); ctx.quadraticCurveTo(10, 22, -10, 12); ctx.quadraticCurveTo(12, 6, 26, -4); ctx.fill();
+  ctx.fillStyle = `rgba(230,240,245,${0.6 + 0.3 * pulse})`;
+  for (let i = 0; i < 7; i++) {
+    const x = 22 - i * 4.5, y = -1 + i * 1.6;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 1.4, y + 6); ctx.lineTo(x + 1.4, y); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x - 2, y + 10 - i * 0.3); ctx.lineTo(x - 3, y + 4); ctx.lineTo(x - 0.8, y + 10 - i * 0.3); ctx.fill();
+  }
+  ctx.fillStyle = "#cfd9de";
+  ctx.beginPath(); ctx.arc(10, -12, 2.2, 0, TAU); ctx.fill();
+}
+
+function gulperEel(ctx, t) {
+  const open = 0.5 + 0.5 * Math.sin(t * 0.9);
+  // Long whip tail ending in a glowing tip.
+  ctx.strokeStyle = "#1f1a1d"; ctx.lineWidth = 3; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-10, 0);
+  let tx = -10, ty = 0;
+  for (let k = 1; k <= 40; k++) {
+    tx = -10 - k * 4.2; ty = Math.sin(t * 2 - k * 0.25) * k * 0.35;
+    ctx.lineWidth = Math.max(0.8, 3 - k * 0.06);
+    ctx.lineTo(tx, ty);
+  }
+  ctx.stroke(); ctx.lineCap = "butt";
+  ctx.globalCompositeOperation = "lighter";
+  glow(ctx, tx, ty, 10, "rgba(255,120,170,ALPHA)", 0.7);
+  ctx.globalCompositeOperation = "source-over";
+  // Enormous loose jaw that opens like a net.
+  ctx.fillStyle = "#251e22";
+  ctx.beginPath();
+  ctx.moveTo(-12, -2); ctx.lineTo(30, -6 - open * 18); ctx.quadraticCurveTo(40, 0, 30, 6 + open * 22); ctx.lineTo(-12, 3);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgba(200,180,190,0.35)"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(30, -6 - open * 18); ctx.quadraticCurveTo(40, 0, 30, 6 + open * 22); ctx.stroke();
+  ctx.fillStyle = "#cbbfc4";
+  ctx.beginPath(); ctx.arc(-4, -1, 1.4, 0, TAU); ctx.fill();
+}
+
+function dumbo(ctx, t) {
+  const flap = Math.sin(t * 2.2);
+  ctx.fillStyle = "rgba(240,170,190,0.85)";
+  // Ear-like fins.
+  ctx.beginPath(); ctx.ellipse(-16, -14, 9, 5, -0.5 + flap * 0.5, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(16, -14, 9, 5, 0.5 - flap * 0.5, 0, TAU); ctx.fill();
+  // Bell-shaped body.
+  ctx.beginPath(); ctx.ellipse(0, -10, 13, 14, 0, 0, TAU); ctx.fill();
+  // Webbed arms as a scalloped skirt.
+  ctx.fillStyle = "rgba(230,150,175,0.7)";
+  ctx.beginPath(); ctx.moveTo(-13, -2);
+  for (let i = 0; i <= 8; i++) {
+    const x = -16 + i * 4;
+    ctx.quadraticCurveTo(x + 2, 12 + flap * 3 + (i % 2) * 4, x + 4, 2 + (i % 2) * 2);
+  }
+  ctx.lineTo(13, -2); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#2a0f18";
+  ctx.beginPath(); ctx.arc(-5, -8, 1.8, 0, TAU); ctx.arc(5, -8, 1.8, 0, TAU); ctx.fill();
+}
+
+function seaPig(ctx, t, phase) {
+  const step = Math.sin(t * 2 + phase);
+  ctx.fillStyle = "rgba(235,170,180,0.85)";
+  ctx.beginPath(); ctx.ellipse(0, 0, 16, 7, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = "rgba(235,170,180,0.85)"; ctx.lineWidth = 2; ctx.lineCap = "round";
+  for (let i = 0; i < 5; i++) {
+    const x = -10 + i * 5;
+    ctx.beginPath(); ctx.moveTo(x, 5); ctx.lineTo(x + step * 1.5 * (i % 2 ? 1 : -1), 10); ctx.stroke();
+  }
+  // Leg-like papillae on the back.
+  ctx.beginPath(); ctx.moveTo(8, -5); ctx.lineTo(12 + step, -13); ctx.moveTo(4, -6); ctx.lineTo(5, -14 - step); ctx.stroke();
+  ctx.lineCap = "butt";
+}
+
+function snailfish(ctx, t) {
+  ctx.fillStyle = "rgba(245,215,215,0.75)";
+  ctx.beginPath();
+  ctx.moveTo(14, 0);
+  ctx.quadraticCurveTo(14, -9, 2, -8);
+  for (let k = 0; k <= 12; k++) ctx.lineTo(2 - k * 3.4, -6 + k * 0.4 + Math.sin(t * 3 - k * 0.5) * k * 0.25);
+  for (let k = 12; k >= 0; k--) ctx.lineTo(2 - k * 3.4, 5 - k * 0.3 + Math.sin(t * 3 - k * 0.5) * k * 0.25);
+  ctx.quadraticCurveTo(14, 9, 14, 0);
+  ctx.fill();
+  ctx.fillStyle = "#3a2228";
+  ctx.beginPath(); ctx.arc(8, -2, 1.6, 0, TAU); ctx.fill();
+}
+
+function amphipod(ctx, t, phase) {
+  const kick = Math.sin(t * 8 + phase);
+  ctx.strokeStyle = "rgba(240,225,200,0.9)"; ctx.lineWidth = 1;
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath(); ctx.moveTo(-4 + i * 2.2, 3); ctx.lineTo(-5 + i * 2.2 + kick, 7); ctx.stroke();
+  }
+  ctx.beginPath(); ctx.moveTo(6, -1); ctx.lineTo(13, -6 + kick); ctx.moveTo(6, 0); ctx.lineTo(12, -2 - kick); ctx.stroke();
+  ctx.fillStyle = "rgba(240,225,200,0.9)";
+  for (let i = 0; i < 6; i++) {
+    ctx.beginPath(); ctx.ellipse(-6 + i * 2.5, Math.sin(i * 0.6) * 1.2, 2, 3, 0, 0, TAU); ctx.fill();
+  }
+}
+
+// ============================================================
+// Part 1: the dive
+// ============================================================
+
+const MAX_DEPTH = 10935; // Challenger Deep, meters
+const FLOOR = 4200;      // the abyssal plain beside the trench
+const dive = document.getElementById("dive");
+const dc = document.getElementById("diveCanvas");
+const dctx = dc.getContext("2d");
+let DW = 0, DH = 0;
+
+function sizeDive() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  DW = dc.clientWidth; DH = dc.clientHeight;
+  dc.width = DW * dpr; dc.height = DH * dpr;
+  dctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+// Depth from scroll. The curve spends more of the scroll in the top kilometer,
+// where most of the animals are, and moves faster through the empty deep.
+function depthFromScroll() {
+  const r = dive.getBoundingClientRect();
+  const p = clamp(-r.top / (r.height - innerHeight), 0, 1);
+  return MAX_DEPTH * Math.pow(p, 2.1);
+}
+
+const CREATURES = [
+  { depth: 120, x: 0.62, draw: null, title: "The sunlit zone", range: "0 to 200 meters",
+    body: "Sunlight powers almost all life in the ocean, and it barely reaches past these first 200 meters. Microscopic algae grow here, and the animals below depend on what they make." },
+  { depth: 320, x: 0.6, draw: null, title: "Marine snow", range: "All depths",
+    body: "The white flecks drifting past are marine snow: dead plankton, waste, and mucus sinking from above. For many deep animals, it is the main source of food." },
+  { depth: 520, x: 0.47, draw: "lanternfish", title: "Lanternfish", range: "Day: hundreds of meters down. Night: near the surface",
+    body: "Lanternfish hide in the dim twilight zone by day and rise at night to feed. They are among the most abundant fish on Earth. A 2014 study estimated that midwater fish weigh at least ten times the earlier estimate of about a billion tonnes." },
+  { depth: 640, x: 0.47, draw: "siphonophore", title: "Siphonophore", range: "Twilight zone",
+    body: "A siphonophore is a colony of many small, specialized animals working as one body. Some kinds grow longer than a blue whale and fish with curtains of stinging tentacles." },
+  { depth: 720, x: 0.47, draw: "barreleye", title: "Barreleye", range: "About 600 to 800 meters",
+    body: "The barreleye has a transparent head. Its green, tube-shaped eyes sit inside it and can turn to look straight up for the shadows of prey, or forward to see what it is eating." },
+  { depth: 820, x: 0.47, draw: "vampireSquid", title: "Vampire squid", range: "About 600 to 900 meters",
+    body: "Despite its name, the vampire squid eats marine snow, collected on two long, sticky filaments. It lives where the water holds very little oxygen, which keeps most predators away." },
+  { depth: 1050, x: 0.47, draw: "whale", title: "Sperm whale and giant squid", range: "Hundreds of meters, sometimes past 1,000",
+    body: "Sperm whales dive deep to hunt squid, holding their breath for long stretches. In total darkness, they find prey by sending out clicks and listening for the echoes." },
+  { depth: 1600, x: 0.47, draw: "anglerfish", title: "Anglerfish", range: "The midnight zone, below 1,000 meters",
+    body: "No sunlight reaches this deep. The only light is made by animals. A female anglerfish dangles a glowing lure in front of her mouth. In many species, bacteria living in the lure make the light." },
+  { depth: 2200, x: 0.47, draw: "gulper", title: "Gulper eel", range: "About 500 to 3,000 meters",
+    body: "The gulper eel's loose, oversized jaw works like a net for scooping up small shrimp. The tip of its whip-like tail glows pink." },
+  { depth: 3500, x: 0.47, draw: "dumbo", title: "Dumbo octopus", range: "Often 3,000 to 4,000 meters, sometimes deeper",
+    body: "Dumbo octopuses hover above the seafloor by flapping ear-like fins. They are among the deepest-living octopuses known." },
+  { depth: FLOOR - 100, x: 0.24, draw: "seaPigs", title: "Sea pigs on the abyssal plain", range: "About 4,000 meters",
+    body: "Much of the deep seafloor is a flat plain of soft mud. Sea pigs, a kind of sea cucumber, walk across it on fleshy tube feet, eating the scraps that settle from above." },
+  { depth: 8000, x: 0.47, draw: "snailfish", title: "Snailfish", range: "Down to about 8,300 meters",
+    body: "In 2022, a camera off Japan filmed a young snailfish at 8,336 meters, the deepest fish ever recorded. Its soft, jelly-like body suits pressure that would crush a diver." },
+  { depth: MAX_DEPTH - 60, x: 0.47, draw: "amphipods", title: "The bottom of the Challenger Deep", range: "About 10,900 meters",
+    body: "Near the deepest point in the ocean, small crustaceans called amphipods swarm on any food that falls this far. The pressure here is more than a thousand times that at the surface." },
+];
+
+const SCHOOL = Array.from({ length: 46 }, () => ({ dx: rand(-260, 260), dy: rand(-70, 70), ph: rand(0, TAU), sp: rand(0.8, 1.2) }));
+const SNOW = Array.from({ length: 260 }, () => ({ x: Math.random(), d: rand(0, 400), r: rand(0.6, 2), sp: rand(0.2, 0.6) }));
+const SPARKS = Array.from({ length: 60 }, () => ({ x: Math.random(), y: Math.random(), ph: rand(0, TAU), sp: rand(0.3, 1.2) }));
+const AMPHI = Array.from({ length: 30 }, () => ({ dx: rand(-90, 90), dy: rand(-20, 10), ph: rand(0, TAU) }));
+
+function zoneOf(d) {
+  if (d < 200) return "Sunlight zone";
+  if (d < 1000) return "Twilight zone";
+  if (d < 4000) return "Midnight zone";
+  if (d < 6000) return "Abyssal zone";
+  return "Hadal zone";
+}
+
+// Background color for a depth: blue near the top, black below about 1,000 m.
+function waterColor(d) {
+  const stops = [[0, [44, 120, 170]], [200, [12, 58, 92]], [600, [5, 24, 40]], [1000, [2, 9, 16]], [MAX_DEPTH, [1, 3, 6]]];
+  for (let i = 0; i < stops.length - 1; i++) {
+    const [a, ca] = stops[i], [b, cb] = stops[i + 1];
+    if (d <= b) {
+      const t = (d - a) / (b - a);
+      return ca.map((v, k) => Math.round(lerp(v, cb[k], t)));
+    }
+  }
+  return [1, 3, 6];
+}
+
+let lastDepth = 0;
+function drawDive(now) {
+  const t = now / 1000;
+  const depth = depthFromScroll();
+  const ppm = DH / 320; // pixels per meter: the screen shows about 320 m of water
+  const yOf = (d) => DH / 2 + (d - depth) * ppm;
+
+  // Water, with a gradient over the visible range.
+  const top = waterColor(Math.max(0, depth - 160)), bot = waterColor(depth + 160);
+  const g = dctx.createLinearGradient(0, 0, 0, DH);
+  g.addColorStop(0, `rgb(${top})`); g.addColorStop(1, `rgb(${bot})`);
+  dctx.fillStyle = g;
+  dctx.fillRect(0, 0, DW, DH);
+
+  // Sun rays, fading out over the first 250 m.
+  const rayA = clamp(1 - depth / 250, 0, 1);
+  if (rayA > 0) {
+    dctx.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 9; i++) {
+      const x = (i / 9) * DW + Math.sin(t * 0.3 + i) * 40;
+      const grad = dctx.createLinearGradient(x, 0, x + 120, DH);
+      grad.addColorStop(0, `rgba(180,225,255,${0.10 * rayA})`);
+      grad.addColorStop(1, "rgba(180,225,255,0)");
+      dctx.fillStyle = grad;
+      dctx.beginPath(); dctx.moveTo(x, 0); dctx.lineTo(x + 50, 0); dctx.lineTo(x + 260, DH); dctx.lineTo(x + 120, DH); dctx.closePath(); dctx.fill();
+    }
+    dctx.globalCompositeOperation = "source-over";
+  }
+
+  // Plankton specks near the top.
+  if (depth < 260) {
+    dctx.fillStyle = `rgba(200,240,220,${0.5 * clamp(1 - depth / 260, 0, 1)})`;
+    for (let i = 0; i < 140; i++) {
+      const x = ((i * 97.3) % DW + Math.sin(t * 0.5 + i) * 6);
+      const y = ((i * 53.1 + t * 8) % DH);
+      dctx.fillRect(x, y, 1.5, 1.5);
+    }
+  }
+
+  // Bioluminescent sparks below 500 m.
+  const sparkA = clamp((depth - 400) / 400, 0, 1);
+  if (sparkA > 0) {
+    dctx.globalCompositeOperation = "lighter";
+    for (const s of SPARKS) {
+      const a = Math.max(0, Math.sin(t * s.sp + s.ph)) ** 6 * sparkA;
+      if (a > 0.02) glow(dctx, s.x * DW, s.y * DH, 7, "rgba(120,220,255,ALPHA)", a);
+    }
+    dctx.globalCompositeOperation = "source-over";
+  }
+
+  // Marine snow: sinks slowly through the water, and slides up past the camera as we dive.
+  const snowA = clamp(depth / 150, 0.25, 0.9);
+  dctx.fillStyle = `rgba(230,240,245,${snowA})`;
+  for (const s of SNOW) {
+    const span = 400;
+    let d = (s.d + t * s.sp * 6) % span;
+    let y = ((d - (depth % span) + span * 1.5) % span) * (DH / span);
+    const x = (s.x * DW + Math.sin(t * 0.4 + s.d) * 8) % DW;
+    dctx.fillRect(x, y, s.r, s.r);
+  }
+
+  // Seafloor at the abyssal plain on the left, then trench walls down to the bottom.
+  const floorY = yOf(FLOOR);
+  if (floorY < DH + 50) {
+    dctx.fillStyle = "#0d0c0b";
+    dctx.beginPath();
+    dctx.moveTo(0, floorY); dctx.lineTo(DW * 0.42, floorY);
+    // The trench wall descends from the plain's edge.
+    for (let d = FLOOR; d <= MAX_DEPTH + 400; d += 100) {
+      const k = (d - FLOOR) / (MAX_DEPTH - FLOOR);
+      dctx.lineTo(DW * (0.42 + 0.05 * k + Math.sin(d * 0.004) * 0.01), yOf(d));
+    }
+    dctx.lineTo(0, yOf(MAX_DEPTH + 400)); dctx.closePath(); dctx.fill();
+    dctx.beginPath();
+    dctx.moveTo(DW, yOf(FLOOR + 900));
+    for (let d = FLOOR + 900; d <= MAX_DEPTH + 400; d += 100) {
+      const k = (d - FLOOR) / (MAX_DEPTH - FLOOR);
+      dctx.lineTo(DW * (0.95 - 0.12 * k + Math.sin(d * 0.005) * 0.012), yOf(d));
+    }
+    dctx.lineTo(DW, yOf(MAX_DEPTH + 400)); dctx.closePath(); dctx.fill();
+    // Sediment surface highlight.
+    dctx.strokeStyle = "rgba(120,110,95,0.35)"; dctx.lineWidth = 2;
+    dctx.beginPath(); dctx.moveTo(0, floorY); dctx.lineTo(DW * 0.42, floorY); dctx.stroke();
+  }
+  const bottomY = yOf(MAX_DEPTH);
+  if (bottomY < DH + 20) {
+    dctx.fillStyle = "#0d0c0b";
+    dctx.fillRect(0, bottomY, DW, DH - bottomY + 20);
+    dctx.strokeStyle = "rgba(120,110,95,0.35)";
+    dctx.beginPath(); dctx.moveTo(0, bottomY); dctx.lineTo(DW, bottomY); dctx.stroke();
+  }
+
+  // Creatures.
+  let nearest = null, nearestDist = Infinity;
+  const sc = Math.min(DW, DH) / 380; // drawing scale
+  for (const c of CREATURES) {
+    const y = yOf(c.depth);
+    const dist = Math.abs(c.depth - depth);
+    if (dist < nearestDist) { nearestDist = dist; nearest = c; }
+    if (y < -300 || y > DH + 300 || !c.draw) continue;
+    const x = c.x * DW;
+    dctx.save();
+    dctx.translate(x, y);
+    if (c.draw === "lanternfish") {
+      for (const f of SCHOOL) {
+        dctx.save();
+        dctx.translate(f.dx * sc * 0.9 + Math.sin(t * 0.4 * f.sp + f.ph) * 30, f.dy * sc + Math.sin(t * f.sp + f.ph) * 6);
+        dctx.scale(sc * 0.9, sc * 0.9);
+        lanternfish(dctx, t, f.ph);
+        dctx.restore();
+      }
+    } else if (c.draw === "whale") {
+      dctx.save(); dctx.translate(-100 * sc + Math.sin(t * 0.2) * 20, -95 * sc); dctx.rotate(0.25); dctx.scale(sc * 1.4, sc * 1.4); spermWhale(dctx, t); dctx.restore();
+      dctx.save(); dctx.translate(75 * sc, 70 * sc); dctx.scale(-sc * 1.1, sc * 1.1); giantSquid(dctx, t); dctx.restore();
+    } else if (c.draw === "seaPigs") {
+      const onFloor = yOf(FLOOR) - y - 9 * sc;
+      for (let i = 0; i < 6; i++) {
+        dctx.save(); dctx.translate((i - 2.5) * 45 * sc + Math.sin(t * 0.1 + i) * 6, onFloor); dctx.scale(sc, sc); seaPig(dctx, t, i); dctx.restore();
+      }
+    } else if (c.draw === "amphipods") {
+      for (const a of AMPHI) {
+        dctx.save(); dctx.translate(a.dx * sc + Math.sin(t + a.ph) * 8, a.dy * sc + Math.cos(t * 1.3 + a.ph) * 5); dctx.scale(sc * 0.8, sc * 0.8); amphipod(dctx, t, a.ph); dctx.restore();
+      }
+    } else {
+      dctx.translate(Math.sin(t * 0.25) * 18, Math.sin(t * 0.7) * 6);
+      dctx.scale(sc * 1.6, sc * 1.6);
+      ({ siphonophore, barreleye, vampireSquid, anglerfish, gulper: gulperEel, dumbo, snailfish })[c.draw](dctx, t);
+    }
+    dctx.restore();
+  }
+
+  // Gauge.
+  document.getElementById("gDepth").textContent = fmt(depth);
+  document.getElementById("gZone").textContent = zoneOf(depth);
+  document.getElementById("gPress").textContent = fmt(1 + depth / 10) + " × surface";
+  // Sunlight falls to about 1 percent by 200 m in clear water.
+  const light = 100 * Math.exp(-depth * Math.log(100) / 200);
+  document.getElementById("gLight").textContent =
+    depth < 200 ? light.toFixed(light < 10 ? 1 : 0) + "% of surface" : depth < 1000 ? "under 1%, fading out" : "none";
+  const temp = depth < 100 ? 20 : depth < 1000 ? lerp(20, 4, (depth - 100) / 900) : depth < 4000 ? lerp(4, 2, (depth - 1000) / 3000) : 2;
+  document.getElementById("gTemp").textContent = "about " + Math.round(temp) + " °C";
+
+  // Caption for the nearest feature.
+  const cap = document.getElementById("caption");
+  const near = nearest && nearestDist < 110;
+  cap.style.opacity = near ? clamp(1 - (nearestDist - 50) / 60, 0, 1) : 0;
+  if (near && cap.dataset.key !== nearest.title) {
+    cap.dataset.key = nearest.title;
+    document.getElementById("cTitle").textContent = nearest.title;
+    document.getElementById("cRange").textContent = nearest.range;
+    document.getElementById("cBody").textContent = nearest.body;
+  }
+  lastDepth = depth;
+}
+
+// ============================================================
+// Part 2: the nightly commute
+// ============================================================
+
+const sim = document.getElementById("sim");
+const sctx = sim.getContext("2d");
+const SW = 1100, SH = 560, SIM_DEPTH = 1000;
+const ySim = (d) => 30 + (d / SIM_DEPTH) * (SH - 50);
+let simScale = 1;
+function sizeSim() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const css = sim.clientWidth || SW;
+  sim.width = css * dpr; sim.height = css * (SH / SW) * dpr;
+  simScale = (css * dpr) / SW;
+}
+
+const simState = {
+  hour: 17, playing: true, migrate: true,
+  eaten: 0, meals: 0, carbon: 0, squid: 0,
+  zoo: [], fish: [], tuna: [], squids: [], pellets: [],
+  whale: { x: 200, d: 0, phase: "surface", timer: 4, dir: 1 },
+};
+
+// Light at a depth for the current hour: zero at night, falling off with depth.
+function lightAt(hour, d) {
+  const sun = Math.max(0, Math.sin(((hour - 6) / 12) * Math.PI));
+  return sun * Math.exp(-d / 90);
+}
+
+function initSim() {
+  const s = simState;
+  s.zoo = Array.from({ length: 360 }, () => ({ x: rand(0, SW), d: rand(250, 450), home: rand(250, 450), night: rand(5, 110) }));
+  s.fish = Array.from({ length: 130 }, () => ({ x: rand(0, SW), d: rand(420, 650), home: rand(420, 650), night: rand(10, 140), vx: rand(-20, 20), ph: rand(0, TAU), fed: 0 }));
+  s.tuna = Array.from({ length: 6 }, () => ({ x: rand(0, SW), d: rand(20, 120), vx: rand(60, 110) * (Math.random() < 0.5 ? -1 : 1) }));
+  s.squids = Array.from({ length: 14 }, () => ({ x: rand(0, SW), d: rand(350, 750), home: rand(350, 750), night: rand(60, 250), ph: rand(0, TAU) }));
+  s.pellets = [];
+  s.eaten = s.meals = s.carbon = s.squid = 0;
+}
+
+function stepSim(dtH) {
+  const s = simState;
+  const night = s.hour < 6 || s.hour > 18.5;
+  const speed = 320; // meters per hour a migrator can swim
+
+  for (const z of s.zoo) {
+    const target = s.migrate ? (night ? z.night : z.home) : z.night;
+    z.d += clamp(target - z.d, -speed * 0.6 * dtH, speed * 0.6 * dtH);
+    z.x = (z.x + rand(-1, 1) + SW) % SW;
+  }
+
+  for (const f of s.fish) {
+    const target = s.migrate ? (night ? f.night : f.home) : f.night;
+    const before = f.d;
+    f.d += clamp(target - f.d, -speed * dtH, speed * dtH);
+    f.x = (f.x + f.vx * dtH * 6 + SW) % SW;
+    if (Math.random() < 0.02) f.vx = rand(-25, 25);
+    // Lanternfish that fed in the night release droppings once they are deep.
+    if (f.fed > 0 && f.d > 380 && before <= f.d && Math.random() < 0.05) {
+      s.pellets.push({ x: f.x, d: f.d });
+      f.fed--;
+    }
+  }
+
+  // Feeding: a lanternfish eats nearby zooplankton when both are shallow at night.
+  for (const f of s.fish) {
+    if (f.d > 200) continue;
+    for (const z of s.zoo) {
+      if (z.eaten) continue;
+      if (Math.abs(z.x - f.x) < 9 && Math.abs(z.d - f.d) < 9) {
+        z.eaten = 1; f.fed++; s.meals++;
+        break;
+      }
+    }
+  }
+  for (const z of s.zoo) if (z.eaten) { z.eaten = 0; z.x = rand(0, SW); z.d = s.migrate ? z.home : z.night; }
+
+  // Tuna hunt by sight: their chance of catching a lanternfish scales with light.
+  for (const tu of s.tuna) {
+    tu.x += tu.vx * dtH * 6;
+    if (tu.x < -40) tu.x = SW + 40; if (tu.x > SW + 40) tu.x = -40;
+    tu.d += Math.sin(performance.now() / 900 + tu.x) * 0.3;
+    for (const f of s.fish) {
+      if (f.caught) continue;
+      if (Math.abs(f.x - tu.x) < 24 && Math.abs(f.d - tu.d) < 40 && Math.random() < 0.9 * lightAt(s.hour, f.d) + 0.002) {
+        f.caught = 1; s.eaten++;
+      }
+    }
+  }
+  // A caught lanternfish is replaced by a new one at depth, so the population stays steady.
+  for (const f of s.fish) if (f.caught) { f.caught = 0; f.x = rand(0, SW); f.d = f.home; f.fed = 0; }
+
+  // Squid make a smaller migration of their own.
+  for (const q of s.squids) {
+    const target = s.migrate ? (night ? q.night : q.home) : q.night;
+    q.d += clamp(target - q.d, -200 * dtH, 200 * dtH);
+    q.x = (q.x + Math.sin(performance.now() / 1500 + q.ph) * 0.6 + SW) % SW;
+  }
+
+  // The sperm whale breathes at the surface, then dives to hunt squid at depth.
+  const w = s.whale;
+  w.timer -= dtH;
+  if (w.phase === "surface" && w.timer <= 0) { w.phase = "down"; }
+  else if (w.phase === "down") { w.d += 900 * dtH; if (w.d >= 780) { w.phase = "hunt"; w.timer = 0.8; } }
+  else if (w.phase === "hunt") { w.x += w.dir * 120 * dtH; if (w.timer <= 0) w.phase = "up"; }
+  else if (w.phase === "up") { w.d -= 900 * dtH; if (w.d <= 0) { w.d = 0; w.phase = "surface"; w.timer = 2.5; w.dir *= -1; } }
+  if (w.x < 80) w.dir = 1; if (w.x > SW - 80) w.dir = -1;
+  if (w.phase === "hunt" || w.phase === "down") {
+    for (const q of s.squids) {
+      if (Math.abs(q.x - w.x) < 60 && Math.abs(q.d - w.d) < 90 && Math.random() < 0.08) {
+        s.squid++; q.x = rand(0, SW); q.d = q.home;
+      }
+    }
+  }
+
+  // Droppings sink and count once they pass 400 m.
+  for (const p of s.pellets) {
+    p.d += 60 * dtH;
+    if (!p.counted && p.d > 400) { p.counted = 1; s.carbon++; }
+  }
+  s.pellets = s.pellets.filter((p) => p.d < SIM_DEPTH);
+}
+
+function drawSim(now) {
+  const s = simState;
+  const t = now / 1000;
+  sctx.setTransform(simScale, 0, 0, simScale, 0, 0);
+  // Water lit by the sun at this hour.
+  const sun = Math.max(0, Math.sin(((s.hour - 6) / 12) * Math.PI));
+  const g = sctx.createLinearGradient(0, 0, 0, SH);
+  g.addColorStop(0, `rgb(${Math.round(lerp(6, 46, sun))},${Math.round(lerp(14, 120, sun))},${Math.round(lerp(28, 170, sun))})`);
+  g.addColorStop(0.35, `rgb(${Math.round(lerp(3, 10, sun))},${Math.round(lerp(8, 40, sun))},${Math.round(lerp(16, 70, sun))})`);
+  g.addColorStop(1, "#01040a");
+  sctx.fillStyle = g;
+  sctx.fillRect(0, 0, SW, SH);
+
+  // Sky strip with the sun or moon.
+  sctx.fillStyle = sun > 0 ? `rgba(255,236,190,${0.5 + sun * 0.5})` : "rgba(220,230,255,0.8)";
+  const skyX = 60 + ((s.hour % 24) / 24) * (SW - 120);
+  sctx.beginPath(); sctx.arc(skyX, 14, sun > 0 ? 9 : 6, 0, TAU); sctx.fill();
+
+  // Depth labels.
+  sctx.font = "11px -apple-system, Helvetica, Arial";
+  sctx.fillStyle = "rgba(200,220,230,0.45)";
+  sctx.textAlign = "left";
+  for (const d of [0, 200, 400, 600, 800, 1000]) {
+    sctx.fillRect(0, ySim(d), 10, 1);
+    sctx.fillText(d + " m", 14, ySim(d) + 4);
+  }
+  sctx.strokeStyle = "rgba(127,212,255,0.25)"; sctx.setLineDash([4, 6]);
+  sctx.beginPath(); sctx.moveTo(60, ySim(400)); sctx.lineTo(SW, ySim(400)); sctx.stroke(); sctx.setLineDash([]);
+  sctx.fillText("400 m", SW - 50, ySim(400) - 6);
+
+  // Zooplankton.
+  sctx.fillStyle = "rgba(220,235,225,0.55)";
+  for (const z of s.zoo) sctx.fillRect(z.x, ySim(z.d), 1.6, 1.6);
+
+  // Droppings.
+  sctx.fillStyle = "rgba(190,160,120,0.8)";
+  for (const p of s.pellets) sctx.fillRect(p.x, ySim(p.d), 2, 3);
+
+  // Squid.
+  sctx.fillStyle = "#b5583f";
+  for (const q of s.squids) {
+    sctx.save(); sctx.translate(q.x, ySim(q.d)); sctx.scale(0.35, 0.35); giantSquid(sctx, t + q.ph); sctx.restore();
+  }
+
+  // Lanternfish.
+  for (const f of s.fish) {
+    sctx.save(); sctx.translate(f.x, ySim(f.d)); if (f.vx < 0) sctx.scale(-0.55, 0.55); else sctx.scale(0.55, 0.55); lanternfish(sctx, t, f.ph); sctx.restore();
+  }
+
+  // Tuna: fast silver hunters near the surface.
+  for (const tu of s.tuna) {
+    sctx.save(); sctx.translate(tu.x, ySim(tu.d)); if (tu.vx < 0) sctx.scale(-1, 1);
+    sctx.fillStyle = "#9fb3c4";
+    sctx.beginPath(); sctx.ellipse(0, 0, 22, 7, 0, 0, TAU); sctx.fill();
+    sctx.beginPath(); sctx.moveTo(-18, 0); sctx.lineTo(-30, -9); sctx.lineTo(-27, 0); sctx.lineTo(-30, 9); sctx.closePath(); sctx.fill();
+    sctx.fillStyle = "#1c2632"; sctx.beginPath(); sctx.arc(14, -1.5, 1.6, 0, TAU); sctx.fill();
+    sctx.restore();
+  }
+
+  // Sperm whale.
+  const w = s.whale;
+  sctx.save(); sctx.translate(w.x, ySim(w.d) + 10);
+  sctx.rotate(w.phase === "down" ? 1.1 * w.dir : w.phase === "up" ? -1.1 * w.dir : 0);
+  sctx.scale(0.55 * w.dir, 0.55);
+  spermWhale(sctx, t);
+  sctx.restore();
+
+  // Clock label.
+  sctx.fillStyle = "#e6eef2"; sctx.font = "600 13px -apple-system, Helvetica, Arial"; sctx.textAlign = "right";
+  const night = s.hour < 6 || s.hour > 18.5;
+  sctx.fillText((night ? "Night" : "Day") + " · " + hourLabel(s.hour), SW - 14, 44);
+}
+
+function hourLabel(h) {
+  const hh = Math.floor(h) % 24, mm = Math.floor((h % 1) * 60);
+  return String(hh).padStart(2, "0") + ":" + String(mm).padStart(2, "0");
+}
+
+// ============================================================
+// Part 3: the whale fall
+// ============================================================
+
+const fall = document.getElementById("fall");
+const fctx = fall.getContext("2d");
+const FW = 1100, FH = 500;
+let fallScale = 1;
+function sizeFall() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const css = fall.clientWidth || FW;
+  fall.width = css * dpr; fall.height = css * (FH / FW) * dpr;
+  fallScale = (css * dpr) / FW;
+}
+
+// Timeline position 0..1 maps to years: the first half covers two years in
+// detail, the second half stretches out to 30 years.
+const yearsOf = (p) => (p < 0.5 ? (p / 0.5) * 2 : 2 + ((p - 0.5) / 0.5) * 28);
+const fallState = { p: 0, playing: true };
+const HAG = Array.from({ length: 70 }, () => ({ x: rand(-260, 260), y: rand(-30, 20), ph: rand(0, TAU) }));
+const WORMS = Array.from({ length: 120 }, () => ({ x: rand(-300, 300), y: rand(0, 30), ph: rand(0, TAU) }));
+const MATS = Array.from({ length: 90 }, () => ({ x: rand(-250, 250), y: rand(-26, 8), r: rand(3, 9) }));
+const CLAMS = Array.from({ length: 40 }, () => ({ x: rand(-330, 330), y: rand(4, 26) }));
+
+// How strongly each stage is present at a given number of years, 0..1.
+function stages(y) {
+  const scav = y < 0.1 ? y / 0.1 : clamp(1 - (y - 0.6) / 1.2, 0, 1);
+  const enrich = clamp((y - 0.3) / 0.6, 0, 1) * clamp(1 - (y - 3) / 2, 0, 1);
+  const sulf = clamp((y - 1.5) / 3, 0, 1);
+  const flesh = clamp(1 - y / 1.6, 0, 1);
+  return { scav, enrich, sulf, flesh };
+}
+
+function drawFall(now) {
+  const t = now / 1000;
+  const years = yearsOf(fallState.p);
+  const st = stages(years);
+  fctx.setTransform(fallScale, 0, 0, fallScale, 0, 0);
+  const g = fctx.createLinearGradient(0, 0, 0, FH);
+  g.addColorStop(0, "#020a12"); g.addColorStop(1, "#05080a");
+  fctx.fillStyle = g; fctx.fillRect(0, 0, FW, FH);
+  // Marine snow.
+  fctx.fillStyle = "rgba(220,230,235,0.45)";
+  for (let i = 0; i < 120; i++) fctx.fillRect((i * 89.7) % FW, ((i * 41.3 + t * 12) % (FH - 120)), 1.4, 1.4);
+  // Seafloor.
+  const fy = 360;
+  fctx.fillStyle = "#14110e"; fctx.fillRect(0, fy, FW, FH - fy);
+  // A halo of enriched sediment around the carcass during the second stage.
+  if (st.enrich > 0) {
+    const halo = fctx.createRadialGradient(FW / 2, fy + 6, 20, FW / 2, fy + 6, 380);
+    halo.addColorStop(0, `rgba(90,60,40,${0.6 * st.enrich})`); halo.addColorStop(1, "rgba(90,60,40,0)");
+    fctx.fillStyle = halo; fctx.fillRect(0, fy, FW, 80);
+  }
+  fctx.save(); fctx.translate(FW / 2, fy - 18);
+
+  // Skeleton: spine, ribs, skull.
+  fctx.strokeStyle = "#cfc5b2"; fctx.lineWidth = 6; fctx.lineCap = "round";
+  fctx.beginPath(); fctx.moveTo(-300, 8); fctx.quadraticCurveTo(0, -6, 230, 0); fctx.stroke();
+  fctx.lineWidth = 4;
+  for (let i = 0; i < 14; i++) {
+    const x = -120 + i * 16;
+    fctx.beginPath(); fctx.moveTo(x, 0); fctx.quadraticCurveTo(x + 8, -36, x + 4, -54 + Math.abs(i - 7) * 2); fctx.stroke();
+  }
+  fctx.fillStyle = "#cfc5b2";
+  fctx.beginPath(); fctx.ellipse(270, -6, 60, 22, 0, 0, TAU); fctx.fill();
+  fctx.lineCap = "butt";
+
+  // Flesh shrinks away during the scavenger stage.
+  if (st.flesh > 0) {
+    fctx.globalAlpha = st.flesh;
+    fctx.fillStyle = "#4a4d55";
+    fctx.beginPath();
+    fctx.moveTo(-320, 10); fctx.quadraticCurveTo(-100, -40 - 40 * st.flesh, 200, -40 * st.flesh - 20);
+    fctx.quadraticCurveTo(340, -40, 340, 0); fctx.quadraticCurveTo(100, 30, -320, 10); fctx.fill();
+    fctx.globalAlpha = 1;
+  }
+
+  // Stage one: hagfish swarm the carcass, and a sleeper shark visits.
+  if (st.scav > 0.02) {
+    fctx.strokeStyle = `rgba(200,150,160,${0.85 * st.scav})`; fctx.lineWidth = 2.2; fctx.lineCap = "round";
+    const count = Math.floor(HAG.length * st.scav);
+    for (let i = 0; i < count; i++) {
+      const h = HAG[i];
+      fctx.beginPath(); fctx.moveTo(h.x, h.y);
+      for (let k = 1; k <= 8; k++) fctx.lineTo(h.x - k * 3, h.y + Math.sin(t * 6 + h.ph + k) * 2.5);
+      fctx.stroke();
+    }
+    fctx.lineCap = "butt";
+    const sx = ((t * 40) % (FW + 400)) - FW / 2 - 200;
+    fctx.globalAlpha = st.scav;
+    fctx.fillStyle = "#3a3f46";
+    fctx.beginPath(); fctx.ellipse(sx, -120, 70, 16, 0, 0, TAU); fctx.fill();
+    fctx.beginPath(); fctx.moveTo(sx - 60, -120); fctx.lineTo(sx - 95, -136); fctx.lineTo(sx - 88, -116); fctx.closePath(); fctx.fill();
+    fctx.globalAlpha = 1;
+  }
+
+  // Stage two: worms colonize the bones and the enriched mud; bone-eating worms grow red plumes.
+  if (st.enrich > 0.02) {
+    const count = Math.floor(WORMS.length * st.enrich);
+    for (let i = 0; i < count; i++) {
+      const w = WORMS[i];
+      fctx.strokeStyle = "rgba(220,90,90,0.85)"; fctx.lineWidth = 1.4;
+      fctx.beginPath(); fctx.moveTo(w.x, 18 + w.y * 0.4); fctx.lineTo(w.x + Math.sin(t * 3 + w.ph) * 2, 18 + w.y * 0.4 - 6); fctx.stroke();
+    }
+    for (let i = 0; i < 26 * st.enrich; i++) {
+      const x = -280 + i * 20;
+      fctx.fillStyle = "rgba(255,80,90,0.9)";
+      fctx.beginPath(); fctx.arc(x + Math.sin(t * 2 + i) * 1.5, -4 + Math.sin(i) * 3, 2.6, 0, TAU); fctx.fill();
+    }
+  }
+
+  // Stage three: bacterial mats on the bones, with clams and snails that live off sulfide.
+  if (st.sulf > 0.02) {
+    const count = Math.floor(MATS.length * st.sulf);
+    for (let i = 0; i < count; i++) {
+      const m = MATS[i];
+      fctx.fillStyle = `rgba(240,240,225,${0.55 * st.sulf})`;
+      fctx.beginPath(); fctx.ellipse(m.x, m.y, m.r * 1.6, m.r * 0.7, 0, 0, TAU); fctx.fill();
+    }
+    for (let i = 0; i < Math.floor(CLAMS.length * st.sulf); i++) {
+      const c = CLAMS[i];
+      fctx.fillStyle = "#c9b48a";
+      fctx.beginPath(); fctx.ellipse(c.x, c.y + 10, 6, 3.5, 0.3, 0, TAU); fctx.fill();
+    }
+  }
+  fctx.restore();
+
+  // Stage labels.
+  const labels = [["Mobile scavengers", "Hagfish and sleeper sharks strip the soft tissue. Months to about two years.", st.scav],
+                  ["Enrichment opportunists", "Worms and crustaceans move into the bones and the enriched mud. Up to a few years.", st.enrich],
+                  ["Sulfophilic stage", "Bacteria break down the oils in the bones, feeding mats, clams, and snails. Can last decades.", st.sulf]];
+  labels.forEach(([title, body, a], i) => {
+    const x = 30 + i * 360;
+    fctx.globalAlpha = 0.25 + 0.75 * a;
+    fctx.fillStyle = "#e6eef2"; fctx.font = "600 15px -apple-system, Helvetica, Arial"; fctx.textAlign = "left";
+    fctx.fillText(title, x, 38);
+    fctx.fillStyle = "#8ea3ad"; fctx.font = "12.5px -apple-system, Helvetica, Arial";
+    wrap(fctx, body, x, 58, 320, 16);
+    fctx.fillStyle = "#7fd4ff"; fctx.fillRect(x, 96, 320 * a, 3);
+    fctx.globalAlpha = 1;
+  });
+
+  document.getElementById("fallOut").textContent =
+    years < 1 ? Math.round(years * 12) + " months" : years.toFixed(years < 3 ? 1 : 0) + " years";
+}
+
+function wrap(ctx, text, x, y, maxW, lh) {
+  const words = text.split(" ");
+  let line = "";
+  for (const w of words) {
+    const test = line ? line + " " + w : w;
+    if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, x, y); line = w; y += lh; }
+    else line = test;
+  }
+  ctx.fillText(line, x, y);
+}
+
+// ============================================================
+// Wiring and the main loop
+// ============================================================
+
+const clockInput = document.getElementById("clock");
+document.getElementById("playBtn").addEventListener("click", (e) => {
+  simState.playing = !simState.playing;
+  e.target.textContent = simState.playing ? "Pause" : "Play";
+  e.target.classList.toggle("on", simState.playing);
+});
+document.getElementById("migBtn").addEventListener("click", (e) => {
+  simState.migrate = !simState.migrate;
+  e.target.textContent = simState.migrate ? "Migration on" : "Migration off";
+  e.target.classList.toggle("on", simState.migrate);
+  simState.eaten = 0; simState.meals = 0; simState.carbon = 0;
+});
+clockInput.addEventListener("input", () => { simState.hour = Number(clockInput.value); });
+
+const fallInput = document.getElementById("fallTime");
+document.getElementById("fallPlay").addEventListener("click", (e) => {
+  fallState.playing = !fallState.playing;
+  e.target.textContent = fallState.playing ? "Pause" : "Play";
+  e.target.classList.toggle("on", fallState.playing);
+});
+fallInput.addEventListener("input", () => { fallState.p = Number(fallInput.value); });
+
+// Only animate sections that are on screen.
+const visible = { dive: false, sim: false, fall: false };
+const watch = (el, key) => new IntersectionObserver((e) => (visible[key] = e[0].isIntersecting)).observe(el);
+watch(document.getElementById("diveStage"), "dive");
+watch(sim, "sim");
+watch(fall, "fall");
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (visible.dive) drawDive(now);
+  if (visible.sim) {
+    if (simState.playing) {
+      // One simulated day takes about 40 seconds.
+      const dtH = dt * 0.6;
+      simState.hour = (simState.hour + dtH) % 24;
+      stepSim(dtH);
+      clockInput.value = simState.hour;
+    }
+    drawSim(now);
+    document.getElementById("clockOut").textContent = hourLabel(simState.hour);
+    document.getElementById("sEaten").textContent = fmt(simState.eaten);
+    document.getElementById("sMeals").textContent = fmt(simState.meals);
+    document.getElementById("sCarbon").textContent = fmt(simState.carbon);
+    document.getElementById("sSquid").textContent = fmt(simState.squid);
+  }
+  if (visible.fall) {
+    if (fallState.playing) {
+      fallState.p += dt / 24; // the whole timeline plays in about 24 seconds
+      if (fallState.p > 1) fallState.p = 0;
+      fallInput.value = fallState.p;
+    }
+    drawFall(now);
+  }
+  requestAnimationFrame(frame);
+}
+
+function sizeAll() { sizeDive(); sizeSim(); sizeFall(); }
+window.addEventListener("resize", sizeAll);
+sizeAll();
+initSim();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
