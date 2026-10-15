@@ -62,13 +62,27 @@ A scrolling visual essay about New York City's street trees and the insects that
 
 ### [Who Eats Whom in the Dark](dark-food-web/)
 
-A scrolling visual essay about the deep-sea food web. Scroll from the surface to the bottom of the Challenger Deep past animated lanternfish, a barreleye, a vampire squid, an anglerfish, a dumbo octopus, and more, each at its real depth. Then run a simulation of the nightly migration, where predators, prey, and sinking droppings interact, and watch a whale carcass feed the seafloor for decades.
+A scrolling visual essay about the deep-sea food web, in three animated parts.
 
 **Live page:** https://squoraishee.github.io/dark-food-web/
 
-![Who Eats Whom in the Dark](dark-food-web/demo.gif)
+**The dive.** From the surface to the bottom of the Challenger Deep, pausing at each animal at its real depth.
 
-[Full-quality video (MP4)](dark-food-web/demo.mp4)
+![The dive](dark-food-web/videos/dive.gif)
+
+[Full-quality video (MP4)](dark-food-web/videos/dive.mp4)
+
+**The nightly commute.** Lanternfish rise at night to feed, light-hunting tuna catch the ones that stay shallow by day, and droppings carry carbon into deep water.
+
+![The nightly commute](dark-food-web/videos/nightly-commute.gif)
+
+[Full-quality video (MP4)](dark-food-web/videos/nightly-commute.mp4)
+
+**When a whale falls.** A carcass on the seafloor feeds scavengers, then worms, then bacteria and clams for decades.
+
+![When a whale falls](dark-food-web/videos/whale-fall.gif)
+
+[Full-quality video (MP4)](dark-food-web/videos/whale-fall.mp4)
 
 ## Running them
 

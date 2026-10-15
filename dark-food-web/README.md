@@ -4,9 +4,31 @@ A scrolling visual essay about how deep-sea animals depend on one another, and o
 
 **Live page:** https://squoraishee.github.io/dark-food-web/
 
-![The dive, the nightly commute, and the whale fall](demo.gif)
+## Videos
 
-[Full-quality video (MP4)](demo.mp4)
+### The dive
+
+Scrolling from the surface to the bottom of the Challenger Deep, pausing at each animal.
+
+![The dive](videos/dive.gif)
+
+[Full-quality video (MP4)](videos/dive.mp4)
+
+### The nightly commute
+
+The simulation runs from late afternoon through the night and into the next day, then the migration is switched off.
+
+![The nightly commute](videos/nightly-commute.gif)
+
+[Full-quality video (MP4)](videos/nightly-commute.mp4)
+
+### When a whale falls
+
+A carcass decays through its three stages over about 30 years.
+
+![When a whale falls](videos/whale-fall.gif)
+
+[Full-quality video (MP4)](videos/whale-fall.mp4)
 
 ## What's on the page
 
