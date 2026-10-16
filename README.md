@@ -84,6 +84,16 @@ A scrolling visual essay about the deep-sea food web, in three animated parts.
 
 [Full-quality video (MP4)](dark-food-web/videos/whale-fall.mp4)
 
+### [Agents Leave the Chat](agents-leave-the-chat/)
+
+A paged data story about AI agent incidents, built from the AI Incident Database. Agent incidents went from 1.6% of reported AI incidents in early 2025 to 19.4% in Q3 2026. Each page has one animated figure: incidents breaking out of a timeline grid, quarterly squares stacking up, agent incidents sorting by what happened, and a log that replays ten cases of agents deleting data.
+
+**Live page:** https://squoraishee.github.io/agents-leave-the-chat/
+
+![Paging through Agents Leave the Chat](agents-leave-the-chat/demo.gif)
+
+[Full-quality video (MP4)](agents-leave-the-chat/demo.mp4)
+
 ## Running them
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.

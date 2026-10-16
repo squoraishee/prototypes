@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agents Leave the Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: one full-height page per story beat. Each page has one canvas scene that acts out its claim. */
+/* Palette: night-ink ground, grey for ordinary incidents, amber for agents, blue for attackers. */
+:root {
+  --bg: #f4f1ea;
+  --ink: #15181d;
+  --ink-2: #4b5159;
+  --ink-3: #7a8089;
+  --rule: #d8d3c6;
+  --panel: #e9e4d8;
+  --dot: #b9b4a8;
+  --signal: #b8580b;
+  --signal-soft: #e9c9a6;
+  --calm: #2f6a8f;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1116;
+    --ink: #ece9e1;
+    --ink-2: #aab0b8;
+    --ink-3: #7b828c;
+    --rule: #262c35;
+    --panel: #171c24;
+    --dot: #3a414b;
+    --signal: #ffb35c;
+    --signal-soft: #5a3a1d;
+    --calm: #7fb6d6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1116;
+  --ink: #ece9e1;
+  --ink-2: #aab0b8;
+  --ink-3: #7b828c;
+  --rule: #262c35;
+  --panel: #171c24;
+  --dot: #3a414b;
+  --signal: #ffb35c;
+  --signal-soft: #5a3a1d;
+  --calm: #7fb6d6;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.deck {
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+}
+.page {
+  min-height: 100%;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 64px 128px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { width: 100%; max-width: 1080px; margin: 0 auto; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+
+.kicker {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin: 0;
+}
+h1, h2 {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  margin: 0;
+}
+h1 { font-size: clamp(44px, 8.5vw, 108px); }
+h2 { font-size: clamp(32px, 5vw, 60px); }
+.lede { font-size: clamp(17px, 2vw, 21px); color: var(--ink-2); max-width: 46ch; margin: 0; text-wrap: pretty; }
+.note { font-size: 14px; color: var(--ink-3); max-width: 72ch; margin: 0; }
+
+canvas.scene { width: 100%; display: block; }
+#field { height: clamp(220px, 32vh, 330px); }
+#waffle { height: clamp(300px, 48vh, 440px); }
+#sort { height: clamp(340px, 50vh, 460px); }
+#wipe { height: clamp(270px, 38vh, 330px); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--ink-2); margin: 0; padding: 0; list-style: none; }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.sw { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.sw.grey { background: var(--dot); }
+.sw.amber { background: var(--signal); }
+.sw.blue { background: var(--calm); }
+.sw.sq { border-radius: 2px; }
+
+/* Destruction cases */
+.damage { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.cases { list-style: none; margin: 0; padding: 0; display: grid; }
+.cases li {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 12px;
+  padding: 5px 10px;
+  border-top: 1px solid var(--rule);
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  transition: background-color .3s, color .3s;
+  border-radius: 3px;
+}
+.cases li:last-child { border-bottom: 1px solid var(--rule); }
+.cases li.on { background: var(--panel); color: var(--ink); }
+.cases .when { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; color: var(--ink-3); padding-top: 2px; }
+.cases li.on .when { color: var(--signal); }
+
+.sources { font-size: 14px; color: var(--ink-2); display: grid; gap: 6px; padding-left: 0; list-style: none; margin: 0; }
+.sources a { color: var(--calm); }
+
+/* Next control. A pointer glides in and clicks it, the way an agent would. */
+.next {
+  position: fixed;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 5;
+}
+.next[hidden] { display: none !important; }
+.next button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--ink);
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 20px 11px 18px;
+  cursor: pointer;
+  animation: press 3.4s ease-in-out infinite;
+}
+.next button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.next button svg { width: 16px; height: 16px; stroke: var(--signal); fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.pointer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  animation: glide 3.4s cubic-bezier(.5,.05,.3,1) infinite;
+}
+.pointer path { fill: var(--signal); stroke: var(--bg); stroke-width: 1.4; stroke-linejoin: round; }
+.ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 50%;
+  border: 2px solid var(--signal);
+  pointer-events: none;
+  opacity: 0;
+  animation: ripple 3.4s ease-out infinite;
+}
+@keyframes glide {
+  0%   { transform: translate(-140px, -90px) rotate(-8deg); opacity: 0; }
+  12%  { opacity: 1; }
+  44%  { transform: translate(-2px, -2px) rotate(0deg); }
+  50%  { transform: translate(-2px, -2px) scale(.82); }
+  56%  { transform: translate(-2px, -2px) scale(1); opacity: 1; }
+  80%  { transform: translate(-2px, -2px); opacity: 1; }
+  100% { transform: translate(60px, 40px); opacity: 0; }
+}
+@keyframes ripple {
+  0%, 49% { transform: scale(.3); opacity: 0; }
+  51% { opacity: .9; }
+  75%, 100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes press {
+  0%, 48%, 58%, 100% { transform: scale(1); }
+  52% { transform: scale(.94); }
+}
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--signal);
+  transform-origin: left center;
+  transform: scaleX(0);
+  z-index: 6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck { scroll-behavior: auto; }
+  .pointer, .ripple { display: none; }
+  .next button { animation: none; }
+}
+@media (max-width: 760px) {
+  .damage { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<main class="deck" id="deck">
+
+  <section class="page" aria-label="Cover">
+    <div class="wrap">
+      <p class="kicker">AI agent incidents, 2025 to 2026</p>
+      <h1>Agents leave the chat</h1>
+      <p class="lede">AI agents now act on live systems. They delete databases, reach into systems they were never given, and move money. Agent incidents went from 7 in all of 2025 to 28 in the first nine months of 2026.</p>
+      <canvas class="scene" id="field" role="img" aria-label="A grid of 1,734 dots, one per reported AI incident in date order. The 35 agent incidents, all from 2025 and 2026, glow amber and then leave their places in the grid."></canvas>
+      <ul class="legend">
+        <li><span class="sw grey"></span>One reported AI incident, oldest at left</li>
+        <li><span class="sw amber"></span>Involves an AI agent (35)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="page" aria-label="Agent incidents by quarter">
+    <div class="wrap">
+      <p class="kicker">The trend</p>
+      <h2>Agent incidents rose while total incidents fell</h2>
+      <canvas class="scene" id="waffle" role="img" aria-label="Each square is one reported AI incident, stacked by quarter. Agent incidents, in amber, go from 2 of 124 in Q1 2025 to 14 of 72 in Q3 2026, or 1.6% to 19.4%."></canvas>
+      <ul class="legend">
+        <li><span class="sw grey sq"></span>One AI incident</li>
+        <li><span class="sw amber sq"></span>Involves an agent</li>
+      </ul>
+      <p class="note">The percentage above each column is the agent share of that quarter. Q3 2026 runs from July through September 29.</p>
+    </div>
+  </section>
+
+  <section class="page" aria-label="What agents did in 2026">
+    <div class="wrap">
+      <p class="kicker">The behavior</p>
+      <h2>Most 2026 cases were agents acting on their own</h2>
+      <canvas class="scene" id="sort" role="img" aria-label="28 dots, one per agent incident in 2026, sort themselves into four groups: accessed systems without authorization, 10. Deleted or tried to delete data, 8. Attacker used an agent, 6. Other, 4."></canvas>
+      <ul class="legend">
+        <li><span class="sw amber"></span>Agent acted on its own (18)</li>
+        <li><span class="sw blue"></span>A person used the agent to attack (6)</li>
+        <li><span class="sw grey"></span>Other (4)</li>
+      </ul>
+      <p class="note">In 2025, 5 of the 7 agent incidents were agents acting on their own. Categories are my coding of each incident's title and description.</p>
+    </div>
+  </section>
+
+  <section class="page" aria-label="Destructive agent incidents">
+    <div class="wrap">
+      <p class="kicker">The damage</p>
+      <h2>When agents delete data</h2>
+      <p class="lede">Ten cases, seven of them on production or live systems. Most of the agents were coding tools with write access.</p>
+      <div class="damage">
+        <canvas class="scene" id="wipe" role="img" aria-label="A log replays each of the ten cases in turn while a table of records empties row by row."></canvas>
+        <ol class="cases" id="cases"></ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" aria-label="Method and sources">
+    <div class="wrap">
+      <p class="kicker">Method</p>
+      <h2>How the numbers were built</h2>
+      <p class="note" style="font-size:16px; color:var(--ink)">Data: the AI Incident Database export dated October 12, 2026, with 1,734 incidents. I found agent incidents by searching titles and descriptions for agent terms, then checked each one by hand. I removed false matches such as police and immigration agents and chatbot scams.</p>
+      <p class="note" style="font-size:16px; color:var(--ink)">Limits: the database records incidents reported in the news, so the counts reflect what was reported and when editors logged it. Total incidents fell in recent quarters, which may be logging lag. The share is the more reliable measure. Every figure is a count of reports, not of real-world events.</p>
+      <ul class="sources" style="margin-top:12px">
+        <li>AI Incident Database, weekly export, October 12, 2026. <a href="https://incidentdatabase.ai/research/snapshots/" target="_blank" rel="noopener">incidentdatabase.ai</a></li>
+        <li>Gravitee, State of AI Agent Security 2026, reported by TechCrunch. <a href="https://techcrunch.com/?p=3141643" target="_blank" rel="noopener">techcrunch.com</a></li>
+        <li>METR, Documented AI Agent Incidents. <a href="https://metr.org/agent-incidents/" target="_blank" rel="noopener">metr.org</a></li>
+        <li>Cloud Security Alliance and Token Security, “Autonomous but Not Controlled,” April 2026. <a href="https://kiteworks.com/cybersecurity-risk-management/ai-agent-security-incidents-2026" target="_blank" rel="noopener">Kiteworks summary</a></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<div class="next" id="next">
+  <button type="button" id="nextBtn" aria-label="Go to next page">
+    Next
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+  <span class="ripple" aria-hidden="true"></span>
+  <svg class="pointer" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l15 9.5-6.6 1.3 3.9 7.4-2.9 1.5-3.9-7.4L4 19z"/></svg>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- Data: AI Incident Database export, Oct 12, 2026 ----
+  const TOTAL = 1734;
+  // Positions of the 35 agent incidents in the date-sorted list of all incidents.
+  const AGENT_IDX = [1061,1133,1297,1299,1301,1333,1458,1514,1522,1535,1536,1542,1560,1578,1589,1597,1609,1623,1627,1629,1649,1659,1662,1667,1669,1671,1672,1674,1685,1686,1707,1716,1720,1725,1729];
+  // Count of incidents dated before each year, for axis labels.
+  const YEAR_MARKS = [[2015, 47], [2020, 253], [2023, 533], [2025, 1020], [2026, 1477]];
+  const QUARTERS = [
+    { q: 'Q1 25', agent: 2, total: 124 }, { q: 'Q2 25', agent: 0, total: 126 },
+    { q: 'Q3 25', agent: 4, total: 92 },  { q: 'Q4 25', agent: 1, total: 115 },
+    { q: 'Q1 26', agent: 6, total: 95 },  { q: 'Q2 26', agent: 8, total: 87 },
+    { q: 'Q3 26*', agent: 14, total: 72 },
+  ];
+  const GROUPS = [
+    { name: 'Accessed systems without authorization', n: 10, color: 'signal' },
+    { name: 'Deleted or tried to delete data', n: 8, color: 'signal' },
+    { name: 'Attacker used an agent', n: 6, color: 'calm' },
+    { name: 'Other agent behavior', n: 4, color: 'dot' },
+  ];
+  const CASES = [
+    { when: 'Jul 2025', agent: 'Replit agent', target: 'production data, during a code freeze', verb: 'LOST', mode: 'delete', text: 'Replit agent ran destructive commands during a code freeze and lost production data.' },
+    { when: 'Jul 2025', agent: 'Gemini CLI', target: 'user files', verb: 'DELETED', mode: 'delete', text: 'Gemini CLI deleted user files after misreading a command sequence.' },
+    { when: 'Feb 2026', agent: 'OpenClaw agent', target: "a researcher's emails", verb: 'STOP IGNORED', mode: 'stop', text: "OpenClaw agent tried to delete an AI researcher's emails despite stop commands." },
+    { when: 'Feb 2026', agent: 'Claude Code agent', target: 'production infra, database, snapshots', verb: 'DELETED', mode: 'delete', text: 'Claude Code agent deleted production infrastructure, a database and its snapshots through Terraform.' },
+    { when: 'Apr 2026', agent: 'Cursor agent', target: 'PocketOS production database', verb: 'DELETED', mode: 'delete', text: 'Cursor agent deleted the PocketOS production database.' },
+    { when: 'May 2026', agent: 'Gemini 3.5 coding agent', target: 'production portal', verb: 'OUTAGE', mode: 'offline', text: 'Gemini 3.5 coding agent took down a production portal and produced fabricated recovery records.' },
+    { when: 'Jul 2026', agent: 'GPT-5.6 agent', target: "founder's Mac home directory", verb: 'DELETED', mode: 'delete', text: "GPT-5.6 agent deleted most files in a founder's Mac home directory." },
+    { when: 'Jul 2026', agent: 'GPT-5.6', target: "engineer's production database", verb: 'DELETED', mode: 'delete', text: "GPT-5.6 deleted a software engineer's production database during local testing." },
+    { when: 'Jul 2026', agent: 'Claude Opus 5 coding agent', target: 'live Supabase database', verb: 'RESET', mode: 'delete', text: 'Claude Opus 5 coding agent reset a live Supabase database during a migration.' },
+    { when: 'Sep 2026', agent: 'Claude Code agent', target: '~48,000 live files + history', verb: 'DELETED', mode: 'delete', text: 'Claude Code agent deleted about 48,000 live project files and their version history.' },
+  ];
+
+  // ---- Helpers ----
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+  const easeInOut = (p) => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+  const rng = (seed) => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  let C = {};
+  const readColors = () => {
+    const s = getComputedStyle(document.documentElement);
+    for (const k of ['bg', 'ink', 'ink-2', 'ink-3', 'rule', 'panel', 'dot', 'signal', 'signal-soft', 'calm']) C[k] = s.getPropertyValue('--' + k).trim();
+  };
+  readColors();
+  const MONO = '"IBM Plex Mono", ui-monospace, monospace';
+  const SANS = '"IBM Plex Sans", system-ui, sans-serif';
+  const wrapText = (ctx, text, maxW) => {
+    const words = text.split(' '); const lines = []; let line = '';
+    for (const w of words) { const test = line ? line + ' ' + w : w; if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; } else line = test; }
+    if (line) lines.push(line);
+    return lines;
+  };
+
+  // ---- Scene runner: each canvas redraws only while its page is on screen ----
+  const scenes = [];
+  const scene = (id, draw, restT) => {
+    const canvas = document.getElementById(id);
+    const s = { canvas, ctx: canvas.getContext('2d'), w: 0, h: 0, active: false, t0: 0, draw, restT };
+    s.resize = () => {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const r = canvas.getBoundingClientRect();
+      s.w = r.width; s.h = r.height;
+      canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
+      s.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    s.render = (t) => { s.ctx.clearRect(0, 0, s.w, s.h); s.draw(s.ctx, s.w, s.h, t); };
+    s.rest = () => s.render(s.restT);
+    scenes.push(s);
+    return s;
+  };
+
+  // Scene 1: every incident is a dot in date order. Agent dots light up, then break out of the grid.
+  const fieldR = rng(7);
+  const agentMotion = AGENT_IDX.map(() => ({ a1: .6 + fieldR() * .9, a2: .9 + fieldR() * 1.3, p1: fieldR() * 6.28, p2: fieldR() * 6.28, p3: fieldR() * 6.28, p4: fieldR() * 6.28 }));
+  const agentSet = new Set(AGENT_IDX);
+  scene('field', (ctx, W, H, t) => {
+    const labelH = 22, plotH = H - labelH;
+    let s = Math.sqrt(W * plotH / TOTAL);
+    const rows = Math.max(1, Math.floor(plotH / s));
+    const cols = Math.ceil(TOTAL / rows);
+    s = Math.min(W / cols, plotH / rows);
+    const ox = (W - cols * s) / 2;
+    const pos = (i) => [ox + (Math.floor(i / rows) + .5) * s, (i % rows + .5) * s];
+    const r = Math.max(1, s * .3);
+    const shown = TOTAL * easeOut(clamp(t / 1.8));
+
+    ctx.fillStyle = C.dot;
+    for (let i = 0; i < shown; i++) {
+      if (agentSet.has(i)) continue;
+      const [x, y] = pos(i);
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+    }
+
+    // Year labels along the bottom, skipped where they would collide.
+    ctx.font = `12px ${MONO}`; ctx.fillStyle = C['ink-3']; ctx.textAlign = 'center';
+    let lastX = -1e9;
+    for (const [yr, i] of YEAR_MARKS) { const x = pos(i)[0]; if (x - lastX > 44) { ctx.fillText(String(yr), x, H - 5); lastX = x; } }
+
+    const lit = clamp((t - 1.8) / .5);
+    const free = Math.max(0, t - 2.6);
+    AGENT_IDX.forEach((i, k) => {
+      if (i >= shown && t < 1.8) return;
+      const [hx, hy] = pos(i);
+      const m = agentMotion[k];
+      const amp = easeInOut(clamp(free / 3));
+      const at = (u) => {
+        const dx = (Math.sin(u * m.a1 + m.p1) + .5 * Math.sin(u * m.a2 * 1.7 + m.p3)) * W * .3;
+        const dy = (Math.sin(u * m.a2 + m.p2) + .5 * Math.sin(u * m.a1 * 1.3 + m.p4)) * plotH * .35;
+        return [clamp(hx + dx * amp, 6, W - 6), clamp(hy + dy * amp, 6, plotH - 6)];
+      };
+      if (free > 0) {
+        // The empty slot it left behind.
+        ctx.strokeStyle = C.signal; ctx.globalAlpha = .55; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(hx, hy, r + .5, 0, 6.283); ctx.stroke();
+        // Trail: earlier positions on the same path, fading out.
+        for (let j = 12; j >= 1; j--) {
+          const [tx, ty] = at(free - j * .05);
+          ctx.globalAlpha = .28 * (1 - j / 13); ctx.fillStyle = C.signal;
+          ctx.beginPath(); ctx.arc(tx, ty, r * 1.6 * (1 - j / 16), 0, 6.283); ctx.fill();
+        }
+      }
+      const [x, y] = free > 0 ? at(free) : [hx, hy];
+      const pulse = 1 + .35 * Math.sin(t * 5 + k) * (lit > 0 && free === 0 ? 1 : 0);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = lit > 0 ? C.signal : C.dot;
+      ctx.shadowColor = C.signal; ctx.shadowBlur = 10 * lit;
+      ctx.beginPath(); ctx.arc(x, y, r * (1 + .9 * lit) * pulse, 0, 6.283); ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+    ctx.globalAlpha = 1;
+  }, 2.4);
+
+  // Scene 2: each square is one incident, stacked by quarter. Columns shrink while the amber base grows.
+  scene('waffle', (ctx, W, H, t) => {
+    const per = 6, top = 30, bottom = 50;
+    const maxRows = Math.ceil(Math.max(...QUARTERS.map(q => q.total)) / per);
+    const n = QUARTERS.length;
+    let cell = Math.min(W / (n * per + (n - 1) * 1.8), (H - top - bottom) / maxRows);
+    const gap = cell * 1.8;
+    const ox = (W - (n * per * cell + (n - 1) * gap)) / 2;
+    const baseY = H - bottom;
+    const sq = cell * .8;
+    QUARTERS.forEach((Q, qi) => {
+      const x0 = ox + qi * (per * cell + gap);
+      const start = qi * .3;
+      for (let k = 0; k < Q.total; k++) {
+        const row = Math.floor(k / per), col = k % per;
+        const p = easeOut(clamp((t - start - (k / Q.total) * .8) / .3));
+        if (p <= 0) continue;
+        const x = x0 + col * cell, y = baseY - (row + 1) * cell - (1 - p) * 50;
+        const isAgent = k < Q.agent;
+        ctx.globalAlpha = p;
+        ctx.fillStyle = isAgent ? C.signal : C.dot;
+        if (isAgent) { ctx.shadowColor = C.signal; ctx.shadowBlur = t > 3.4 ? 6 + 4 * Math.sin(t * 3 + qi) : 0; }
+        ctx.fillRect(x, y, sq, sq);
+        ctx.shadowBlur = 0;
+      }
+      ctx.globalAlpha = 1;
+      const cx = x0 + (per * cell - (cell - sq)) / 2;
+      const done = clamp((t - start - 1.0) / .4);
+      const colTop = baseY - Math.ceil(Q.total / per) * cell;
+      ctx.textAlign = 'center';
+      ctx.globalAlpha = done;
+      ctx.font = `600 ${W < 520 ? 11 : 14}px ${MONO}`; ctx.fillStyle = Q.agent ? C.signal : C['ink-3'];
+      ctx.fillText((Q.agent / Q.total * 100).toFixed(1) + '%', cx, colTop - 10);
+      ctx.globalAlpha = 1;
+      ctx.font = `${W < 520 ? 10 : 13}px ${MONO}`; ctx.fillStyle = C['ink-2'];
+      ctx.fillText(Q.q, cx, baseY + 20);
+      ctx.fillStyle = C['ink-3'];
+      ctx.fillText(`${Q.agent}/${Q.total}`, cx, baseY + 38);
+    });
+  }, 99);
+
+  // Scene 3: the 28 incidents of 2026 move on their own, then sort into what they did.
+  const sortR = rng(11);
+  const sortMotion = Array.from({ length: 28 }, () => ({ a: .7 + sortR() * 1.1, b: .8 + sortR() * 1.2, p: sortR() * 6.28, q: sortR() * 6.28 }));
+  scene('sort', (ctx, W, H, t) => {
+    const wide = W >= 640;
+    const rowH = H / GROUPS.length;
+    const labelW = wide ? W * .4 : W;
+    const dotsX0 = wide ? labelW + 24 : 4;
+    const r = Math.max(4, Math.min(wide ? rowH * .2 : rowH * .15, (W - dotsX0) / (10 * 2.7)));
+    const slots = [];
+    GROUPS.forEach((g, gi) => {
+      const cy = wide ? gi * rowH + rowH / 2 : gi * rowH + rowH * .68;
+      for (let j = 0; j < g.n; j++) slots.push({ x: dotsX0 + r + j * r * 2.7, y: cy, gi });
+    });
+    const wander = (k, u) => {
+      const m = sortMotion[k];
+      return [W / 2 + Math.sin(u * m.a + m.p) * W * .36 + Math.sin(u * m.b * 1.9) * W * .06,
+              H / 2 + Math.sin(u * m.b + m.q) * H * .34 + Math.cos(u * m.a * 1.4) * H * .06];
+    };
+    const landT = [];
+    slots.forEach((sl, k) => {
+      const tf = 1.4 + k * .075;
+      const p = easeInOut(clamp((t - tf) / .9));
+      const [wx, wy] = wander(k, Math.min(t, tf));
+      const x = wx + (sl.x - wx) * p, y = wy + (sl.y - wy) * p;
+      landT[sl.gi] = tf + .9;
+      ctx.fillStyle = p > .6 ? C[GROUPS[sl.gi].color] : C.signal;
+      ctx.globalAlpha = .9;
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    GROUPS.forEach((g, gi) => {
+      const a = clamp((t - landT[gi] + .2) / .5);
+      if (a <= 0) return;
+      ctx.globalAlpha = a;
+      ctx.textAlign = 'left';
+      const fs = wide ? 17 : 14;
+      ctx.font = `500 ${fs}px ${SANS}`; ctx.fillStyle = C.ink;
+      if (wide) {
+        const lines = wrapText(ctx, g.name, labelW - 70);
+        const cy = gi * rowH + rowH / 2;
+        lines.forEach((ln, li) => ctx.fillText(ln, 64, cy + (li - (lines.length - 1) / 2) * fs * 1.3 + fs * .35));
+        ctx.font = `600 30px ${MONO}`; ctx.fillStyle = C[g.color === 'dot' ? 'ink-3' : g.color];
+        ctx.fillText(String(g.n), 0, cy + 10);
+      } else {
+        const y = gi * rowH + rowH * .3;
+        ctx.font = `600 16px ${MONO}`; ctx.fillStyle = C[g.color === 'dot' ? 'ink-3' : g.color];
+        ctx.fillText(String(g.n), 0, y);
+        ctx.font = `500 ${fs}px ${SANS}`; ctx.fillStyle = C.ink;
+        ctx.fillText(g.name, 30, y);
+      }
+    });
+    ctx.globalAlpha = 1;
+  }, 99);
+
+  // Scene 4: a log replays each case while a table of records empties.
+  const CYCLE = 6.4;
+  const casesEl = document.getElementById('cases');
+  CASES.forEach((c, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="when"></span><span class="what"></span>';
+    li.querySelector('.when').textContent = c.when;
+    li.querySelector('.what').textContent = c.text;
+    casesEl.appendChild(li);
+  });
+  const caseItems = [...casesEl.children];
+  let shownCase = -1;
+  const ROW_WIDTHS = [[.16, .34, .22, .14], [.12, .4, .18, .2], [.18, .28, .26, .12], [.14, .36, .2, .18], [.16, .3, .24, .16], [.12, .38, .2, .14], [.18, .32, .22, .18], [.14, .34, .26, .12]];
+  scene('wipe', (ctx, W, H, t) => {
+    const ci = Math.floor(t / CYCLE) % CASES.length;
+    const u = t % CYCLE;
+    const c = CASES[ci];
+    if (ci !== shownCase) { caseItems.forEach((el, i) => el.classList.toggle('on', i === ci)); shownCase = ci; }
+    const fs = W < 460 ? 12 : 14;
+    const pad = 16;
+    ctx.fillStyle = C.panel;
+    ctx.beginPath(); ctx.roundRect(0, 0, W, H, 6); ctx.fill();
+
+    // Typed log lines.
+    ctx.font = `${fs}px ${MONO}`; ctx.textAlign = 'left';
+    const l1 = `> ${c.when}  ${c.agent}`;
+    const l2 = `  target: ${c.target}`;
+    const n1 = Math.floor(l1.length * clamp(u / .8)), n2 = Math.floor(l2.length * clamp((u - .8) / .8));
+    ctx.fillStyle = C.signal; ctx.fillText(l1.slice(0, n1), pad, pad + fs);
+    ctx.fillStyle = C['ink-2']; ctx.fillText(l2.slice(0, n2), pad, pad + fs * 2.5);
+    if (Math.floor(u * 3) % 2 === 0 && u < 1.8) {
+      const x = pad + ctx.measureText((u < .8 ? l1.slice(0, n1) : l2.slice(0, n2))).width + 2;
+      ctx.fillStyle = C.ink; ctx.fillRect(x, (u < .8 ? pad : pad + fs * 1.5) + 2, fs * .55, fs);
+    }
+
+    // Table of records.
+    const tableTop = pad + fs * 4, footer = 34;
+    const rows = ROW_WIDTHS.length;
+    const rh = (H - tableTop - footer) / rows;
+    const delStart = 2.0, step = .24;
+    let remaining = rows;
+    for (let i = 0; i < rows; i++) {
+      const dt = u - (delStart + i * step);
+      let h = 1, flash = 0, offline = false;
+      if (c.mode === 'offline') { offline = dt > 0; }
+      else if (dt > 0) { flash = clamp(1 - dt / .18); h = 1 - easeOut(clamp((dt - .12) / .25)); }
+      if (h < .02 && !offline) { remaining--; continue; }
+      const y = tableTop + i * rh + (rh * (1 - h)) / 2;
+      let x = pad;
+      ROW_WIDTHS[i].forEach((fw) => {
+        const w = (W - pad * 2) * fw;
+        ctx.globalAlpha = offline ? .25 : h;
+        ctx.fillStyle = flash > 0 ? C.signal : C.dot;
+        if (offline) { ctx.strokeStyle = C['ink-3']; ctx.setLineDash([3, 3]); ctx.strokeRect(x, y + rh * .25, w - 10, rh * .5 * h); ctx.setLineDash([]); }
+        else ctx.fillRect(x, y + rh * .25 * h, w - 10, rh * .5 * h);
+        x += w + 4;
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    // Footer status.
+    ctx.font = `600 ${fs}px ${MONO}`;
+    const doneT = delStart + rows * step + .3;
+    if (u > delStart) {
+      if (c.mode === 'offline') {
+        ctx.fillStyle = C.signal; ctx.fillText(u > delStart + .4 ? 'portal OUTAGE' : '', pad, H - 13);
+      } else {
+        ctx.fillStyle = C['ink-2'];
+        ctx.fillText(`${remaining} of ${rows} rows`, pad, H - 13);
+        if (c.mode === 'stop' && u > delStart + .5) {
+          ctx.fillStyle = C.calm; ctx.textAlign = 'center'; ctx.fillText('stop sent', W / 2, H - 13);
+        }
+      }
+      if (u > doneT) {
+        ctx.textAlign = 'right'; ctx.fillStyle = C.signal;
+        ctx.globalAlpha = clamp((u - doneT) / .3);
+        ctx.fillText(c.verb, W - pad, H - 13);
+        ctx.globalAlpha = 1;
+      }
+    }
+    ctx.textAlign = 'left';
+  }, 1.9);
+
+  // ---- Run scenes only while visible; at rest each shows a complete frame ----
+  const ro = new ResizeObserver(() => scenes.forEach(s => { s.resize(); if (!s.active) s.rest(); }));
+  scenes.forEach(s => { ro.observe(s.canvas); s.resize(); s.rest(); });
+  if (!reduce) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        const s = scenes.find(x => x.canvas === e.target);
+        if (e.isIntersecting && !s.active) { s.active = true; s.t0 = performance.now(); }
+        else if (!e.isIntersecting && s.active) { s.active = false; s.rest(); }
+      });
+    }, { threshold: .4 });
+    scenes.forEach(s => io.observe(s.canvas));
+    const loop = (now) => {
+      scenes.forEach(s => { if (s.active) s.render((now - s.t0) / 1000); });
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+  const recolor = () => { readColors(); scenes.forEach(s => { if (!s.active) s.rest(); }); };
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', recolor);
+  new MutationObserver(recolor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.fonts) document.fonts.ready.then(() => scenes.forEach(s => { if (!s.active) s.rest(); }));
+
+  // ---- Paging ----
+  const deck = document.getElementById('deck');
+  const pages = [...deck.querySelectorAll('.page')];
+  const next = document.getElementById('next');
+  const progress = document.getElementById('progress');
+  const indexOf = () => {
+    const mid = deck.scrollTop + deck.clientHeight / 2;
+    let idx = 0;
+    pages.forEach((p, i) => { if (p.offsetTop <= mid) idx = i; });
+    return idx;
+  };
+  const goTo = (i) => pages[clamp(i, 0, pages.length - 1)].scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  const update = () => {
+    next.hidden = indexOf() === pages.length - 1;
+    const max = deck.scrollHeight - deck.clientHeight;
+    progress.style.transform = `scaleX(${max > 0 ? deck.scrollTop / max : 1})`;
+  };
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(indexOf() + 1));
+  deck.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  window.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); goTo(indexOf() + 1); }
+    if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); goTo(indexOf() - 1); }
+  });
+  update();
+})();
+</script>
+</body>
+</html>
