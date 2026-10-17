@@ -94,6 +94,16 @@ A paged data story about AI agent incidents, built from the AI Incident Database
 
 [Full-quality video (MP4)](agents-leave-the-chat/demo.mp4)
 
+### [The Gigawatt Rush](gigawatt-rush/)
+
+A paged data story about the AI data center build-out, built from Epoch AI's satellite-tracked data on 94 frontier sites. Tracked capacity went from 0.6 GW in January 2024 to 18 GW in October 2026, with 49 GW planned by 2029. Each page has one animated figure: U.S. sites lighting up on a night map, 100 MW squares pouring into columns, planned capacity swelling across the map, radiation symbols filling like dials against the U.S. nuclear fleet, a race from bare ground to first power, and a bar race of owners.
+
+**Live page:** https://squoraishee.github.io/gigawatt-rush/
+
+![Paging through The Gigawatt Rush](gigawatt-rush/demo.gif)
+
+[Full-quality video (MP4)](gigawatt-rush/demo.mp4)
+
 ## Running them
 
 The Luminous Basin and Snakephoria are plain HTML, CSS, and JavaScript. Open the `index.html` file in a modern browser. The Luminous Basin loads Three.js from a CDN, so it needs an internet connection.
