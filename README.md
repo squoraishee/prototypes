@@ -2,7 +2,7 @@
 
 A party-snake game where you grow a cake chain, chase friends through a festival map, and beat the bosses on your way to the finale.
 
-**Live game:** https://squoraishee.github.io/snakephoria/
+**Live game:** https://thedailycoefficient.com/snakephoria/
 
 ![Snakephoria](screenshot.png)
 
