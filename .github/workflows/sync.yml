@@ -1,0 +1,38 @@
+# On every push to main:
+#   1. copies this repo, with its history, to the private copy on the thedailycoefficient account, and
+#   2. asks the site repo (squoraishee/daily-coefficient) to rebuild the public site with the new content.
+# Secrets: DEPLOY_TOKEN, from thedailycoefficient, with Contents read and write on the copy;
+# SITE_TOKEN, from squoraishee, with Contents read and write on daily-coefficient, stories and prototypes.
+# Each step skips until its secret exists.
+name: Sync
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+      SITE_TOKEN: ${{ secrets.SITE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Copy to thedailycoefficient
+        run: |
+          if [ -z "$DEPLOY_TOKEN" ]; then echo "DEPLOY_TOKEN isn't set yet, so nothing was copied."; exit 0; fi
+          name="${GITHUB_REPOSITORY#*/}"
+          git push -q -f "https://x-access-token:${DEPLOY_TOKEN}@github.com/thedailycoefficient/${name}.git" HEAD:main \
+            && echo "Copied to thedailycoefficient/${name}" || echo "::warning::Couldn't copy to thedailycoefficient/${name}"
+
+      - name: Rebuild the site
+        run: |
+          if [ -z "$SITE_TOKEN" ]; then echo "SITE_TOKEN isn't set yet, so the site wasn't rebuilt."; exit 0; fi
+          curl -sf -X POST -H "Authorization: Bearer ${SITE_TOKEN}" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/squoraishee/daily-coefficient/dispatches \
+            -d "{\"event_type\":\"content-updated\",\"client_payload\":{\"from\":\"${GITHUB_REPOSITORY}\"}}"
+          echo "Asked the site to rebuild."
