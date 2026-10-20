@@ -4,6 +4,8 @@ Browser prototypes: simulations, games and experiments, one folder per prototype
 
 | Prototype | What it is |
 | --- | --- |
+| [Reading a Suspicious Recording](audio-forensics/) | How an audio forensic examiner checks whether a recording is real |
+| [Reading the Light Under a Forest](forest-light/) | Sunlight followed into a forest, one photon at a time |
 | [Turing Bloom](turing-bloom/) | Gray-Scott reaction-diffusion, the model behind Turing patterns, in WebGL2 |
 | [The Luminous Basin](luminous-basin/) | An interactive landscape made from Gaussian splats |
 | [Snakephoria](snakephoria/) | A party-snake game with 21 levels and bosses |
