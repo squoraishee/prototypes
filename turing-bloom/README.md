@@ -2,7 +2,7 @@
 
 A browser simulation of Gray-Scott reaction-diffusion, the model behind Turing patterns.
 
-**Live page:** https://thedailycoefficient.com/turing-bloom/
+**Live page:** https://squoraishee.github.io/prototypes/turing-bloom/
 
 ![Turing Bloom, growing from a center seed](demo.gif)
 

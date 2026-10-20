@@ -2,7 +2,7 @@
 
 A small interactive landscape made from Gaussian splats, running in the browser.
 
-**Live page:** https://thedailycoefficient.com/luminous-basin/
+**Live page:** https://squoraishee.github.io/prototypes/luminous-basin/
 
 ![The Luminous Basin](screenshot.png)
 

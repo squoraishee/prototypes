@@ -1,13 +1,13 @@
 # Prototypes
 
-The Daily Coefficient's prototypes: simulations, games and experiments, one folder per prototype. Each folder's name is its slug, and the site serves it at `thedailycoefficient.com/<slug>/`.
+Browser prototypes: simulations, games and experiments, one folder per prototype. GitHub Pages serves this repo at https://squoraishee.github.io/prototypes/, and each prototype at `squoraishee.github.io/prototypes/<folder>/`. `index.html` at the top lists them all.
 
-Each folder holds the page (`index.html`), a README, the recording (`demo.gif`, `demo.mp4`) and the data scripts. Add a new prototype as a new folder here, and list it in `assets/site.js` in the site repo (squoraishee/daily-coefficient) with `kind: "prototype"`.
+| Prototype | What it is |
+| --- | --- |
+| [Turing Bloom](turing-bloom/) | Gray-Scott reaction-diffusion, the model behind Turing patterns, in WebGL2 |
+| [The Luminous Basin](luminous-basin/) | An interactive landscape made from Gaussian splats |
+| [Snakephoria](snakephoria/) | A party-snake game with 21 levels and bosses |
+| [Photon Ring](photon-ring/) | A ray tracer for a spinning black hole, with a tour of the M87* and Sagittarius A* results |
+| [Faraday Quasicrystal](faraday-quasicrystal/) | Faraday waves on a shaken fluid, from stripes to quasicrystal patterns |
 
-Stories live in their own repo, squoraishee/stories. A prototype only goes on the site once it is listed in `site.js`.
-
-## How it gets published
-
-Pushing to `main` runs `.github/workflows/sync.yml`. It copies this repo to the private copy on the thedailycoefficient account, then asks the site repo to rebuild. The site repo's deploy takes every slug listed in `site.js` from here or from the stories repo, and publishes only the served files.
-
-The workflow needs two secrets: `DEPLOY_TOKEN` (from thedailycoefficient, Contents read and write on the copy) and `SITE_TOKEN` (from squoraishee, Contents read and write on daily-coefficient, stories and prototypes).
+To add a prototype, add its folder and a card in `index.html`, then push to `main`. Each folder has its own README with how it works and how to run it.
