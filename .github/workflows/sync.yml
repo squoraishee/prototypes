@@ -26,6 +26,9 @@ jobs:
         run: |
           if [ -z "$DEPLOY_TOKEN" ]; then echo "DEPLOY_TOKEN isn't set yet, so nothing was copied."; exit 0; fi
           name="${GITHUB_REPOSITORY#*/}"
+          # Copy only into a private repo, so the history never lands somewhere public.
+          vis=$(curl -s -H "Authorization: Bearer ${DEPLOY_TOKEN}" "https://api.github.com/repos/thedailycoefficient/${name}" | python3 -c "import json,sys; print(json.load(sys.stdin).get('visibility',''))")
+          if [ "$vis" != private ]; then echo "::warning::thedailycoefficient/${name} isn't private (${vis:-not found}), so it wasn't copied"; exit 0; fi
           git push -q -f "https://x-access-token:${DEPLOY_TOKEN}@github.com/thedailycoefficient/${name}.git" HEAD:main \
             && echo "Copied to thedailycoefficient/${name}" || echo "::warning::Couldn't copy to thedailycoefficient/${name}"
 
