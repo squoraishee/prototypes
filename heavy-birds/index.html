@@ -106,6 +106,13 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
 .sw { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex: none; }
 .sw.sq { border-radius: 3px; }
 .sw.ring { background: transparent !important; border: 2px solid var(--dmg); }
+.ico { width: 24px; height: 14px; flex: none; fill: currentColor; }
+.flock { position: absolute; right: 0; top: 34px; width: min(34vw, 360px); height: auto; color: var(--big); fill: currentColor; opacity: .9; pointer-events: none; }
+.flock use { animation: glide 5s ease-in-out infinite; }
+.flock use:nth-child(2n) { animation-delay: -1.7s; }
+.flock use:nth-child(3n) { animation-delay: -3.1s; }
+@keyframes glide { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@media (max-width: 760px) { .flock { width: 150px; top: 58px; opacity: .8; } }
 
 .scrub { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
 .scrub button {
@@ -152,6 +159,7 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
 @media (prefers-reduced-motion: reduce) {
   .deck { scroll-behavior: auto; }
   .next .wing { animation: none; }
+  .flock use { animation: none; }
 }
 @media (max-width: 760px) {
   body { font-size: 17px; }
@@ -168,6 +176,7 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
 </head>
 <body>
 <div class="progress" id="progress" aria-hidden="true"></div>
+<svg id="sprite" width="0" height="0" style="position:absolute" aria-hidden="true"></svg>
 
 <main class="deck" id="deck">
 
@@ -175,9 +184,10 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
     <div class="wrap">
       <p class="kicker"><b>01</b> Wildlife strikes on U.S. aircraft, 2025</p>
       <h1>Heavy <i>Birds</i></h1>
+      <svg class="flock" viewBox="0 0 360 150" aria-hidden="true"><use href="#g-goose" x="250" y="10" width="70" height="42"/><use href="#g-goose" x="190" y="38" width="60" height="36"/><use href="#g-goose" x="130" y="64" width="54" height="32"/><use href="#g-goose" x="75" y="88" width="48" height="29"/><use href="#g-goose" x="200" y="88" width="50" height="30"/><use href="#g-goose" x="150" y="112" width="44" height="26"/></svg>
       <p class="lede">Pilots, airports and airlines reported <b>24,457</b> collisions between aircraft and wildlife in the United States in 2025, the most since the FAA's records begin in 1990. That is about <b>67 a day</b>. Most were small birds that did no harm. The damage came from a few heavy species. Through August, <b>2026</b> is running <b>4%</b> ahead of last year.</p>
       <div class="fig">
-        <canvas class="scene" id="map" role="img" aria-label="A map of the United States. Through 2025, a circle grows at each airport as its wildlife strikes are reported, day by day. Small birds are slate dots, large birds amber, and strikes that damaged the aircraft are ringed in red. Strikes rise in spring and peak in late summer and early fall. Denver, Houston and Dallas-Fort Worth grow largest."></canvas>
+        <canvas class="scene" id="map" role="img" aria-label="A map of the United States. Through 2025, a circle grows at each airport as its wildlife strikes are reported, day by day. Each new strike appears as a bird flying in: small birds in slate, large birds in amber, and strikes that damaged the aircraft in red. Strikes rise in spring and peak in late summer and early fall. Denver, Houston and Dallas-Fort Worth grow largest."></canvas>
         <div class="tip" id="mapTip"></div>
       </div>
       <div class="scrub">
@@ -186,8 +196,8 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
         <output id="dayOut" for="day">Dec 31</output>
       </div>
       <ul class="legend">
-        <li><span class="sw" style="background:var(--small)"></span>Small or medium bird, or unknown</li>
-        <li><span class="sw" style="background:var(--big)"></span>Large bird or mammal</li>
+        <li><svg class="ico" style="color:var(--small)"><use href="#g-song"/></svg>Small or medium bird, or unknown</li>
+        <li><svg class="ico" style="color:var(--big)"><use href="#g-raptor"/></svg>Large bird or mammal</li>
         <li><span class="sw ring"></span>Damaged the aircraft</li>
       </ul>
       <p class="note">Each circle is an airport, sized by its strikes so far in 2025. 19,450 of the year's 24,457 reports name an airport that can be placed on the map. The rest happened en route or at an unnamed airport. Hover or tap an airport to read it.</p>
@@ -218,9 +228,9 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
       <p class="lede">Where a report gives the animal's size, large birds and mammals were <b>5%</b> of 2025's strikes but <b>35%</b> of the strikes that damaged an aircraft. A small bird damaged the aircraft about <b>1 time in 60</b>. A large animal damaged it about <b>1 time in 4</b>.</p>
       <canvas class="scene" id="sizes" role="img" aria-label="Two rows of squares, each square ten strikes. The top row, all 2025 strikes with a known size, is mostly slate small birds, with a thin blue band of medium birds and a sliver of amber large animals. The bottom row, only the strikes that damaged the aircraft, is split roughly into thirds of small, medium and large."></canvas>
       <ul class="legend">
-        <li><span class="sw sq" style="background:var(--small)"></span>Small</li>
-        <li><span class="sw sq" style="background:var(--mid)"></span>Medium</li>
-        <li><span class="sw sq" style="background:var(--big)"></span>Large</li>
+        <li><svg class="ico" style="color:var(--small)"><use href="#g-song"/></svg>Small, like a dove or swallow</li>
+        <li><svg class="ico" style="color:var(--mid)"><use href="#g-raptor"/></svg>Medium, like a hawk or duck</li>
+        <li><svg class="ico" style="color:var(--big)"><use href="#g-goose"/></svg>Large, like a goose, vulture or deer</li>
       </ul>
       <p class="note">Each square is 10 strikes. Size is recorded for 18,116 of the year's 24,457 strikes and 709 of its 905 damaging ones. The FAA counts a strike as damaging when the aircraft had minor, substantial or uncertain damage, or was destroyed.</p>
     </div>
@@ -236,11 +246,11 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
         <div class="tip" id="speciesTip"></div>
       </div>
       <ul class="legend">
-        <li><span class="sw" style="background:var(--small)"></span>Small</li>
-        <li><span class="sw" style="background:var(--mid)"></span>Medium</li>
-        <li><span class="sw" style="background:var(--big)"></span>Large</li>
+        <li><svg class="ico" style="color:var(--small)"><use href="#g-song"/></svg>Small</li>
+        <li><svg class="ico" style="color:var(--mid)"><use href="#g-raptor"/></svg>Medium</li>
+        <li><svg class="ico" style="color:var(--big)"><use href="#g-goose"/></svg>Large</li>
       </ul>
-      <p class="note">Species with at least 60 strikes from 2015 to 2025, where the report names the species. Dot area shows reported repair costs, adjusted for inflation. Most reports don't give a cost, so this is a floor. Hover or tap a dot.</p>
+      <p class="note">Species with at least 60 strikes from 2015 to 2025, where the report names the species. Size shows reported repair costs, adjusted for inflation. The best-known species are drawn as the animal. Most reports don't give a cost, so this is a floor. Hover or tap a dot.</p>
     </div>
   </section>
 
@@ -254,10 +264,10 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
         <div class="tip" id="growthTip"></div>
       </div>
       <ul class="legend">
-        <li><span class="sw" style="background:var(--big)"></span>Grew faster than all strikes</li>
-        <li><span class="sw" style="background:var(--small)"></span>Grew slower</li>
+        <li><svg class="ico" style="color:var(--big)"><use href="#g-raptor"/></svg>Grew faster than all strikes</li>
+        <li><svg class="ico" style="color:var(--small)"><use href="#g-goose"/></svg>Grew slower</li>
       </ul>
-      <p class="note">Each arrow runs from the five years 1990 to 1994 to the five years 2020 to 2024. The dashed line marks growth of 6.9 times, the rise in all reported strikes. Black vultures start from 2 strikes, so their multiple is large and uncertain. The 2021 eagle estimate used a new method, so part of its rise over 2009 reflects better counting.</p>
+      <p class="note">Each animal flies from its count in 1990 to 1994 to its count in 2020 to 2024. The dashed line marks growth of 6.9 times, the rise in all reported strikes. Black vultures start from 2 strikes, so their multiple is large and uncertain. The 2021 eagle estimate used a new method, so part of its rise over 2009 reflects better counting.</p>
     </div>
   </section>
 
@@ -272,7 +282,7 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
         <button type="button" data-p="1" aria-pressed="false">2005–2014</button>
         <button type="button" data-p="2" aria-pressed="true">2015–2025</button>
       </div>
-      <p class="note">Darker states had more black vulture strikes in the period. The map plays through the three periods once, then the buttons pick one. A strike's state is where the airport is, and strike counts also depend on how many airports in a state report.</p>
+      <p class="note">Darker states had more black vulture strikes in the period, and more vultures circle them. The map plays through the three periods once, then the buttons pick one. A strike's state is where the airport is, and strike counts also depend on how many airports in a state report.</p>
     </div>
   </section>
 
@@ -286,10 +296,10 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
         <div class="tip" id="heightsTip"></div>
       </div>
       <ul class="legend">
-        <li><span class="sw sq" style="background:var(--small)"></span>Strikes</li>
+        <li><svg class="ico" style="color:var(--small)"><use href="#g-song"/></svg>About 1,000 strikes</li>
         <li><span class="sw" style="background:var(--dmg)"></span>Share that damaged the aircraft</li>
       </ul>
-      <p class="note">Height is given for 78,172 of the 186,401 strikes from 2015 to 2025, mostly by airline crews. A height of zero means the aircraft was on the runway. Hover or tap a band.</p>
+      <p class="note">Each bird in a bar stands for about 1,000 strikes. Height is given for 78,172 of the 186,401 strikes from 2015 to 2025, mostly by airline crews. A height of zero means the aircraft was on the runway. Hover or tap a band.</p>
     </div>
   </section>
 
@@ -361,6 +371,58 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
   const alpha = (hex, a) => `rgba(${rgb(hex).join(',')},${a})`;
   const mix = (a, b, p) => { const x = rgb(a), y = rgb(b); return `rgb(${x.map((v, i) => Math.round(lerp(v, y[i], p))).join(',')})`; };
   const SIZE_COL = () => [C.small, C.mid, C.big];
+
+  // ---- Bird and animal silhouettes, about 100 units wide, centered on 0,0. The same geometry draws on the
+  //      canvases and in the legend icons. Side views face right; raptors are seen from below, head up. ----
+  const polyD = (pts) => 'M' + pts.map(p => p.join(',')).join('L') + 'Z';
+  const ellD = (cx, cy, rx, ry) => `M${cx - rx},${cy}a${rx},${ry} 0 1,0 ${2 * rx},0a${rx},${ry} 0 1,0 ${-2 * rx},0Z`;
+  const mirror = (half) => [...half, ...half.slice().reverse().map(([x, y]) => [-x, y])];
+  const RAPTOR = polyD(mirror([[0, -10], [2.5, -8], [3, -5], [10, -5], [24, -6.5], [37, -8.5], [45, -10], [50, -8], [46, -6.5], [50, -4.5], [45, -3.5], [48.5, -1], [43, -0.5], [34, 2], [20, 4], [8, 4.5], [4, 6], [5, 12], [0, 13]]));
+  const OSPREY = polyD(mirror([[0, -9], [2.5, -7], [3, -4], [9, -5], [17, -10], [25, -12.5], [31, -9], [38, -5], [45, -2], [50, 0], [46, 1.5], [49, 3.5], [44, 3.5], [36, 2.5], [27, -3], [19, 0], [9, 4], [4, 6], [4.5, 11], [0, 12]]));
+  const SONG = ellD(0, 0, 26, 11) + ellD(22, -5, 9, 9) + polyD([[29, -7], [40, -3.5], [29, -1]]) + polyD([[-22, -2], [-48, -9], [-46, 4], [-22, 5]]);
+  const songWing = (f) => polyD([[6, -4], [-4, -4 - 38 * f], [-24, -4 - 32 * f], [-14, 2]]);
+  const GOOSE_BODY = ellD(-6, 4, 26, 10) + polyD([[-28, 2], [-44, -2], [-42, 8], [-28, 9]]);
+  const GOOSE_NECK = polyD([[14, 0], [36, -10], [40, -5], [18, 9]]) + ellD(42, -9, 7, 5) + polyD([[47, -10], [54, -7.5], [47, -5.5]]);
+  const gooseWing = (f) => polyD([[10, 0], [-2, -2 - 44 * f], [-24, -2 - 40 * f], [-14, 5]]);
+  const DEER = ellD(-4, 0, 26, 11) + [-24, -17, 10, 17].map(x => `M${x},6h4v30h-4Z`).join('') + polyD([[12, -6], [24, -26], [33, -22], [22, 2]]) + ellD(32, -26, 9, 5) + polyD([[38, -28], [48, -23], [38, -21]]) + polyD([[25, -30], [20, -40], [29, -31]]) + polyD([[-28, -6], [-36, -10], [-30, -1]]);
+  const ANTLER = 'M30,-31L28,-48M28,-40L36,-46M28,-44L22,-50';
+  const PLANE = 'M-41,-5h82a5,5 0 0 1 0,10h-82a5,5 0 0 1 0,-10Z' + polyD([[-46, -3], [-50, -22], [-40, -22], [-30, -5]]) + polyD([[-6, 2], [-20, 15], [-10, 15], [8, 2]]) + ellD(-4, 9, 7, 3);
+  const P2 = {}, path2 = (d) => P2[d] || (P2[d] = new Path2D(d));
+  const BIRD = (ctx, kind, x, y, w, color, o = {}) => {
+    const f = o.flap === undefined ? .8 : o.flap, k = w / 100;
+    ctx.save(); ctx.translate(x, y); if (o.rot) ctx.rotate(o.rot); ctx.scale(o.flip ? -k : k, k);
+    if (o.alpha !== undefined) ctx.globalAlpha *= o.alpha;
+    ctx.fillStyle = color;
+    const light = o.light || C.bg, dark = o.dark || C.ink;
+    if (kind === 'raptor' || kind === 'vulture' || kind === 'eagle' || kind === 'osprey') ctx.scale(1, 1.7);
+    if (kind === 'raptor' || kind === 'vulture' || kind === 'eagle') {
+      ctx.fill(path2(RAPTOR));
+      if (kind === 'eagle') { ctx.fillStyle = light; ctx.fill(path2(ellD(0, -7.5, 3.2, 3.5))); ctx.fill(path2(polyD([[3.6, 7], [5, 12], [0, 13], [-5, 12], [-3.6, 7]]))); }
+      if (kind === 'vulture') { ctx.fillStyle = alpha(light, .45); ctx.fill(path2(polyD([[12, 3.8], [34, 1.8], [43, -0.4], [42, 1.2], [34, 3.4], [20, 5]]))); ctx.fill(path2(polyD([[-12, 3.8], [-34, 1.8], [-43, -0.4], [-42, 1.2], [-34, 3.4], [-20, 5]]))); }
+    } else if (kind === 'osprey') {
+      ctx.fill(path2(OSPREY));
+    } else if (kind === 'song') {
+      ctx.fill(path2(SONG)); ctx.fill(new Path2D(songWing(f)));
+    } else if (kind === 'goose' || kind === 'canada' || kind === 'snow') {
+      ctx.fill(path2(GOOSE_BODY)); ctx.fill(new Path2D(gooseWing(f)));
+      ctx.fillStyle = kind === 'canada' ? dark : color; ctx.fill(path2(GOOSE_NECK));
+      if (kind === 'canada') { ctx.fillStyle = light; ctx.fill(path2(ellD(41, -7, 3.2, 2))); }
+      if (kind === 'snow') { ctx.fillStyle = dark; ctx.fill(new Path2D(polyD([[-2, -2 - 44 * f], [-24, -2 - 40 * f], [-14, -2 - 30 * f], [-6, -2 - 32 * f]]))); }
+    } else if (kind === 'deer') {
+      ctx.fill(path2(DEER)); ctx.strokeStyle = color; ctx.lineWidth = 2.6; ctx.lineCap = 'round'; ctx.stroke(path2(ANTLER));
+    } else if (kind === 'plane') {
+      ctx.fill(path2(PLANE));
+    }
+    ctx.restore();
+  };
+  // Legend icons and the cover flock use the same shapes as SVG symbols.
+  const SYMBOLS = {
+    song: ['-50 -46 92 58', SONG + songWing(.8)],
+    raptor: ['-52 -26 104 52', RAPTOR, 'scale(1,1.7)'],
+    goose: ['-46 -48 102 62', GOOSE_BODY + gooseWing(.9) + GOOSE_NECK],
+    deer: ['-38 -52 88 90', DEER + 'M28,-48L30,-31L31,-31L29,-48Z'],
+  };
+  document.getElementById('sprite').innerHTML = '<defs>' + Object.entries(SYMBOLS).map(([k, [vb, d, tf]]) => `<symbol id="g-${k}" viewBox="${vb}"><path d="${d}"${tf ? ` transform="${tf}"` : ''}/></symbol>`).join('') + '</defs>';
   const label = (ctx, text, x, y, o = {}) => {
     ctx.font = `${o.weight || 400} ${o.size || 12}px ${o.font || '"JetBrains Mono", ui-monospace, monospace'}`;
     ctx.textAlign = o.align || 'left'; ctx.textBaseline = o.base || 'middle';
@@ -460,8 +522,9 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
       const age = (day - d) / 3;
       for (const [a, , sz, dm] of byDay[d]) {
         const p = AP[a].p; if (!p) continue;
-        ctx.beginPath(); ctx.arc(p[0] * f.k, p[1] * f.k, (sz === 2 ? 4.5 : 2.6) * (1 + age), 0, Math.PI * 2);
-        ctx.fillStyle = alpha(dm ? C.dmg : sz === 2 ? C.big : C.ink, (1 - age) * (sz === 2 || dm ? .9 : .35)); ctx.fill();
+        const big = sz === 2, rise = (1 - age) * (big ? 14 : 8);
+        BIRD(ctx, big ? 'raptor' : 'song', p[0] * f.k + rise * .6, p[1] * f.k - rise, big ? 22 : 9, dm ? C.dmg : big ? C.big : C.ink,
+          { alpha: (1 - age) * (big || dm ? .95 : .45), flap: Math.sin(t * 14 + a), flip: a % 2 === 1 });
       }
     }
     ctx.restore();
@@ -556,12 +619,19 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
       const a0 = SZ.map(v => v[0]), a1 = SZ.map(v => v[1]);
       label(ctx, `Large: ${pct(2, a0)}`, W, 10, { size: 12, weight: 600, align: 'right', color: C.big, halo: false });
       label(ctx, `Large: ${pct(2, a1)}`, W, y1 + 32, { size: 12, weight: 600, align: 'right', color: C.big, halo: false });
+      ctx.font = '600 12px "JetBrains Mono", monospace';
+      const lw = ctx.measureText('Large: 35%').width;
+      BIRD(ctx, 'canada', W - lw - 26, 8, 30, C.big, { flap: .5 });
+      BIRD(ctx, 'vulture', W - lw - 26, y1 + 31, 34, C.big);
     }
   }, SZT + .2);
 
   // ---- 4. Species: strikes against damage rate ----
   const SP = D.species.map(([name, n, d, size, cost]) => ({ name, n, d, size, cost, rate: d / n }));
   const KEY = new Set(['Mourning dove', 'White-tailed deer', 'Black vulture', 'Turkey vulture', 'Canada goose', 'Bald eagle', 'Osprey', 'Red-tailed hawk', 'Snow goose']);
+  const ICON = { 'Mourning dove': 'song', 'Barn swallow': 'song', 'Horned lark': 'song', 'Killdeer': 'song', 'American kestrel': 'raptor',
+    'Red-tailed hawk': 'raptor', 'Turkey vulture': 'vulture', 'Black vulture': 'vulture', 'Bald eagle': 'eagle', 'Osprey': 'osprey',
+    'Canada goose': 'canada', 'Snow goose': 'snow', 'White-tailed deer': 'deer' };
   const SPT = 3;
   const species = scene('species', (ctx, W, H, t, s) => {
     const narrow = W < 560, L = narrow ? 36 : 46, R = narrow ? 10 : 24, T = 14, B = 34, pw = W - L - R, ph = H - T - B;
@@ -576,15 +646,23 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
     const order = SP.slice().sort((a, b) => b.cost - a.cost);
     order.forEach((d, i) => {
       const q = ease(p * 1.5 - (1 - d.rate) * .5), x = xs(d.n), y = lerp(ys(0), ys(d.rate), q), r = rs(d.cost);
-      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = alpha(col(d.size), KEY.has(d.name) ? .75 : .35); ctx.fill();
-      ctx.lineWidth = 1; ctx.strokeStyle = alpha(col(d.size), .95); ctx.stroke();
+      if (ICON[d.name]) return;
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = alpha(col(d.size), .3); ctx.fill();
+      ctx.lineWidth = 1; ctx.strokeStyle = alpha(col(d.size), .8); ctx.stroke();
       s.hits.push({ x, y, r: Math.max(r, 6), html: `<b>${d.name}</b><br>${fmt(d.n)} strikes · ${(d.rate * 100).toFixed(1)}% damaging<br>$${fmt(Math.round(d.cost / 1e5) / 10)} million in reported repairs` });
+    });
+    // The named animals go on top, so the small dots never cover them.
+    const iconW = (d) => clamp(rs(d.cost) * 3, narrow ? 26 : 36, narrow ? 46 : 66);
+    SP.filter(d => ICON[d.name]).sort((a, b) => b.cost - a.cost).forEach(d => {
+      const q = ease(p * 1.5 - (1 - d.rate) * .5), x = xs(d.n), y = lerp(ys(0), ys(d.rate), q), w = iconW(d), kind = ICON[d.name];
+      BIRD(ctx, kind, x, y, w, col(d.size), { flap: kind === 'song' ? Math.sin(t * 9 + d.n) * .8 : .7, alpha: .95 });
+      s.hits.push({ x, y, r: w / 2, html: `<b>${d.name}</b><br>${fmt(d.n)} strikes · ${(d.rate * 100).toFixed(1)}% damaging<br>$${fmt(Math.round(d.cost / 1e5) / 10)} million in reported repairs` });
     });
     if (p > .95) {
       const placed = [];
       for (const d of SP.filter(d => KEY.has(d.name)).sort((a, b) => b.rate - a.rate)) {
         if (narrow && !['Mourning dove', 'White-tailed deer', 'Black vulture', 'Turkey vulture', 'Bald eagle', 'Canada goose'].includes(d.name)) continue;
-        const x = xs(d.n), y = ys(d.rate), r = rs(d.cost);
+        const x = xs(d.n), y = ys(d.rate), r = ICON[d.name] ? iconW(d) / 2 : rs(d.cost);
         const right = x < L + pw * .72;
         let ly = y; for (let k = 0; k < 6 && placed.some(p => Math.abs(p.y - ly) < 13 && Math.abs(p.x - x) < 110); k++) ly += 13;
         placed.push({ x, y: ly });
@@ -599,9 +677,10 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
     .map(name => ({ name, a: D.fives[name][0], b: D.fives[name][1] }));
   const ALL = { name: 'All reported strikes', a: D.fivesTotal[0], b: D.fivesTotal[1] };
   const TOTAL_X = ALL.b / ALL.a;
+  const GICON = { 'Black vulture': 'vulture', 'Bald eagle': 'eagle', 'Osprey': 'osprey', 'Turkey vulture': 'vulture', 'Canada goose': 'canada', 'White-tailed deer': 'deer', 'All reported strikes': 'plane' };
   const GT = 3;
   const growth = scene('growth', (ctx, W, H, t, s) => {
-    const narrow = W < 560, L = narrow ? 112 : 190, R = narrow ? 52 : 120, T = 22, B = 30, pw = W - L - R, ph = H - T - B;
+    const narrow = W < 560, L = narrow ? 112 : 190, R = narrow ? 64 : 170, T = 22, B = 30, pw = W - L - R, ph = H - T - B;
     const xs = d3.scaleLog([1, 150000], [L, L + pw]);
     const rows = [ALL, ...GROW], rh = ph / rows.length;
     for (const v of [1, 10, 100, 1000, 10000, 100000]) { const x = Math.round(xs(v)) + .5; ctx.strokeStyle = alpha(C.rule, .9); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, T - 6); ctx.lineTo(x, T + ph); ctx.stroke(); label(ctx, v >= 1000 ? `${v / 1000}k` : v, x, T + ph + 14, { size: 10, align: 'center', color: C['ink-3'], halo: false }); }
@@ -617,13 +696,15 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
       const xe = xs(r.a * TOTAL_X);
       if (!isAll) { ctx.setLineDash([3, 3]); ctx.strokeStyle = alpha(C['ink-3'], .9); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xe, y - rh * .32); ctx.lineTo(xe, y + rh * .32); ctx.stroke(); ctx.setLineDash([]); }
       ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
-      const dir = Math.sign(x1t - x0) || 1;
-      ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x1 + dir * 2, y); ctx.lineTo(x1 - dir * 8, y - 5); ctx.lineTo(x1 - dir * 8, y + 5); ctx.closePath(); ctx.fill();
+      const dir = Math.sign(x1t - x0) || 1, iw = Math.min(rh * 1.3, narrow ? 38 : 54), kind = GICON[r.name];
       ctx.beginPath(); ctx.arc(x0, y, 3.5, 0, Math.PI * 2); ctx.fillStyle = C.bg; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = col; ctx.stroke();
+      const moving = q < 1 && !reduce;
+      BIRD(ctx, kind, x1 + dir * iw * .42, y - (kind === 'deer' ? iw * .05 : 0), iw, col,
+        { flip: dir < 0, flap: moving ? Math.sin(t * 16 + i) : .6, rot: kind === 'plane' ? -.08 : 0 });
       if (q > .95) {
-        const txt = `×${mult >= 10 ? Math.round(mult) : mult.toFixed(1)}`;
-        label(ctx, txt, Math.max(x0, x1t) + 12, y, { size: 12, weight: 600, color: col });
-        if (!narrow) label(ctx, `${fmt(r.a)} → ${fmt(r.b)}`, Math.max(x0, x1t) + 52, y, { size: 11, color: C['ink-3'] });
+        const txt = `×${mult >= 10 ? Math.round(mult) : mult.toFixed(1)}`, tx = Math.max(x0, x1t) + iw + 6;
+        label(ctx, txt, tx, y, { size: 12, weight: 600, color: col });
+        if (!narrow) label(ctx, `${fmt(r.a)} → ${fmt(r.b)}`, tx + 40, y, { size: 11, color: C['ink-3'] });
       }
       s.hits.push({ x0: L - 180, x1: W, y0: y - rh / 2, y1: y + rh / 2, html: `<b>${r.name}</b><br>1990–94: ${fmt(r.a)} · 2020–24: ${fmt(r.b)}<br>${(mult).toFixed(1)} times as many` });
     });
@@ -634,6 +715,8 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
   const FIPS = { '01': 'AL', '04': 'AZ', '05': 'AR', '06': 'CA', '08': 'CO', '09': 'CT', '10': 'DE', '11': 'DC', '12': 'FL', '13': 'GA', '16': 'ID', '17': 'IL', '18': 'IN', '19': 'IA', '20': 'KS', '21': 'KY', '22': 'LA', '23': 'ME', '24': 'MD', '25': 'MA', '26': 'MI', '27': 'MN', '28': 'MS', '29': 'MO', '30': 'MT', '31': 'NE', '32': 'NV', '33': 'NH', '34': 'NJ', '35': 'NM', '36': 'NY', '37': 'NC', '38': 'ND', '39': 'OH', '40': 'OK', '41': 'OR', '42': 'PA', '44': 'RI', '45': 'SC', '46': 'SD', '47': 'TN', '48': 'TX', '49': 'UT', '50': 'VT', '51': 'VA', '53': 'WA', '54': 'WV', '55': 'WI', '56': 'WY', '02': 'AK', '15': 'HI' };
   const PER = Object.keys(D.vultureStates), VS = PER.map(k => D.vultureStates[k]);
   const lower48 = { type: 'FeatureCollection', features: states.features.filter(f => !['02', '15', '72'].includes(f.id)) };
+  const CENT = {};
+  for (const ft of lower48.features) CENT[FIPS[ft.id]] = d3.geoPath().centroid(ft);
   const tabs = [...document.querySelectorAll('.tabs button')];
   const vstate = { pick: null };
   const VT = 6;
@@ -652,10 +735,21 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
     }
     ctx.lineWidth = .7 / f.k; ctx.strokeStyle = alpha(C['land-edge'], .8); ctx.beginPath(); path(inner); ctx.stroke();
     ctx.restore();
+    // One to three vultures circle each state, more where there were more strikes.
+    const vw = Math.max(18, f.k * 38), show = blend < .5 ? from : p;
+    Object.entries(VS[show]).forEach(([ab, n], si) => {
+      const c = CENT[ab]; if (!c) return;
+      const cx = f.x + c[0] * f.k, cy = f.y + 24 + c[1] * f.k, k = Math.min(3, 1 + Math.floor(Math.log2(n) / 2)), R = vw * (.5 + .2 * k);
+      for (let j = 0; j < k; j++) {
+        const a = (reduce ? 0 : t * .55) * (si % 2 ? 1 : -1) + j * 2 * Math.PI / k + si;
+        const rot = a + (si % 2 ? Math.PI : 0);
+        BIRD(ctx, 'vulture', cx + R * Math.cos(a), cy + R * Math.sin(a) * .7, vw, C.ink, { rot, alpha: .8, light: C.land });
+      }
+    });
     const n = Object.values(VS[p]).reduce((a, b) => a + b, 0), k = Object.keys(VS[p]).filter(x => x !== 'DC').length;
     label(ctx, `${PER[p].replace('-', '–')}`, 0, 10, { size: 13, weight: 600, color: C.ink, halo: false });
     label(ctx, `${fmt(n)} strikes in ${k} states and D.C.`, 0, 28, { size: 12, color: C['ink-2'], halo: false });
-  }, VT, { loop: false });
+  }, VT, { loop: true });
   tabs.forEach((b, i) => b.addEventListener('click', () => { vstate.pick = i; vult.render(VT); }));
 
   // ---- 7. Height above ground ----
@@ -670,16 +764,24 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
     label(ctx, 'DAMAGED', L + pw * .82, 8, { size: 10, color: C.dmg, halo: false });
     HB.forEach((h, i) => {
       const y = T + ph - (i + 1) * rh, q = ease(p * 1.6 - i * .12), w = (xs(h.n) - L) * q;
-      ctx.fillStyle = C.small; ctx.fillRect(L, y + rh * .2, w, rh * .6);
+      ctx.fillStyle = alpha(C.small, .18); ctx.fillRect(L, y + rh * .14, w, rh * .72);
+      const full = xs(h.n) - L, count = Math.max(1, Math.round(h.n / 1000)), step = full / count, bw = Math.min(rh * .62, Math.max(step * 1.25, 9));
+      const kind = i <= 2 ? 'song' : i === 3 ? 'raptor' : 'goose';
+      let end = w;
+      if (full < bw) { if (q > .5) BIRD(ctx, kind, L + bw * .55, y + rh / 2, bw, C.small, { flap: Math.sin(t * 10) * .7 }); end = bw * 1.1; }
+      else for (let j = 0; j < count; j++) {
+        const bx = L + step * (j + .5); if (bx > L + w) break;
+        BIRD(ctx, kind, bx, y + rh / 2 + (j % 2 ? 2 : -2), bw, C.small, { flap: reduce ? .5 : Math.sin(t * 9 + j * 1.3) * .8 });
+      }
       label(ctx, hname(h), L - 10, y + rh / 2, { size: narrow ? 10.5 : 12, align: 'right', color: C.ink, halo: false });
-      if (q > .9) label(ctx, fmt(h.n), L + w + 6, y + rh / 2, { size: 10.5, color: C['ink-2'], halo: false });
+      if (q > .9) label(ctx, fmt(h.n), L + end + 8, y + rh / 2, { size: 10.5, color: C['ink-2'], halo: false });
       ctx.strokeStyle = alpha(C.rule, .9); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(rx(0), y + rh / 2); ctx.lineTo(rx(.25), y + rh / 2); ctx.stroke();
       const cx = lerp(rx(0), rx(h.rate), q);
       ctx.beginPath(); ctx.arc(cx, y + rh / 2, 5, 0, Math.PI * 2); ctx.fillStyle = C.dmg; ctx.fill();
       if (q > .9) label(ctx, `${(h.rate * 100).toFixed(1)}%`, cx + 9, y + rh / 2, { size: 11, weight: 600, color: C.dmg });
       s.hits.push({ x0: 0, x1: W, y0: y, y1: y + rh, html: `<b>${hname(h)}</b><br>${fmt(h.n)} strikes<br>${fmt(h.d)} damaged the aircraft (${(h.rate * 100).toFixed(1)}%)` });
     });
-  }, HT + .2);
+  }, HT + .2, { loop: true });
   hover(heights, 'heightsTip');
 
   // ---- Run scenes only while visible. At rest each shows a complete frame. ----
