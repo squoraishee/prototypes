@@ -4,6 +4,7 @@ Browser prototypes: simulations, games and experiments, one folder per prototype
 
 | Prototype | What it is |
 | --- | --- |
+| [Heavy Birds](heavy-birds/) | Wildlife strikes on U.S. aircraft and the species that do the damage |
 | [Reading a Suspicious Recording](audio-forensics/) | How an audio forensic examiner checks whether a recording is real |
 | [Reading the Light Under a Forest](forest-light/) | Sunlight followed into a forest, one photon at a time |
 | [Turing Bloom](turing-bloom/) | Gray-Scott reaction-diffusion, the model behind Turing patterns, in WebGL2 |
