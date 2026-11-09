@@ -1,0 +1,200 @@
+{
+ "years": [
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026
+ ],
+ "iss": [
+  647,
+  689,
+  680,
+  776,
+  845,
+  1212,
+  1151,
+  1258,
+  1124,
+  1135,
+  1028,
+  814,
+  653,
+  768,
+  733,
+  855,
+  827
+ ],
+ "css": [
+  8,
+  29,
+  12,
+  17,
+  63,
+  27,
+  44,
+  43,
+  100,
+  86,
+  52,
+  76,
+  81,
+  105,
+  133,
+  141,
+  131
+ ],
+ "fields": [
+  [
+   "Atomic, molecular and optical physics",
+   83,
+   36,
+   "phys"
+  ],
+  [
+   "Fluid and computational mechanics",
+   56,
+   26,
+   "phys"
+  ],
+  [
+   "Materials chemistry",
+   93,
+   34,
+   "phys"
+  ],
+  [
+   "Radiation",
+   49,
+   16,
+   "phys"
+  ],
+  [
+   "Nuclear and high-energy physics",
+   187,
+   61,
+   "phys"
+  ],
+  [
+   "Aerospace engineering",
+   645,
+   113,
+   "eng"
+  ],
+  [
+   "Astronomy",
+   101,
+   19,
+   "phys"
+  ],
+  [
+   "Human physiology and medicine",
+   735,
+   39,
+   "life"
+  ],
+  [
+   "Space and planetary science",
+   122,
+   8,
+   "earth"
+  ],
+  [
+   "Plant science",
+   23,
+   1,
+   "life"
+  ],
+  [
+   "Molecular biology",
+   78,
+   2,
+   "life"
+  ],
+  [
+   "Atmospheric science",
+   111,
+   1,
+   "earth"
+  ]
+ ],
+ "total_2022_26": [
+  3836,
+  591
+ ],
+ "css_countries": [
+  [
+   "Italy",
+   35
+  ],
+  [
+   "Switzerland",
+   17
+  ],
+  [
+   "Spain",
+   12
+  ],
+  [
+   "Germany",
+   11
+  ],
+  [
+   "United States",
+   11
+  ],
+  [
+   "Poland",
+   8
+  ],
+  [
+   "Australia",
+   5
+  ],
+  [
+   "Egypt",
+   5
+  ],
+  [
+   "Pakistan",
+   5
+  ]
+ ],
+ "css_china": 439,
+ "self_reported": {
+  "css_papers_2025": 230,
+  "css_projects_end_2025": 265,
+  "iss_pubs_fy2024": 361,
+  "iss_pubs_cumulative": 4438
+ },
+ "cold": [
+  [
+   "NASA Cold Atom Lab, ISS",
+   1,
+   52
+  ],
+  [
+   "German drop tower",
+   2,
+   null
+  ],
+  [
+   "Tiangong, 2026",
+   7,
+   10
+  ]
+ ],
+ "downloaded": "2026-11-09"
+}

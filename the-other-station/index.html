@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Other Station</title>
+<meta name="description" content="China's Tiangong space station just made the coldest atoms ever produced in space. Across all fields it publishes about a sixth as much research as the ISS. In atomic physics and materials it is near half, and Europe's next big cosmic-ray detector is being built to fly on it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Red marks Tiangong, China's station. Blue marks the ISS. Slate is everything else. */
+:root {
+  --bg: #f2f3f6;
+  --bg-2: #e2e5ec;
+  --ink: #12151d;
+  --ink-2: #3f4656;
+  --ink-3: #788094;
+  --rule: #cfd4de;
+  --earth: #dfe6ef;
+  --earth-2: #c6d1de;
+  --iss: #2f6fd0;
+  --css: #d23b32;
+  --old: #a3aaba;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #06080d;
+    --bg-2: #0e121c;
+    --ink: #eef1f7;
+    --ink-2: #b6bdcc;
+    --ink-3: #6f7890;
+    --rule: #1f2533;
+    --earth: #121a29;
+    --earth-2: #22314a;
+    --iss: #6aa2ff;
+    --css: #ff6a5e;
+    --old: #4a5166;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #06080d;
+  --bg-2: #0e121c;
+  --ink: #eef1f7;
+  --ink-2: #b6bdcc;
+  --ink-3: #6f7890;
+  --rule: #1f2533;
+  --earth: #121a29;
+  --earth-2: #22314a;
+  --iss: #6aa2ff;
+  --css: #ff6a5e;
+  --old: #4a5166;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background-color: var(--bg); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(90% 40% at 50% -6%, color-mix(in srgb, var(--css) 8%, transparent), transparent 70%), linear-gradient(180deg, var(--bg) 40%, var(--bg-2));
+  background-attachment: fixed;
+}
+:root { --display: "Instrument Serif", Georgia, serif; --body: "Public Sans", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace; }
+
+.deck { height: 100%; overflow-y: auto; scroll-snap-type: y proximity; scroll-behavior: smooth; }
+.page {
+  min-height: 100%; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center;
+  padding-block: 56px 112px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { width: 100%; max-width: 1100px; margin: 0 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px; position: relative; }
+
+.kicker { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin: 0; }
+.kicker b { color: var(--css); font-weight: 600; margin-right: 10px; }
+h1, h2 { font-family: var(--display); font-weight: 400; line-height: 1; letter-spacing: -.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(58px, 9vw, 124px); }
+h1 i { color: var(--css); }
+h2 { font-size: clamp(34px, 4.6vw, 56px); }
+.lede { font-size: clamp(17px, 1.8vw, 19.5px); color: var(--ink-2); max-width: 68ch; margin: 0; text-wrap: pretty; }
+.lede b { color: var(--ink); font-weight: 700; }
+.note { font-family: var(--mono); font-size: 12px; line-height: 1.65; color: var(--ink-3); max-width: 92ch; margin: 0; }
+
+.fig { position: relative; }
+canvas.scene { width: 100%; display: block; touch-action: pan-y; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 22px; font-family: var(--mono); font-size: 12px; color: var(--ink-2); margin: 0; padding: 0; list-style: none; }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.sw { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex: none; }
+.sw.line { width: 18px; height: 3px; border-radius: 2px; }
+.sw.tri { width: 0; height: 0; border-radius: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid var(--old); background: none !important; }
+
+.counter { font-family: var(--mono); font-size: 12px; color: var(--ink-2); display: flex; gap: 22px; flex-wrap: wrap; }
+.counter b { color: var(--ink); font-weight: 600; font-size: 15px; }
+.counter .mu b { color: var(--css); }
+
+.tip {
+  position: absolute; pointer-events: none; z-index: 4; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+  white-space: nowrap; opacity: 0; transition: opacity .12s;
+}
+.tip.on { opacity: 1; }
+.tip b { font-weight: 600; }
+
+.method { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+.method h3 { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); font-weight: 400; margin: 0 0 6px; }
+.method p, .method li { font-size: 15.5px; color: var(--ink-2); margin: 0; }
+.method ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.method a { color: var(--iss); }
+.method > div { display: grid; gap: 12px; align-content: start; min-width: 0; }
+
+.next { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 5; }
+.next[hidden] { display: none !important; }
+.next button {
+  display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--ink); background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border: 1px solid var(--rule); border-radius: 999px; padding: 9px 18px 9px 14px; cursor: pointer; backdrop-filter: blur(6px);
+}
+.next button:hover { border-color: var(--css); }
+.next button:focus-visible { outline: 2px solid var(--css); outline-offset: 3px; }
+.next .orb { width: 18px; height: 14px; flex: none; stroke: var(--css); stroke-width: 1.8; stroke-linecap: round; fill: none; }
+.next .orb path { stroke-dasharray: 22; animation: fly 2.2s ease-in-out infinite; }
+.next .arrow { width: 14px; height: 14px; stroke: var(--ink); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes fly { 0% { stroke-dashoffset: 22; } 60%, 100% { stroke-dashoffset: 0; } }
+
+.progress { position: fixed; top: 0; left: 0; height: 2px; width: 100%; background: var(--css); transform-origin: left center; transform: scaleX(0); z-index: 6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .deck { scroll-behavior: auto; }
+  .next .orb path { animation: none; stroke-dashoffset: 0; }
+}
+@media (max-width: 760px) {
+  body { font-size: 17px; }
+  .method { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+            }
+
+#orbits { height: clamp(220px, 30vh, 340px); }
+#years { height: clamp(300px, 42vh, 430px); }
+#fields { height: clamp(330px, 44vh, 440px); }
+#partners { height: clamp(260px, 34vh, 340px); }
+#cold { height: clamp(220px, 30vh, 300px); }
+@media (max-width: 760px) {
+  #orbits { height: clamp(260px, 38vh, 360px); }
+  #years { height: clamp(320px, 48vh, 440px); }
+  #fields { height: clamp(560px, 80vh, 680px); }
+  #partners { height: clamp(320px, 46vh, 420px); }
+  #cold { height: clamp(260px, 38vh, 340px); }
+}
+.next .orb { width: 18px; height: 14px; flex: none; }
+.next .orb circle.o { fill: none; stroke: var(--rule); stroke-width: 1.4; }
+.next .orb circle.s { fill: var(--css); transform-origin: 9px 7px; animation: spin 3s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .next .orb circle.s { animation: none; } }
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<main class="deck" id="deck">
+
+  <section class="page" aria-label="Cover">
+    <div class="wrap">
+      <p class="kicker"><b>01</b> Research on China's space station, 2010 to 2026</p>
+      <h1>The Other <i>Station</i></h1>
+      <p class="lede">In early November, scientists in China reported in <b>Science</b> that they had made the coldest atoms ever produced in space, aboard the <b>Tiangong</b> space station. The atoms got below <b>10 trillionths of a degree</b> above absolute zero and held together for <b>7 seconds</b>. NASA's lab on the International Space Station manages about one second. NASA plans to retire the ISS around <b>2030</b>. If no commercial station is ready by then, Tiangong will be the only government lab in orbit.</p>
+      <div class="fig">
+        <canvas class="scene" id="orbits" role="img" aria-label="A sketch of Earth with two orbits. The ISS circles on a steeper tilt, at about 420 kilometres. Tiangong circles on a shallower tilt, at about 390 kilometres. Each station is a moving dot."></canvas>
+      </div>
+      <ul class="legend">
+        <li><span class="sw" style="background:var(--iss)"></span>International Space Station, since 1998</li>
+        <li><span class="sw" style="background:var(--css)"></span>Tiangong, finished in 2022</li>
+      </ul>
+      <p class="note">Orbits drawn to show tilt, not to scale. The ISS orbit is tilted 51.6 degrees to the equator and Tiangong's about 41.5 degrees. Both circle Earth about every 90 minutes.</p>
+    </div>
+  </section>
+
+  <section class="page" aria-label="Papers each year">
+    <div class="wrap">
+      <p class="kicker"><b>02</b> Research papers that name each station, 2010 to 2026</p>
+      <h2>About a sixth as many papers as the ISS</h2>
+      <p class="lede">In 2025, <b>141</b> papers in the OpenAlex index named Tiangong or its modules in the title or abstract. <b>855</b> named the ISS. Tiangong's count has risen <b>74%</b> since it was finished in 2022. From 2022 through 2026 so far, it comes to <b>591</b> papers against <b>3,836</b>, about <b>15%</b>.</p>
+      <div class="fig">
+        <canvas class="scene" id="years" role="img" aria-label="A line chart of papers per year from 2010 to 2026. The ISS line runs between about 650 and 1,250 papers a year, peaking in 2017 and sitting near 830 to 855 in 2025 and 2026. The Tiangong line starts near zero, rises during the Tiangong-1 and Tiangong-2 test labs, and climbs from 81 in 2022 to 141 in 2025."></canvas>
+        <div class="tip" id="yearsTip"></div>
+      </div>
+      <ul class="legend">
+        <li><span class="sw line" style="background:var(--iss)"></span>ISS</li>
+        <li><span class="sw line" style="background:var(--css)"></span>Tiangong, including the Tiangong-1 and Tiangong-2 test labs</li>
+      </ul>
+      <p class="note">2026 runs to early November. Papers about China's planned CSST space telescope, which will fly beside the station, are left out. Part of the ISS drop after 2020 is likely a change in how the index collects papers, not less research. By the agencies' own counts, China reported more than 230 papers from Tiangong in 2025, and NASA counted 361 ISS papers in its 2024 fiscal year. Hover or tap a year.</p>
+    </div>
+  </section>
+
+  <section class="page" aria-label="Papers by field">
+    <div class="wrap">
+      <p class="kicker"><b>03</b> Tiangong papers for every 100 ISS papers, by field, 2022 to 2026</p>
+      <h2>Strong in physics, nearly absent in biology</h2>
+      <p class="lede">The gap depends on the field. In <b>atomic and optical physics</b>, where cold-atom work sits, Tiangong produced <b>43</b> papers for every 100 from the ISS. Materials, radiation and fluid physics run between <b>33</b> and <b>46</b>. In <b>human physiology and medicine</b>, the ISS's biggest field, the figure is <b>5</b>. Molecular biology, plant science and atmospheric science are almost empty.</p>
+      <div class="fig">
+        <canvas class="scene" id="fields" role="img" aria-label="Paired bars for twelve fields. Each row shows ISS papers and Tiangong papers from 2022 to 2026, and Tiangong papers per 100 ISS papers. Physical sciences lead: fluid and computational mechanics 46, atomic, molecular and optical physics 43, materials chemistry 37, radiation 33, nuclear and high-energy physics 33. Aerospace engineering 18 and astronomy 19 are in the middle. Life and Earth sciences are lowest: space and planetary science 7, human physiology and medicine 5, plant science 4, molecular biology 3, atmospheric science 1."></canvas>
+        <div class="tip" id="fieldsTip"></div>
+      </div>
+      <ul class="legend">
+        <li><span class="sw" style="background:var(--iss)"></span>ISS papers</li>
+        <li><span class="sw" style="background:var(--css)"></span>Tiangong papers</li>
+      </ul>
+      <p class="note">Fields are OpenAlex's subject labels for each paper's main topic. Across all fields, the figure is 15. Some Tiangong physics papers describe instruments still being built, such as the HERD cosmic-ray detector. Hover or tap a row.</p>
+    </div>
+  </section>
+
+  <section class="page" aria-label="Foreign partners">
+    <div class="wrap">
+      <p class="kicker"><b>04</b> Countries of co-authors on Tiangong papers, outside China, 2022 to 2026</p>
+      <h2>Europe's next cosmic-ray detector is headed to Tiangong</h2>
+      <p class="lede">Researchers in China co-wrote <b>439</b> of the 591 Tiangong papers. <b>Italy</b> is the largest foreign partner, on <b>35</b>. Almost all of those describe one instrument: <b>HERD</b>, a large cosmic-ray detector being built with Italian, Swiss and Spanish groups to fly on Tiangong. Swiss and Polish groups are working on <b>POLAR-2</b>, a gamma-ray burst detector for the station. U.S. researchers appear on <b>11</b>.</p>
+      <div class="fig">
+        <canvas class="scene" id="partners" role="img" aria-label="Horizontal bars of Tiangong papers with a co-author from each country outside China, 2022 to 2026: Italy 35, Switzerland 17, Spain 12, Germany 11, United States 11, Poland 8, Australia 5, Egypt 5, Pakistan 5."></canvas>
+        <div class="tip" id="partnersTip"></div>
+      </div>
+      <p class="note">A paper counts once for each country among its authors' affiliations. U.S. law bars NASA from most direct cooperation with China's space program, but it doesn't stop university researchers from co-writing papers. Hover or tap a bar.</p>
+    </div>
+  </section>
+
+  <section class="page" aria-label="The coldest atoms in space">
+    <div class="wrap">
+      <p class="kicker"><b>05</b> How long a cloud of ultracold atoms held together, in seconds</p>
+      <h2>Where the coldest atoms in space are now made</h2>
+      <p class="lede">Cold atoms behave like one big quantum wave. In free fall they can be held longer and cooled further than on the ground. That makes them useful for precise tests of gravity and for better clocks. NASA's Cold Atom Lab has led this work since 2018. The Tiangong team says its cloud of about <b>20,000</b> rubidium atoms lasted about <b>7 times</b> as long.</p>
+      <div class="fig">
+        <canvas class="scene" id="cold" role="img" aria-label="Three bars showing how long an ultracold atom cloud held together. NASA's Cold Atom Lab on the ISS, about 1 second. A drop tower in Germany, about 2 seconds. Tiangong in 2026, about 7 seconds."></canvas>
+      </div>
+      <p class="note">Times and temperatures are as reported by the South China Morning Post and Science News from the Science paper. Groups measure temperature in different ways, so the comparison is rough. The ISS has reached effective temperatures as low as 52 trillionths of a degree. Tiangong reports below 10.</p>
+    </div>
+  </section>
+
+  <section class="page" aria-label="Method and sources">
+    <div class="wrap">
+      <p class="kicker"><b>06</b> Method</p>
+      <h2>How the papers were counted</h2>
+      <div class="method">
+        <div>
+          <h3>Data</h3>
+          <p>Paper counts come from OpenAlex, a free index of more than 250 million research works, queried November 9, 2026. A paper counts for the ISS when its title or abstract contains "International Space Station." It counts for Tiangong when its title or abstract names the China Space Station, the Tiangong station or its Tianhe, Wentian or Mengtian modules, or the Tiangong-1 and Tiangong-2 test labs. Papers that mention the CSST telescope, the Tianhe supercomputer or other survey telescopes are left out.</p>
+          <p>Fields are OpenAlex's subfield label for each paper's main topic. Countries come from author affiliations.</p>
+        </div>
+        <div>
+          <h3>Limits</h3>
+          <ul>
+            <li>Naming a station isn't the same as using data from it. Some papers discuss a station without running an experiment on it.</li>
+            <li>OpenAlex covers English-language journals best. Papers in Chinese-language journals are undercounted, so Tiangong's figures are likely low.</li>
+            <li>OpenAlex changed sources in 2022 and lost some abstracts. Counts across that year are less comparable than counts within the same years.</li>
+            <li>China's paper and project totals are self-reported.</li>
+          </ul>
+          <h3 style="margin-top:8px">Sources</h3>
+          <ul>
+            <li>OpenAlex. <a href="https://openalex.org/" target="_blank" rel="noopener">openalex.org</a></li>
+            <li>China Daily, "Tiangong playing a key role in research," January 9, 2026. <a href="https://www.chinadaily.com.cn/a/202601/09/WS69604f46a310d6866eb32cb5.html" target="_blank" rel="noopener">chinadaily.com.cn</a></li>
+            <li>NASA, 2024 Annual Highlights of Results from the International Space Station. <a href="https://www.nasa.gov/wp-content/uploads/2025/02/ahr-2024-final.pdf" target="_blank" rel="noopener">nasa.gov</a></li>
+            <li>Science News, "Record-low temperature created on China's space station." <a href="https://sciencenews.org/article/lowest-temperature-china-space-station" target="_blank" rel="noopener">sciencenews.org</a></li>
+            <li>South China Morning Post on the Tiangong cold-atom result. <a href="https://www.scmp.com/news/china/science/article/3373343/chinese-scientists-chill-atoms-record-low-tiangong-space-station" target="_blank" rel="noopener">scmp.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="next" id="next">
+  <button type="button" id="nextBtn" aria-label="Go to next page">
+    <svg class="orb" viewBox="0 0 18 14" aria-hidden="true"><circle class="o" cx="9" cy="7" r="5.5"/><circle class="s" cx="14.5" cy="7" r="2"/></svg>
+    Next
+    <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+</div>
+
+<!--DATA--><script type="application/json" id="station-data">{"years":[2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026],"iss":[647,689,680,776,845,1212,1151,1258,1124,1135,1028,814,653,768,733,855,827],"css":[8,29,12,17,63,27,44,43,100,86,52,76,81,105,133,141,131],"fields":[["Atomic, molecular and optical physics",83,36,"phys"],["Fluid and computational mechanics",56,26,"phys"],["Materials chemistry",93,34,"phys"],["Radiation",49,16,"phys"],["Nuclear and high-energy physics",187,61,"phys"],["Aerospace engineering",645,113,"eng"],["Astronomy",101,19,"phys"],["Human physiology and medicine",735,39,"life"],["Space and planetary science",122,8,"earth"],["Plant science",23,1,"life"],["Molecular biology",78,2,"life"],["Atmospheric science",111,1,"earth"]],"total_2022_26":[3836,591],"css_countries":[["Italy",35],["Switzerland",17],["Spain",12],["Germany",11],["United States",11],["Poland",8],["Australia",5],["Egypt",5],["Pakistan",5]],"css_china":439,"self_reported":{"css_papers_2025":230,"css_projects_end_2025":265,"iss_pubs_fy2024":361,"iss_pubs_cumulative":4438},"cold":[["NASA Cold Atom Lab, ISS",1,52],["German drop tower",2,null],["Tiangong, 2026",7,10]],"downloaded":"2026-11-09"}</script><!--/DATA-->
+<script>
+(() => {
+  const D = JSON.parse(document.getElementById('station-data').textContent);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const ease = (p) => 1 - Math.pow(1 - clamp(p), 3);
+  const narrowW = (W) => W < 560;
+  const fmt = (n) => n.toLocaleString('en-US');
+
+  const C = {};
+  const readColors = () => { const cs = getComputedStyle(document.documentElement); ['bg', 'ink', 'ink-2', 'ink-3', 'rule', 'earth', 'earth-2', 'iss', 'css', 'old'].forEach(k => C[k] = cs.getPropertyValue('--' + k).trim()); };
+  readColors();
+  const rgb = (hex) => { const h = hex.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; };
+  const alpha = (hex, a) => `rgba(${rgb(hex).join(',')},${a})`;
+  const label = (ctx, text, x, y, o = {}) => {
+    ctx.font = `${o.weight || 400} ${o.size || 12}px ${o.font || '"JetBrains Mono", ui-monospace, monospace'}`;
+    ctx.textAlign = o.align || 'left'; ctx.textBaseline = o.base || 'middle';
+    if (o.halo !== false) { ctx.lineWidth = 4; ctx.strokeStyle = alpha(C.bg, .85); ctx.lineJoin = 'round'; ctx.strokeText(text, x, y); }
+    ctx.fillStyle = o.color || C['ink-2']; ctx.fillText(text, x, y);
+  };
+  // A scene is a canvas that draws a complete frame for any time t. At rest it shows t = restT.
+  const scenes = [];
+  const scene = (id, draw, restT, opts = {}) => {
+    const canvas = document.getElementById(id), ctx = canvas.getContext('2d');
+    const s = { canvas, ctx, restT, active: false, t0: 0, W: 0, H: 0, hits: [], loop: !!opts.loop, ...opts };
+    s.resize = () => {
+      const dpr = Math.min(2, window.devicePixelRatio || 1), r = canvas.getBoundingClientRect();
+      s.W = r.width; s.H = r.height; canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    s.render = (t) => { s.t = t; s.hits = []; ctx.clearRect(0, 0, s.W, s.H); draw(ctx, s.W, s.H, t, s); };
+    s.rest = () => s.render(s.restT);
+    scenes.push(s);
+    return s;
+  };
+  const hover = (s, tipId) => {
+    const tip = document.getElementById(tipId);
+    const show = (e) => {
+      const r = s.canvas.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+      let best = null, bd = Infinity;
+      for (const h of s.hits) {
+        let d = Math.hypot(px - h.x, py - h.y);
+        if (d > Math.max(h.r || 0, 12)) d = Infinity;
+        if (d < bd) { bd = d; best = h; }
+      }
+      if (!best) { tip.classList.remove('on'); return; }
+      tip.innerHTML = best.html; tip.classList.add('on');
+      const tw = tip.offsetWidth, th = tip.offsetHeight;
+      tip.style.left = `${clamp(px + 14, 0, r.width - tw)}px`;
+      tip.style.top = `${py - th - 12 < 0 ? py + 16 : py - th - 12}px`;
+    };
+    s.canvas.addEventListener('pointermove', show);
+    s.canvas.addEventListener('pointerdown', show);
+    s.canvas.addEventListener('pointerleave', () => tip.classList.remove('on'));
+  };
+
+  // ---- 1. Cover: two orbits ----
+  const ORB = [
+    { name: 'ISS', col: 'iss', tilt: 51.6, alt: 420, period: 9, phase: .1 },
+    { name: 'Tiangong', col: 'css', tilt: 41.5, alt: 390, period: 8.6, phase: .55 },
+  ];
+  const orbits = scene('orbits', (ctx, W, H, t) => {
+    const cx = W / 2, cy = H / 2, r = Math.min(H * .34, W * .2);
+    const g = ctx.createRadialGradient(cx - r * .3, cy - r * .3, r * .1, cx, cy, r);
+    g.addColorStop(0, C.earth); g.addColorStop(1, C['earth-2']);
+    // Back half of each orbit, then Earth, then the front half.
+    const pt = (o, a) => {
+      const R = r * (1.3 + (o.alt - 390) / 300), k = Math.sin(o.tilt * Math.PI / 180) * .55;
+      const rot = -o.tilt * Math.PI / 180 * .35;
+      const x = Math.cos(a) * R * 1.55, y = Math.sin(a) * R * k;
+      return [cx + x * Math.cos(rot) - y * Math.sin(rot), cy + x * Math.sin(rot) + y * Math.cos(rot), Math.sin(a)];
+    };
+    const half = (o, front) => {
+      ctx.beginPath(); let started = false;
+      for (let i = 0; i <= 180; i++) { const a = i / 180 * Math.PI * 2, [x, y, z] = pt(o, a); if ((z >= 0) === front) { started ? ctx.lineTo(x, y) : ctx.moveTo(x, y); started = true; } else started = false; }
+      ctx.strokeStyle = alpha(C[o.col], front ? .8 : .3); ctx.lineWidth = 1.6; ctx.stroke();
+    };
+    const dot = (o, front) => {
+      const a = o.phase * Math.PI * 2 + t / o.period * Math.PI * 2, [x, y, z] = pt(o, a);
+      if ((z >= 0) !== front) return;
+      ctx.beginPath(); ctx.arc(x, y, front ? 6 : 4, 0, Math.PI * 2); ctx.fillStyle = front ? C[o.col] : alpha(C[o.col], .5); ctx.fill();
+      if (front) label(ctx, o.name, x + 10, y - 10, { size: 12, weight: 600, color: C[o.col] });
+    };
+    ORB.forEach(o => { half(o, false); dot(o, false); });
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = alpha(C.ink, .12); ctx.lineWidth = 1; ctx.stroke();
+    // Equator, for the tilt.
+    ctx.beginPath(); ctx.ellipse(cx, cy, r, r * .18, 0, 0, Math.PI); ctx.strokeStyle = alpha(C.ink, .18); ctx.setLineDash([3, 4]); ctx.stroke(); ctx.setLineDash([]);
+    ORB.forEach(o => { half(o, true); dot(o, true); });
+  }, 1.2, { loop: true });
+
+  // ---- 2. Papers per year ----
+  const years = scene('years', (ctx, W, H, t, s) => {
+    const narrow = narrowW(W), L = narrow ? 40 : 56, R = W - (narrow ? 70 : 96), T = 14, B = H - 30;
+    const n = D.years.length, x = (i) => lerp(L, R, i / (n - 1)), y = (v) => lerp(B, T, v / 1300);
+    for (let v = 0; v <= 1200; v += 300) { ctx.strokeStyle = alpha(C.rule, .6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(L, y(v)); ctx.lineTo(R, y(v)); ctx.stroke(); label(ctx, fmt(v), L - 8, y(v), { size: 10.5, align: 'right', color: C['ink-3'], halo: false }); }
+    D.years.forEach((yr, i) => { if (yr % (narrow ? 4 : 2) === 0 || yr === 2026) label(ctx, yr === 2026 ? '2026*' : String(yr), x(i), B + 16, { size: 10.5, align: 'center', color: C['ink-3'], halo: false }); });
+    // Tiangong-2 and full station markers.
+    [[2016, narrow ? 'T-2' : 'Tiangong-2 lab'], [2022, narrow ? 'Done' : 'Station finished']].forEach(([yr, txt]) => {
+      const X = x(D.years.indexOf(yr)); ctx.setLineDash([3, 4]); ctx.strokeStyle = alpha(C['ink-3'], .6); ctx.beginPath(); ctx.moveTo(X, T); ctx.lineTo(X, B); ctx.stroke(); ctx.setLineDash([]);
+      label(ctx, txt, X + 5, T + 8, { size: 10.5, color: C['ink-3'] });
+    });
+    const p = ease(t / 2.2), upto = p * (n - 1);
+    [['iss', D.iss], ['css', D.css]].forEach(([k, arr]) => {
+      ctx.beginPath();
+      for (let i = 0; i <= Math.floor(upto); i++) { i ? ctx.lineTo(x(i), y(arr[i])) : ctx.moveTo(x(i), y(arr[i])); }
+      const f = upto - Math.floor(upto), i0 = Math.floor(upto);
+      if (i0 < n - 1) ctx.lineTo(lerp(x(i0), x(i0 + 1), f), y(lerp(arr[i0], arr[i0 + 1], f)));
+      ctx.strokeStyle = C[k]; ctx.lineWidth = 2.6; ctx.lineJoin = 'round'; ctx.stroke();
+      if (p > .97) { label(ctx, `${k === 'iss' ? 'ISS' : 'Tiangong'} ${fmt(arr[n - 2])}`, x(n - 1) + 8, y(arr[n - 1]), { size: 11.5, weight: 600, color: C[k] }); }
+    });
+    if (p > .97) D.years.forEach((yr, i) => s.hits.push({ x: x(i), y: y(D.css[i]), r: 14, html: `<b>${yr}${yr === 2026 ? ', to early November' : ''}</b><br>ISS ${fmt(D.iss[i])}<br>Tiangong ${fmt(D.css[i])} (${Math.round(100 * D.css[i] / D.iss[i])} per 100)` }));
+  }, 2.6);
+  hover(years, 'yearsTip');
+
+  // ---- 3. By field ----
+  const F = D.fields.map(([name, iss, css, grp]) => ({ name, iss, css, grp, per: Math.round(100 * css / iss) })).sort((a, b) => b.per - a.per);
+  const fields = scene('fields', (ctx, W, H, t, s) => {
+    const narrow = narrowW(W);
+    const L = narrow ? 8 : 290, R = W - (narrow ? 50 : 70), T = 6, B = H - 6, rh = (B - T) / F.length;
+    const max = 760, bx = (v) => L + (R - L) * Math.sqrt(v / max);
+    F.forEach((f, i) => {
+      const q = ease((t - i * .08) / .7), y0 = T + i * rh, phys = f.grp === 'phys';
+      const nameY = narrow ? y0 + rh * .2 : y0 + rh * .5;
+      label(ctx, f.name, narrow ? L : L - 14, nameY, { size: narrow ? 11 : 12.5, weight: 600, color: C.ink, align: narrow ? 'left' : 'right', halo: false });
+      const top = narrow ? y0 + rh * .38 : y0 + rh * .2, bh = narrow ? rh * .22 : rh * .27;
+      ctx.fillStyle = alpha(C.iss, .85); ctx.fillRect(L, top, (bx(f.iss) - L) * q, bh);
+      ctx.fillStyle = C.css; ctx.fillRect(L, top + bh + 2, (bx(f.css) - L) * q, bh);
+      if (q > .9) {
+        label(ctx, fmt(f.iss), bx(f.iss) + 6, top + bh / 2, { size: 10, color: C['ink-3'], halo: false });
+        label(ctx, fmt(f.css), bx(f.css) + 6, top + bh * 1.5 + 2, { size: 10, color: C['ink-3'], halo: false });
+        label(ctx, String(f.per), W - 4, top + bh, { size: 15, weight: 600, color: f.per >= 30 ? C.css : C['ink-3'], align: 'right', halo: false });
+      }
+      s.hits.push({ x: (L + R) / 2, y: y0 + rh / 2, r: rh / 2 + 200, html: `<b>${f.name}</b><br>ISS ${fmt(f.iss)} · Tiangong ${fmt(f.css)}<br>${f.per} Tiangong papers per 100 ISS papers` });
+    });
+    label(ctx, 'per 100', W - 4, T + 2, { size: 9.5, color: C['ink-3'], align: 'right', halo: false });
+  }, 1.9);
+  // Rows are full-width bands, so pick the row under the pointer.
+  (() => { const tip = document.getElementById('fieldsTip'); const c = fields.canvas;
+    const show = (e) => { const r = c.getBoundingClientRect(), py = e.clientY - r.top, px = e.clientX - r.left, rh = (r.height - 12) / F.length, i = Math.floor((py - 6) / rh);
+      if (i < 0 || i >= F.length) { tip.classList.remove('on'); return; }
+      const f = F[i]; tip.innerHTML = `<b>${f.name}</b><br>ISS ${fmt(f.iss)} · Tiangong ${fmt(f.css)}<br>${f.per} Tiangong papers per 100 ISS papers`; tip.classList.add('on');
+      tip.style.left = `${clamp(px + 14, 0, r.width - tip.offsetWidth)}px`; tip.style.top = `${py - tip.offsetHeight - 12 < 0 ? py + 16 : py - tip.offsetHeight - 12}px`; };
+    c.addEventListener('pointermove', show); c.addEventListener('pointerdown', show); c.addEventListener('pointerleave', () => tip.classList.remove('on')); })();
+
+  // ---- 4. Foreign partners ----
+  const P = D.css_countries;
+  const partners = scene('partners', (ctx, W, H, t, s) => {
+    const narrow = narrowW(W), L = narrow ? 104 : 150, R = W - 40, T = 4, rh = (H - 8) / P.length;
+    P.forEach(([name, n], i) => {
+      const q = ease((t - i * .1) / .6), y = T + rh * (i + .5), w = (R - L) * n / P[0][1] * q;
+      label(ctx, name, L - 12, y, { size: narrow ? 11 : 12.5, weight: 600, color: C.ink, align: 'right', halo: false });
+      ctx.fillStyle = name === 'United States' ? C.iss : i === 0 ? C.css : alpha(C.css, .55); ctx.fillRect(L, y - rh * .32, w, rh * .64);
+      if (q > .9) label(ctx, String(n), L + w + 8, y, { size: 11, color: C['ink-2'], halo: false });
+      if (i === 0 && q > .9 && !narrow) label(ctx, 'mostly HERD, a cosmic-ray detector', L + 10, y, { size: 11, weight: 600, color: '#ffffff', halo: false });
+      s.hits.push({ x: L + w / 2, y, r: Math.max(rh / 2, w / 2), html: `<b>${name}</b><br>${n} Tiangong papers with a co-author here, 2022 to 2026` });
+    });
+  }, 1.6);
+  hover(partners, 'partnersTip');
+
+  // ---- 5. Cold atoms ----
+  const cold = scene('cold', (ctx, W, H, t) => {
+    const narrow = narrowW(W), L = narrow ? 8 : 230, R = W - 60, rows = D.cold, rh = (H - 30) / rows.length;
+    const x = (v) => L + (R - L) * v / 7.5;
+    for (let v = 0; v <= 7; v++) { ctx.strokeStyle = alpha(C.rule, .6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x(v), 0); ctx.lineTo(x(v), H - 24); ctx.stroke(); label(ctx, `${v} s`, x(v), H - 10, { size: 10.5, align: 'center', color: C['ink-3'], halo: false }); }
+    rows.forEach(([name, sec], i) => {
+      const q = ease((t - i * .3) / 1.2), y = rh * (i + .5), col = i === 2 ? C.css : i === 0 ? C.iss : C.old;
+      const by = narrow ? y + 6 : y, bh = narrow ? rh * .36 : rh * .5;
+      label(ctx, name, narrow ? L : L - 14, narrow ? y - rh * .3 : y, { size: narrow ? 11 : 12.5, weight: 600, color: C.ink, align: narrow ? 'left' : 'right', halo: false });
+      ctx.fillStyle = col; ctx.fillRect(x(0), by - bh / 2, x(sec * q) - x(0), bh);
+      if (q > .95) label(ctx, `about ${sec} s`, x(sec) + 8, by, { size: 11.5, weight: 600, color: col, halo: false });
+    });
+  }, 2);
+  // ---- Run scenes only while visible. At rest each shows a complete frame. ----
+  const ro = new ResizeObserver(() => scenes.forEach(s => { s.resize(); s.render(s.active ? (s.t || 0) : s.restT); }));
+  scenes.forEach(s => { ro.observe(s.canvas); s.resize(); s.render(s.restT); });
+  if (!reduce) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        const s = scenes.find(x => x.canvas === e.target);
+        if (e.isIntersecting && !s.active) { s.active = true; s.t0 = performance.now(); }
+        else if (!e.isIntersecting && s.active) { s.active = false; s.rest(); }
+      });
+    }, { threshold: .4 });
+    scenes.forEach(s => io.observe(s.canvas));
+    const loop = (now) => {
+      scenes.forEach(s => {
+        if (!s.active) return;
+        const t = (now - s.t0) / 1000;
+        if (s.loop || t < s.restT + .5) s.render(t);
+      });
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+  const recolor = () => { readColors(); scenes.forEach(s => s.render(s.active ? (s.t || 0) : s.restT)); };
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', recolor);
+  new MutationObserver(recolor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.fonts) document.fonts.ready.then(recolor);
+
+  // ---- Paging ----
+  const deck = document.getElementById('deck');
+  const pages = [...deck.querySelectorAll('.page')];
+  const next = document.getElementById('next');
+  const progress = document.getElementById('progress');
+  const indexOf = () => {
+    const mid = deck.scrollTop + deck.clientHeight / 2;
+    let idx = 0;
+    pages.forEach((p, i) => { if (p.offsetTop <= mid) idx = i; });
+    return idx;
+  };
+  const goTo = (i) => pages[clamp(i, 0, pages.length - 1)].scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  const update = () => {
+    next.hidden = indexOf() === pages.length - 1;
+    const max = deck.scrollHeight - deck.clientHeight;
+    progress.style.transform = `scaleX(${max > 0 ? deck.scrollTop / max : 1})`;
+  };
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(indexOf() + 1));
+  deck.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  window.addEventListener('keydown', (e) => {
+    if (e.target.closest && e.target.closest('input, button')) return;
+    if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); goTo(indexOf() + 1); }
+    if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); goTo(indexOf() - 1); }
+  });
+  update();
+})();
+</script>
+
+</body>
+</html>
