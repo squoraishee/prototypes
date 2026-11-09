@@ -22,6 +22,13 @@
   --iss: #2f6fd0;
   --css: #d23b32;
   --old: #a3aaba;
+  --metal: #8f98ab;
+  --ocean: #8ec0ea;
+  --ocean-2: #2f68aa;
+  --land: #6fa36a;
+  --atmo: #7fb8ff;
+  --moon: #c9ccd6;
+  --star: #5c6680;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -37,6 +44,13 @@
     --iss: #6aa2ff;
     --css: #ff6a5e;
     --old: #4a5166;
+    --metal: #c9d0dc;
+    --ocean: #2d6bb0;
+    --ocean-2: #0a1f44;
+    --land: #3f7a52;
+    --atmo: #5aa0ff;
+    --moon: #d9dce4;
+    --star: #ffffff;
     color-scheme: dark;
   }
 }
@@ -52,6 +66,13 @@
   --iss: #6aa2ff;
   --css: #ff6a5e;
   --old: #4a5166;
+  --metal: #c9d0dc;
+  --ocean: #2d6bb0;
+  --ocean-2: #0a1f44;
+  --land: #3f7a52;
+  --atmo: #5aa0ff;
+  --moon: #d9dce4;
+  --star: #ffffff;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -134,6 +155,15 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
   .method { grid-template-columns: minmax(0, 1fr); gap: 20px; }
             }
 
+#stars { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.deck { position: relative; z-index: 1; }
+#sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.ico { width: 30px; height: 30px; flex: none; margin-block: -6px; }
+.ico.iss { color: var(--iss); } .ico.css { color: var(--css); }
+.craft { position: absolute; right: 0; top: 18px; width: min(26vw, 250px); height: auto; color: var(--css); pointer-events: none; animation: drift 9s ease-in-out infinite; filter: drop-shadow(0 0 18px color-mix(in srgb, var(--css) 35%, transparent)); }
+@keyframes drift { 0%, 100% { transform: translateY(0) rotate(-8deg); } 50% { transform: translateY(-8px) rotate(-4deg); } }
+@media (max-width: 760px) { .craft { width: 110px; top: 54px; opacity: .85; } }
+@media (prefers-reduced-motion: reduce) { .craft { animation: none; } }
 #orbits { height: clamp(220px, 30vh, 340px); }
 #years { height: clamp(300px, 42vh, 430px); }
 #fields { height: clamp(330px, 44vh, 440px); }
@@ -155,6 +185,8 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
 </head>
 <body>
 <div class="progress" id="progress" aria-hidden="true"></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<svg id="sprite" aria-hidden="true"></svg>
 
 <main class="deck" id="deck">
 
@@ -162,13 +194,14 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
     <div class="wrap">
       <p class="kicker"><b>01</b> Research on China's space station, 2010 to 2026</p>
       <h1>The Other <i>Station</i></h1>
+      <svg class="craft" viewBox="-50 -50 100 100" aria-hidden="true"><use href="#g-css" x="-50" y="-50" width="100" height="100"/></svg>
       <p class="lede">In early November, scientists in China reported in <b>Science</b> that they had made the coldest atoms ever produced in space, aboard the <b>Tiangong</b> space station. The atoms got below <b>10 trillionths of a degree</b> above absolute zero and held together for <b>7 seconds</b>. NASA's lab on the International Space Station manages about one second. NASA plans to retire the ISS around <b>2030</b>. If no commercial station is ready by then, Tiangong will be the only government lab in orbit.</p>
       <div class="fig">
-        <canvas class="scene" id="orbits" role="img" aria-label="A sketch of Earth with two orbits. The ISS circles on a steeper tilt, at about 420 kilometres. Tiangong circles on a shallower tilt, at about 390 kilometres. Each station is a moving dot."></canvas>
+        <canvas class="scene" id="orbits" role="img" aria-label="A turning Earth with oceans, land and clouds, and two orbits. The ISS, drawn as a long truss with four pairs of solar wings, circles on a steeper tilt at about 420 kilometres. Tiangong, drawn as a T of three modules with large solar wings, circles on a shallower tilt at about 390 kilometres. The Moon sits in the corner."></canvas>
       </div>
       <ul class="legend">
-        <li><span class="sw" style="background:var(--iss)"></span>International Space Station, since 1998</li>
-        <li><span class="sw" style="background:var(--css)"></span>Tiangong, finished in 2022</li>
+        <li><svg class="ico iss" viewBox="-50 -50 100 100"><use href="#g-iss" x="-50" y="-50" width="100" height="100"/></svg>International Space Station, since 1998</li>
+        <li><svg class="ico css" viewBox="-50 -50 100 100"><use href="#g-css" x="-50" y="-50" width="100" height="100"/></svg>Tiangong, finished in 2022</li>
       </ul>
       <p class="note">Orbits drawn to show tilt, not to scale. The ISS orbit is tilted 51.6 degrees to the equator and Tiangong's about 41.5 degrees. Both circle Earth about every 90 minutes.</p>
     </div>
@@ -184,8 +217,8 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
         <div class="tip" id="yearsTip"></div>
       </div>
       <ul class="legend">
-        <li><span class="sw line" style="background:var(--iss)"></span>ISS</li>
-        <li><span class="sw line" style="background:var(--css)"></span>Tiangong, including the Tiangong-1 and Tiangong-2 test labs</li>
+        <li><svg class="ico iss" viewBox="-50 -50 100 100"><use href="#g-iss" x="-50" y="-50" width="100" height="100"/></svg>ISS</li>
+        <li><svg class="ico css" viewBox="-50 -50 100 100"><use href="#g-css" x="-50" y="-50" width="100" height="100"/></svg>Tiangong, including the Tiangong-1 and Tiangong-2 test labs</li>
       </ul>
       <p class="note">2026 runs to early November. Papers about China's planned CSST space telescope, which will fly beside the station, are left out. Part of the ISS drop after 2020 is likely a change in how the index collects papers, not less research. By the agencies' own counts, China reported more than 230 papers from Tiangong in 2025, and NASA counted 361 ISS papers in its 2024 fiscal year. Hover or tap a year.</p>
     </div>
@@ -227,7 +260,7 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
       <h2>Where the coldest atoms in space are now made</h2>
       <p class="lede">Cold atoms behave like one big quantum wave. In free fall they can be held longer and cooled further than on the ground. That makes them useful for precise tests of gravity and for better clocks. NASA's Cold Atom Lab has led this work since 2018. The Tiangong team says its cloud of about <b>20,000</b> rubidium atoms lasted about <b>7 times</b> as long.</p>
       <div class="fig">
-        <canvas class="scene" id="cold" role="img" aria-label="Three bars showing how long an ultracold atom cloud held together. NASA's Cold Atom Lab on the ISS, about 1 second. A drop tower in Germany, about 2 seconds. Tiangong in 2026, about 7 seconds."></canvas>
+        <canvas class="scene" id="cold" role="img" aria-label="Three glowing clouds of atoms drift along tracks, each lasting as long as its real cloud held together, then scattering. NASA's Cold Atom Lab on the ISS, about 1 second. A drop tower in Germany, about 2 seconds. Tiangong in 2026, about 7 seconds."></canvas>
       </div>
       <p class="note">Times and temperatures are as reported by the South China Morning Post and Science News from the Science paper. Groups measure temperature in different ways, so the comparison is rough. The ISS has reached effective temperatures as low as 52 trillionths of a degree. Tiangong reports below 10.</p>
     </div>
@@ -286,7 +319,7 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
   const fmt = (n) => n.toLocaleString('en-US');
 
   const C = {};
-  const readColors = () => { const cs = getComputedStyle(document.documentElement); ['bg', 'ink', 'ink-2', 'ink-3', 'rule', 'earth', 'earth-2', 'iss', 'css', 'old'].forEach(k => C[k] = cs.getPropertyValue('--' + k).trim()); };
+  const readColors = () => { const cs = getComputedStyle(document.documentElement); ['bg', 'ink', 'ink-2', 'ink-3', 'rule', 'earth', 'earth-2', 'iss', 'css', 'old', 'metal', 'ocean', 'ocean-2', 'land', 'atmo', 'moon', 'star'].forEach(k => C[k] = cs.getPropertyValue('--' + k).trim()); };
   readColors();
   const rgb = (hex) => { const h = hex.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; };
   const alpha = (hex, a) => `rgba(${rgb(hex).join(',')},${a})`;
@@ -332,48 +365,161 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
     s.canvas.addEventListener('pointerleave', () => tip.classList.remove('on'));
   };
 
-  // ---- 1. Cover: two orbits ----
+  const rng = (seed) => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  // ---- Spacecraft. One spec per station, in a 100-unit box centred on 0,0. 'p' parts are solar
+  //      panels in the station's colour, 'm' parts are pressurised modules and trusses in metal grey.
+  //      The same spec draws on the canvases and in the legend icons. ----
+  const CRAFT = {
+    iss: [
+      ['r', 'm', -47, -1.6, 94, 3.2],
+      ...[-43, -31, 26, 38].flatMap(x => [['r', 'p', x, -23, 5, 20], ['r', 'p', x, 3, 5, 20]]),
+      ['r', 'm', -19, 3, 4, 11], ['r', 'm', 15, 3, 4, 11],
+      ['r', 'm', -3, -10, 6, 25], ['r', 'm', -12, 3, 24, 5.5], ['r', 'm', -9, 12, 18, 4.5],
+    ],
+    css: [
+      ['r', 'p', -44, -47, 7, 35], ['r', 'p', -44, -6, 7, 35], ['r', 'p', 37, -47, 7, 35], ['r', 'p', 37, -6, 7, 35],
+      ['r', 'm', -37, -10.5, 31, 8], ['r', 'm', 6, -10.5, 31, 8],
+      ['r', 'm', -4.5, -6, 9, 34], ['c', 'm', 0, -6.5, 7],
+      ['r', 'p', -20, 19, 14, 5], ['r', 'p', 6, 19, 14, 5],
+    ],
+  };
+  const drawCraft = (ctx, kind, x, y, w, o = {}) => {
+    const k = w / 100;
+    ctx.save(); ctx.translate(x, y); if (o.rot) ctx.rotate(o.rot); ctx.scale(k, k);
+    if (o.alpha !== undefined) ctx.globalAlpha *= o.alpha;
+    for (const [type, fill, a, b, c, d] of CRAFT[kind]) {
+      ctx.fillStyle = fill === 'p' ? C[kind] : C.metal;
+      ctx.beginPath();
+      if (type === 'r') ctx.rect(a, b, c, d); else ctx.arc(a, b, c, 0, Math.PI * 2);
+      ctx.fill();
+      if (fill === 'p' && w > 30 && type === 'r') {
+        // Cell lines on the panels.
+        ctx.strokeStyle = alpha(C.bg, .45); ctx.lineWidth = .7 / k * .8;
+        ctx.beginPath();
+        const along = d > c;
+        for (let s = 1; s < 4; s++) { if (along) { const yy = b + d * s / 4; ctx.moveTo(a, yy); ctx.lineTo(a + c, yy); } else { const xx = a + c * s / 4; ctx.moveTo(xx, b); ctx.lineTo(xx, b + d); } }
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  };
+  document.getElementById('sprite').innerHTML = '<defs>' + Object.entries(CRAFT).map(([k, parts]) =>
+    `<symbol id="g-${k}" viewBox="-50 -50 100 100">` + parts.map(([type, fill, a, b, c, d]) =>
+      type === 'r' ? `<rect x="${a}" y="${b}" width="${c}" height="${d}" fill="${fill === 'p' ? 'currentColor' : 'var(--metal)'}"/>`
+                   : `<circle cx="${a}" cy="${b}" r="${c}" fill="var(--metal)"/>`).join('') + '</symbol>').join('') + '</defs>';
+
+  // ---- Field icons, drawn as strokes about s pixels across ----
+  const ICON = (ctx, kind, x, y, s, col) => {
+    ctx.save(); ctx.translate(x, y); const u = s / 20; ctx.scale(u, u);
+    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.7 / u * .9; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const P = (d, fill) => { const p = new Path2D(d); fill ? ctx.fill(p) : ctx.stroke(p); };
+    if (kind === 'atom') { [0, 60, 120].forEach(a => { ctx.save(); ctx.rotate(a * Math.PI / 180); ctx.beginPath(); ctx.ellipse(0, 0, 9.5, 3.6, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }); ctx.beginPath(); ctx.arc(0, 0, 2.2, 0, Math.PI * 2); ctx.fill(); }
+    else if (kind === 'drop') { P('M0,-9C4,-3 7,1 7,4A7,7 0 0 1 -7,4C-7,1 -4,-3 0,-9Z'); P('M-3,4A3,3 0 0 0 0,7'); }
+    else if (kind === 'crystal') { P('M0,-9L8,-4.5L8,4.5L0,9L-8,4.5L-8,-4.5Z'); P('M0,-9L0,9M-8,-4.5L8,4.5M8,-4.5L-8,4.5'); }
+    else if (kind === 'rad') { ctx.beginPath(); ctx.arc(0, 0, 2, 0, Math.PI * 2); ctx.fill(); [0, 120, 240].forEach(a => { ctx.save(); ctx.rotate((a - 90) * Math.PI / 180); P('M3.5,-2.5L9,-5.5A10,10 0 0 1 9,5.5L3.5,2.5Z', true); ctx.restore(); }); }
+    else if (kind === 'spark') { ctx.beginPath(); ctx.arc(-6, 6, 1.8, 0, Math.PI * 2); ctx.fill(); P('M-6,6Q0,-2 9,-8M-6,6Q2,4 9,1M-6,6Q-4,-3 -1,-9M-6,6L8,8'); }
+    else if (kind === 'rocket') { P('M0,-10C5,-5 5,3 3,7L-3,7C-5,3 -5,-5 0,-10Z'); P('M-3,3L-7,8L-3,7M3,3L7,8L3,7M-1.5,9L0,11L1.5,9'); ctx.beginPath(); ctx.arc(0, -3, 1.6, 0, Math.PI * 2); ctx.stroke(); }
+    else if (kind === 'star') { ctx.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 4 : 9.5, a = i * Math.PI / 5 - Math.PI / 2; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); ctx.stroke(); }
+    else if (kind === 'heart') { P('M0,8C-9,2 -10,-4 -6,-7C-3,-9 -1,-7 0,-5C1,-7 3,-9 6,-7C10,-4 9,2 0,8Z'); P('M-8,0L-4,0L-2,-3L1,3L3,0L8,0'); }
+    else if (kind === 'planet') { ctx.beginPath(); ctx.arc(0, 0, 5.5, 0, Math.PI * 2); ctx.stroke(); ctx.save(); ctx.rotate(-.35); ctx.beginPath(); ctx.ellipse(0, 0, 10.5, 3.2, 0, Math.PI * .05, Math.PI * .95, true); ctx.stroke(); ctx.restore(); }
+    else if (kind === 'leaf') { P('M-7,8C-8,-4 0,-9 9,-9C9,1 3,8 -7,8Z'); P('M-7,8L4,-3'); }
+    else if (kind === 'dna') { ctx.beginPath(); for (let i = 0; i <= 20; i++) { const yy = -9 + i * .9, xx = Math.sin(i / 20 * Math.PI * 2) * 6; i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); ctx.beginPath(); for (let i = 0; i <= 20; i++) { const yy = -9 + i * .9, xx = -Math.sin(i / 20 * Math.PI * 2) * 6; i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); P('M-4.5,-5.4L4.5,-5.4M-6,-0.5L6,-0.5M-4.5,4.5L4.5,4.5'); }
+    else if (kind === 'cloud') { P('M-7,5A4,4 0 0 1 -6,-3A6,6 0 0 1 5,-4A4.5,4.5 0 0 1 7,5Z'); }
+    ctx.restore();
+  };
+  const FIELD_ICON = {
+    'Fluid and computational mechanics': 'drop', 'Atomic, molecular and optical physics': 'atom', 'Materials chemistry': 'crystal',
+    'Radiation': 'rad', 'Nuclear and high-energy physics': 'spark', 'Aerospace engineering': 'rocket', 'Astronomy': 'star',
+    'Human physiology and medicine': 'heart', 'Space and planetary science': 'planet', 'Plant science': 'leaf',
+    'Molecular biology': 'dna', 'Atmospheric science': 'cloud',
+  };
+
+  // ---- Starfield behind every page ----
+  const stars = document.getElementById('stars'), sctx = stars.getContext('2d');
+  const drawStars = () => {
+    const dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight;
+    stars.width = W * dpr; stars.height = H * dpr; sctx.setTransform(dpr, 0, 0, dpr, 0, 0); sctx.clearRect(0, 0, W, H);
+    const r = rng(7), n = Math.round(W * H / 2600);
+    for (let i = 0; i < n; i++) {
+      const x = r() * W, y = r() * H, m = r(), sz = m > .985 ? 1.6 : m > .9 ? 1.1 : .7;
+      sctx.fillStyle = alpha(C.star, .25 + r() * .6); sctx.beginPath(); sctx.arc(x, y, sz, 0, Math.PI * 2); sctx.fill();
+      if (m > .993) { sctx.strokeStyle = alpha(C.star, .35); sctx.lineWidth = .6; sctx.beginPath(); sctx.moveTo(x - 4, y); sctx.lineTo(x + 4, y); sctx.moveTo(x, y - 4); sctx.lineTo(x, y + 4); sctx.stroke(); }
+    }
+  };
+  addEventListener('resize', drawStars);
+
+  // ---- 1. Cover: Earth with both stations in orbit ----
+  // Continents and clouds are made-up blobs on a turning globe, so the planet reads as Earth without
+  // claiming any real geography.
+  const blob = (seed, lat0, lon0, size, n = 28) => { const r = rng(seed); const ph = [r(), r(), r()].map(v => v * 6.28);
+    return Array.from({ length: n }, (_, i) => { const a = i / n * Math.PI * 2, k = size * (1 + .32 * Math.sin(2 * a + ph[0]) + .2 * Math.sin(3 * a + ph[1]) + .12 * Math.sin(5 * a + ph[2]));
+      return [lat0 + Math.sin(a) * k, lon0 + Math.cos(a) * k * 1.3]; }); };
+  const LAND = [blob(3, 40, -100, 22), blob(5, -15, -60, 18), blob(8, 45, 20, 20), blob(9, 5, 20, 20), blob(13, 40, 95, 26), blob(17, -25, 135, 12), blob(21, 70, -40, 9)];
+  const CLOUDS = Array.from({ length: 12 }, (_, i) => blob(100 + i * 13, (i * 37) % 120 - 60, i * 31 - 180, 3 + (i % 3) * 1.5, 18));
   const ORB = [
-    { name: 'ISS', col: 'iss', tilt: 51.6, alt: 420, period: 9, phase: .1 },
-    { name: 'Tiangong', col: 'css', tilt: 41.5, alt: 390, period: 8.6, phase: .55 },
+    { name: 'ISS', kind: 'iss', tilt: 51.6, alt: 420, period: 11, phase: .12 },
+    { name: 'Tiangong', kind: 'css', tilt: 41.5, alt: 390, period: 10.4, phase: .6 },
   ];
   const orbits = scene('orbits', (ctx, W, H, t) => {
-    const cx = W / 2, cy = H / 2, r = Math.min(H * .34, W * .2);
-    const g = ctx.createRadialGradient(cx - r * .3, cy - r * .3, r * .1, cx, cy, r);
-    g.addColorStop(0, C.earth); g.addColorStop(1, C['earth-2']);
-    // Back half of each orbit, then Earth, then the front half.
+    const cx = W / 2, cy = H / 2, r = Math.min(H * .33, W * .2), rot = t * 9, tiltE = 23.4 * Math.PI / 180;
+    const proj = (lat, lon) => {
+      const la = lat * Math.PI / 180, lo = (lon + rot) * Math.PI / 180;
+      let x = Math.cos(la) * Math.sin(lo), y = -Math.sin(la), z = Math.cos(la) * Math.cos(lo);
+      const yy = y * Math.cos(tiltE) - z * Math.sin(tiltE) * .3;
+      return [cx + x * r, cy + yy * r, z];
+    };
+    // Moon, far off in a corner.
+    const mx = W - Math.min(70, W * .12), my = Math.min(46, H * .16), mr = Math.max(8, r * .13);
+    ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fillStyle = C.moon; ctx.fill();
+    ctx.beginPath(); ctx.arc(mx + mr * .45, my - mr * .1, mr * .95, 0, Math.PI * 2); ctx.fillStyle = alpha(C.bg, .55); ctx.fill();
     const pt = (o, a) => {
-      const R = r * (1.3 + (o.alt - 390) / 300), k = Math.sin(o.tilt * Math.PI / 180) * .55;
-      const rot = -o.tilt * Math.PI / 180 * .35;
-      const x = Math.cos(a) * R * 1.55, y = Math.sin(a) * R * k;
-      return [cx + x * Math.cos(rot) - y * Math.sin(rot), cy + x * Math.sin(rot) + y * Math.cos(rot), Math.sin(a)];
+      const R = r * (1.32 + (o.alt - 390) / 260), k = Math.sin(o.tilt * Math.PI / 180) * .5;
+      const tr = -o.tilt * Math.PI / 180 * .32;
+      const x = Math.cos(a) * R * 1.6, y = Math.sin(a) * R * k;
+      return [cx + x * Math.cos(tr) - y * Math.sin(tr), cy + x * Math.sin(tr) + y * Math.cos(tr), Math.sin(a)];
     };
     const half = (o, front) => {
       ctx.beginPath(); let started = false;
-      for (let i = 0; i <= 180; i++) { const a = i / 180 * Math.PI * 2, [x, y, z] = pt(o, a); if ((z >= 0) === front) { started ? ctx.lineTo(x, y) : ctx.moveTo(x, y); started = true; } else started = false; }
-      ctx.strokeStyle = alpha(C[o.col], front ? .8 : .3); ctx.lineWidth = 1.6; ctx.stroke();
+      for (let i = 0; i <= 200; i++) { const a = i / 200 * Math.PI * 2, [x, y, z] = pt(o, a); if ((z >= 0) === front) { started ? ctx.lineTo(x, y) : ctx.moveTo(x, y); started = true; } else started = false; }
+      ctx.strokeStyle = alpha(C[o.kind], front ? .75 : .25); ctx.lineWidth = 1.4; ctx.setLineDash(front ? [] : [2, 4]); ctx.stroke(); ctx.setLineDash([]);
     };
-    const dot = (o, front) => {
+    const craft = (o, front) => {
       const a = o.phase * Math.PI * 2 + t / o.period * Math.PI * 2, [x, y, z] = pt(o, a);
       if ((z >= 0) !== front) return;
-      ctx.beginPath(); ctx.arc(x, y, front ? 6 : 4, 0, Math.PI * 2); ctx.fillStyle = front ? C[o.col] : alpha(C[o.col], .5); ctx.fill();
-      if (front) label(ctx, o.name, x + 10, y - 10, { size: 12, weight: 600, color: C[o.col] });
+      const w = Math.max(30, r * (front ? .58 : .34));
+      const [x2, y2] = pt(o, a + .02), heading = Math.atan2(y2 - y, x2 - x);
+      if (front) { const g = ctx.createRadialGradient(x, y, 0, x, y, w * .7); g.addColorStop(0, alpha(C[o.kind], .25)); g.addColorStop(1, alpha(C[o.kind], 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, w * .7, 0, Math.PI * 2); ctx.fill(); }
+      drawCraft(ctx, o.kind, x, y, w, { rot: heading * .35, alpha: front ? 1 : .45 });
+      if (front) label(ctx, o.name, x, y + w * .55 + 8, { size: 12, weight: 600, color: C[o.kind], align: 'center' });
     };
-    ORB.forEach(o => { half(o, false); dot(o, false); });
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
-    ctx.strokeStyle = alpha(C.ink, .12); ctx.lineWidth = 1; ctx.stroke();
-    // Equator, for the tilt.
-    ctx.beginPath(); ctx.ellipse(cx, cy, r, r * .18, 0, 0, Math.PI); ctx.strokeStyle = alpha(C.ink, .18); ctx.setLineDash([3, 4]); ctx.stroke(); ctx.setLineDash([]);
-    ORB.forEach(o => { half(o, true); dot(o, true); });
+    ORB.forEach(o => { half(o, false); craft(o, false); });
+    // Atmosphere glow.
+    const glow = ctx.createRadialGradient(cx, cy, r * .96, cx, cy, r * 1.16);
+    glow.addColorStop(0, alpha(C.atmo, .5)); glow.addColorStop(1, alpha(C.atmo, 0));
+    ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(cx, cy, r * 1.16, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
+    const ocean = ctx.createRadialGradient(cx - r * .35, cy - r * .35, r * .1, cx, cy, r * 1.05);
+    ocean.addColorStop(0, C.ocean); ocean.addColorStop(1, C['ocean-2']);
+    ctx.fillStyle = ocean; ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+    const shape = (pts, col) => { const v = pts.map(([la, lo]) => proj(la, lo)); if (v.every(p => p[2] < 0)) return;
+      ctx.beginPath(); v.forEach(([x, y, z], i) => { const f = z < 0 ? 1 / Math.hypot((x - cx) / r, (y - cy) / r || 1) : 1; const X = cx + (x - cx) * Math.min(1, f), Y = cy + (y - cy) * Math.min(1, f); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+      ctx.closePath(); ctx.fillStyle = col; ctx.fill(); };
+    LAND.forEach(b => shape(b, C.land));
+    CLOUDS.forEach((b, i) => shape(b.map(([la, lo]) => [la, lo + t * 4 + i * 3]), alpha('#ffffff', .35)));
+    // Night side.
+    const night = ctx.createLinearGradient(cx - r * .2, cy, cx + r, cy);
+    night.addColorStop(0, 'rgba(0,0,0,0)'); night.addColorStop(1, 'rgba(3,6,20,.55)');
+    ctx.fillStyle = night; ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+    ctx.restore();
+    ORB.forEach(o => { half(o, true); craft(o, true); });
   }, 1.2, { loop: true });
 
   // ---- 2. Papers per year ----
   const years = scene('years', (ctx, W, H, t, s) => {
-    const narrow = narrowW(W), L = narrow ? 40 : 56, R = W - (narrow ? 70 : 96), T = 14, B = H - 30;
+    const narrow = narrowW(W), L = narrow ? 40 : 56, R = W - (narrow ? 96 : 150), T = 14, B = H - 30;
     const n = D.years.length, x = (i) => lerp(L, R, i / (n - 1)), y = (v) => lerp(B, T, v / 1300);
     for (let v = 0; v <= 1200; v += 300) { ctx.strokeStyle = alpha(C.rule, .6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(L, y(v)); ctx.lineTo(R, y(v)); ctx.stroke(); label(ctx, fmt(v), L - 8, y(v), { size: 10.5, align: 'right', color: C['ink-3'], halo: false }); }
     D.years.forEach((yr, i) => { if (yr % (narrow ? 4 : 2) === 0 || yr === 2026) label(ctx, yr === 2026 ? '2026*' : String(yr), x(i), B + 16, { size: 10.5, align: 'center', color: C['ink-3'], halo: false }); });
-    // Tiangong-2 and full station markers.
     [[2016, narrow ? 'T-2' : 'Tiangong-2 lab'], [2022, narrow ? 'Done' : 'Station finished']].forEach(([yr, txt]) => {
       const X = x(D.years.indexOf(yr)); ctx.setLineDash([3, 4]); ctx.strokeStyle = alpha(C['ink-3'], .6); ctx.beginPath(); ctx.moveTo(X, T); ctx.lineTo(X, B); ctx.stroke(); ctx.setLineDash([]);
       label(ctx, txt, X + 5, T + 8, { size: 10.5, color: C['ink-3'] });
@@ -383,9 +529,13 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
       ctx.beginPath();
       for (let i = 0; i <= Math.floor(upto); i++) { i ? ctx.lineTo(x(i), y(arr[i])) : ctx.moveTo(x(i), y(arr[i])); }
       const f = upto - Math.floor(upto), i0 = Math.floor(upto);
-      if (i0 < n - 1) ctx.lineTo(lerp(x(i0), x(i0 + 1), f), y(lerp(arr[i0], arr[i0 + 1], f)));
+      const hx = i0 < n - 1 ? lerp(x(i0), x(i0 + 1), f) : x(n - 1), hy = i0 < n - 1 ? y(lerp(arr[i0], arr[i0 + 1], f)) : y(arr[n - 1]);
+      if (i0 < n - 1) ctx.lineTo(hx, hy);
       ctx.strokeStyle = C[k]; ctx.lineWidth = 2.6; ctx.lineJoin = 'round'; ctx.stroke();
-      if (p > .97) { label(ctx, `${k === 'iss' ? 'ISS' : 'Tiangong'} ${fmt(arr[n - 2])}`, x(n - 1) + 8, y(arr[n - 1]), { size: 11.5, weight: 600, color: C[k] }); }
+      // The station flies along the head of its own line.
+      const cw = narrow ? 30 : 40;
+      drawCraft(ctx, k, hx + cw * .62, hy, cw);
+      if (p > .97) label(ctx, `${k === 'iss' ? 'ISS' : 'Tiangong'} ${fmt(arr[n - 2])}`, x(n - 1) + cw * 1.2 + 4, y(arr[n - 1]), { size: 11.5, weight: 600, color: C[k] });
     });
     if (p > .97) D.years.forEach((yr, i) => s.hits.push({ x: x(i), y: y(D.css[i]), r: 14, html: `<b>${yr}${yr === 2026 ? ', to early November' : ''}</b><br>ISS ${fmt(D.iss[i])}<br>Tiangong ${fmt(D.css[i])} (${Math.round(100 * D.css[i] / D.iss[i])} per 100)` }));
   }, 2.6);
@@ -395,12 +545,14 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
   const F = D.fields.map(([name, iss, css, grp]) => ({ name, iss, css, grp, per: Math.round(100 * css / iss) })).sort((a, b) => b.per - a.per);
   const fields = scene('fields', (ctx, W, H, t, s) => {
     const narrow = narrowW(W);
-    const L = narrow ? 8 : 290, R = W - (narrow ? 50 : 70), T = 6, B = H - 6, rh = (B - T) / F.length;
+    const L = narrow ? 8 : 340, R = W - (narrow ? 50 : 70), T = 6, B = H - 6, rh = (B - T) / F.length;
     const max = 760, bx = (v) => L + (R - L) * Math.sqrt(v / max);
     F.forEach((f, i) => {
-      const q = ease((t - i * .08) / .7), y0 = T + i * rh, phys = f.grp === 'phys';
+      const q = ease((t - i * .08) / .7), y0 = T + i * rh;
+      const icol = f.grp === 'phys' ? C.css : f.grp === 'eng' ? C['ink-2'] : C.iss;
       const nameY = narrow ? y0 + rh * .2 : y0 + rh * .5;
-      label(ctx, f.name, narrow ? L : L - 14, nameY, { size: narrow ? 11 : 12.5, weight: 600, color: C.ink, align: narrow ? 'left' : 'right', halo: false });
+      if (narrow) { ICON(ctx, FIELD_ICON[f.name], L + 8, nameY, 15, icol); label(ctx, f.name, L + 22, nameY, { size: 11, weight: 600, color: C.ink, halo: false }); }
+      else { ICON(ctx, FIELD_ICON[f.name], L - 20, nameY, 18, icol); label(ctx, f.name, L - 40, nameY, { size: 12.5, weight: 600, color: C.ink, align: 'right', halo: false }); }
       const top = narrow ? y0 + rh * .38 : y0 + rh * .2, bh = narrow ? rh * .22 : rh * .27;
       ctx.fillStyle = alpha(C.iss, .85); ctx.fillRect(L, top, (bx(f.iss) - L) * q, bh);
       ctx.fillStyle = C.css; ctx.fillRect(L, top + bh + 2, (bx(f.css) - L) * q, bh);
@@ -409,7 +561,6 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
         label(ctx, fmt(f.css), bx(f.css) + 6, top + bh * 1.5 + 2, { size: 10, color: C['ink-3'], halo: false });
         label(ctx, String(f.per), W - 4, top + bh, { size: 15, weight: 600, color: f.per >= 30 ? C.css : C['ink-3'], align: 'right', halo: false });
       }
-      s.hits.push({ x: (L + R) / 2, y: y0 + rh / 2, r: rh / 2 + 200, html: `<b>${f.name}</b><br>ISS ${fmt(f.iss)} · Tiangong ${fmt(f.css)}<br>${f.per} Tiangong papers per 100 ISS papers` });
     });
     label(ctx, 'per 100', W - 4, T + 2, { size: 9.5, color: C['ink-3'], align: 'right', halo: false });
   }, 1.9);
@@ -421,34 +572,74 @@ canvas.scene { width: 100%; display: block; touch-action: pan-y; }
       tip.style.left = `${clamp(px + 14, 0, r.width - tip.offsetWidth)}px`; tip.style.top = `${py - tip.offsetHeight - 12 < 0 ? py + 16 : py - tip.offsetHeight - 12}px`; };
     c.addEventListener('pointermove', show); c.addEventListener('pointerdown', show); c.addEventListener('pointerleave', () => tip.classList.remove('on')); })();
 
-  // ---- 4. Foreign partners ----
+  // ---- 4. Foreign partners, with the two European instruments drawn next to their countries ----
+  // HERD: a cube of crystal calorimeter wrapped in detector layers. POLAR-2: a square grid of detector modules.
+  const drawHerd = (ctx, x, y, s, col) => {
+    const d = s * .28;
+    ctx.save(); ctx.lineJoin = 'round';
+    ctx.fillStyle = alpha(col, .9); ctx.fillRect(x - s / 2, y - s / 2 + d, s - d, s - d);
+    ctx.fillStyle = alpha(col, .6); ctx.beginPath(); ctx.moveTo(x - s / 2, y - s / 2 + d); ctx.lineTo(x - s / 2 + d, y - s / 2); ctx.lineTo(x + s / 2, y - s / 2); ctx.lineTo(x + s / 2 - d, y - s / 2 + d); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = alpha(col, .4); ctx.beginPath(); ctx.moveTo(x + s / 2 - d, y - s / 2 + d); ctx.lineTo(x + s / 2, y - s / 2); ctx.lineTo(x + s / 2, y + s / 2 - d); ctx.lineTo(x + s / 2 - d, y + s / 2); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = alpha(C.bg, .6); ctx.lineWidth = 1;
+    for (let k = 1; k < 4; k++) { const a = x - s / 2 + (s - d) * k / 4, b = y - s / 2 + d + (s - d) * k / 4; ctx.beginPath(); ctx.moveTo(a, y - s / 2 + d); ctx.lineTo(a, y + s / 2); ctx.moveTo(x - s / 2, b); ctx.lineTo(x + s / 2 - d, b); ctx.stroke(); }
+    // A cosmic ray coming in.
+    ctx.strokeStyle = C.atmo; ctx.lineWidth = 1.4; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(x - s * 1.1, y - s * 1.1); ctx.lineTo(x - s * .1, y - s * .05); ctx.stroke(); ctx.setLineDash([]);
+    ctx.restore();
+  };
+  const drawPolar = (ctx, x, y, s, col) => {
+    const n = 5, c = s / n;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { ctx.fillStyle = alpha(col, (i + j) % 2 ? .55 : .85); ctx.fillRect(x - s / 2 + i * c + .6, y - s / 2 + j * c + .6, c - 1.2, c - 1.2); }
+  };
   const P = D.css_countries;
   const partners = scene('partners', (ctx, W, H, t, s) => {
-    const narrow = narrowW(W), L = narrow ? 104 : 150, R = W - 40, T = 4, rh = (H - 8) / P.length;
+    const narrow = narrowW(W), L = narrow ? 104 : 150, R = W - (narrow ? 90 : 180), T = 4, rh = (H - 8) / P.length;
     P.forEach(([name, n], i) => {
       const q = ease((t - i * .1) / .6), y = T + rh * (i + .5), w = (R - L) * n / P[0][1] * q;
       label(ctx, name, L - 12, y, { size: narrow ? 11 : 12.5, weight: 600, color: C.ink, align: 'right', halo: false });
       ctx.fillStyle = name === 'United States' ? C.iss : i === 0 ? C.css : alpha(C.css, .55); ctx.fillRect(L, y - rh * .32, w, rh * .64);
       if (q > .9) label(ctx, String(n), L + w + 8, y, { size: 11, color: C['ink-2'], halo: false });
-      if (i === 0 && q > .9 && !narrow) label(ctx, 'mostly HERD, a cosmic-ray detector', L + 10, y, { size: 11, weight: 600, color: '#ffffff', halo: false });
+      if (q > .9 && (name === 'Italy' || name === 'Switzerland')) {
+        const ix = L + w + 44, sz = Math.min(rh * 1.3, narrow ? 22 : 30);
+        name === 'Italy' ? drawHerd(ctx, ix, y, sz, C.css) : drawPolar(ctx, ix, y, sz * .8, C.css);
+        label(ctx, name === 'Italy' ? 'HERD' : 'POLAR-2', ix + sz * .7 + 4, y, { size: 11, weight: 600, color: C.css, halo: false });
+      }
       s.hits.push({ x: L + w / 2, y, r: Math.max(rh / 2, w / 2), html: `<b>${name}</b><br>${n} Tiangong papers with a co-author here, 2022 to 2026` });
     });
-  }, 1.6);
+  }, 1.6, { loop: false });
   hover(partners, 'partnersTip');
 
-  // ---- 5. Cold atoms ----
+  // ---- 5. Cold atoms: each cloud drifts along its track for as long as it held together ----
+  const cr = rng(500);
+  const CLOUD = Array.from({ length: 80 }, () => { const a = cr() * Math.PI * 2, d = Math.sqrt(-2 * Math.log(cr() + 1e-6)) * .32; return [Math.cos(a) * d, Math.sin(a) * d, cr()]; });
   const cold = scene('cold', (ctx, W, H, t) => {
-    const narrow = narrowW(W), L = narrow ? 8 : 230, R = W - 60, rows = D.cold, rh = (H - 30) / rows.length;
+    const narrow = narrowW(W), L = narrow ? 8 : 230, R = W - 70, rows = D.cold, rh = (H - 30) / rows.length;
     const x = (v) => L + (R - L) * v / 7.5;
     for (let v = 0; v <= 7; v++) { ctx.strokeStyle = alpha(C.rule, .6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x(v), 0); ctx.lineTo(x(v), H - 24); ctx.stroke(); label(ctx, `${v} s`, x(v), H - 10, { size: 10.5, align: 'center', color: C['ink-3'], halo: false }); }
+    // Animation time runs at real speed, so the clouds last 1, 2 and 7 seconds on screen too.
+    const clock = t % 9.5;
     rows.forEach(([name, sec], i) => {
-      const q = ease((t - i * .3) / 1.2), y = rh * (i + .5), col = i === 2 ? C.css : i === 0 ? C.iss : C.old;
-      const by = narrow ? y + 6 : y, bh = narrow ? rh * .36 : rh * .5;
+      const y = rh * (i + .5), col = i === 2 ? C.css : i === 0 ? C.iss : C.old, by = narrow ? y + 6 : y;
       label(ctx, name, narrow ? L : L - 14, narrow ? y - rh * .3 : y, { size: narrow ? 11 : 12.5, weight: 600, color: C.ink, align: narrow ? 'left' : 'right', halo: false });
-      ctx.fillStyle = col; ctx.fillRect(x(0), by - bh / 2, x(sec * q) - x(0), bh);
-      if (q > .95) label(ctx, `about ${sec} s`, x(sec) + 8, by, { size: 11.5, weight: 600, color: col, halo: false });
+      // Track.
+      ctx.strokeStyle = alpha(col, .35); ctx.lineWidth = 2; ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.moveTo(x(0), by); ctx.lineTo(x(sec), by); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(x(sec), by - 8); ctx.lineTo(x(sec), by + 8); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.stroke();
+      const live = Math.min(clock, sec), alive = clock <= sec, fade = alive ? 1 : Math.max(.22, clamp(1 - (clock - sec) / .8));
+      const cx = x(live), rad = (narrow ? 10 : 14) * (1 + live * .06);
+      if (fade > 0) {
+        const g = ctx.createRadialGradient(cx, by, 0, cx, by, rad * 2.2); g.addColorStop(0, alpha(col, .55 * fade)); g.addColorStop(1, alpha(col, 0));
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, by, rad * 2.2, 0, Math.PI * 2); ctx.fill();
+        // When a cloud runs out of time its atoms scatter.
+        const spread = alive ? 1 : 1 + Math.min(2.5, (clock - sec) * 4);
+        CLOUD.forEach(([dx, dy, ph]) => { const jx = Math.sin(t * 3 + ph * 20) * .06, jy = Math.cos(t * 2.6 + ph * 17) * .06;
+          ctx.fillStyle = alpha(col, .9 * fade); ctx.beginPath(); ctx.arc(cx + (dx + jx) * rad * 2 * spread, by + (dy + jy) * rad * 2 * spread, 1.9, 0, Math.PI * 2); ctx.fill(); });
+      }
+      label(ctx, `about ${sec} s`, x(sec) + 10, by, { size: 11.5, weight: 600, color: col, halo: false });
     });
-  }, 2);
+  }, 6.8, { loop: true });
+  drawStars();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => setTimeout(drawStars));
+  new MutationObserver(() => setTimeout(drawStars)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.fonts) document.fonts.ready.then(drawStars);
   // ---- Run scenes only while visible. At rest each shows a complete frame. ----
   const ro = new ResizeObserver(() => scenes.forEach(s => { s.resize(); s.render(s.active ? (s.t || 0) : s.restT); }));
   scenes.forEach(s => { ro.observe(s.canvas); s.resize(); s.render(s.restT); });
